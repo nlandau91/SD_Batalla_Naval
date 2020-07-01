@@ -1,0 +1,5 @@
+Por el momento solo hay conexion entre pares y una chat por turnos
+
+Hay que implementar la logica del juego en si y su interfaz grafica
+
+Refactorizar/modularizar codigo, por el momento es un unico .c
