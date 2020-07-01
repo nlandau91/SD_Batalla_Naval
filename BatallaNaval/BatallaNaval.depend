@@ -5,3 +5,12 @@
 	<sys/socket.h>
 	<netinet/in.h>
 
+1593637801 source:/home/pi/Documents/SD_Batalla_Naval-master/BatallaNaval/main.c
+	<stdio.h>
+	<stdlib.h>
+	<unistd.h>
+	<string.h>
+	<sys/socket.h>
+	<netinet/in.h>
+	<arpa/inet.h>
+
