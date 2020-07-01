@@ -1,0 +1,7 @@
+# depslib dependency file v1.0
+1593630670 source:/home/nicolas/Documents/BatallaNaval/main.c
+	<stdio.h>
+	<stdlib.h>
+	<sys/socket.h>
+	<netinet/in.h>
+
