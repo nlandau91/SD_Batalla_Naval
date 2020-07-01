@@ -5,6 +5,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <ifaddrs.h>
 
 void texto()
 {
@@ -13,8 +14,29 @@ void texto()
     printf("2) Unirse a una partida\n\n");
 }
 
+void print_addresses()
+{
+    struct ifaddrs *ifap, *ifa;
+    struct sockaddr_in *sa;
+    char *addr;
+
+    getifaddrs (&ifap);
+    for (ifa = ifap; ifa; ifa = ifa->ifa_next)
+    {
+        if (ifa->ifa_addr && ifa->ifa_addr->sa_family==AF_INET)
+        {
+            sa = (struct sockaddr_in *) ifa->ifa_addr;
+            addr = inet_ntoa(sa->sin_addr);
+            printf("Interface: %s\tAddress: %s\n", ifa->ifa_name, addr);
+        }
+    }
+
+    freeifaddrs(ifap);
+}
+
 int create_game(int port)
 {
+    printf("Creando partida...\n");
     int server_fd, new_socket;
     struct sockaddr_in address;
     int opt = 1;
@@ -49,18 +71,25 @@ int create_game(int port)
         perror("listen");
         return -1;
     }
+    printf("Partida creada!\n");
+    printf("Esperando oponente...\n\n");
+    printf("PORT: %d\n",port);
+    printf("Addresses:\n");
+    print_addresses();
     if ((new_socket = accept(server_fd, (struct sockaddr *)&address,
                              (socklen_t*)&addrlen))<0)
     {
         perror("accept");
         return -1;
     }
+    printf("\nOponente conectado, comenzando partida...\n\n");
 
     return new_socket;
 }
 
 int join_game(char* hostname, int port)
 {
+    printf("Intentando conectarse a %s : %d\n\n",hostname,port);
     int sock = 0;
     struct sockaddr_in serv_addr;
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
@@ -84,7 +113,7 @@ int join_game(char* hostname, int port)
         printf("\nConnection Failed \n");
         return -1;
     }
-
+    printf("Conectado! comenzando partida...\n\n");
     return sock;
 }
 
@@ -116,6 +145,7 @@ int play_game(int socket, int mode)
 
 int main()
 {
+
     system("clear");
     printf("Batalla Naval 2020 GOTY Edition\n\n");
     texto();
@@ -136,7 +166,8 @@ int main()
 
     int new_socket = -1;;
     if(opcion == 1)
-    {   printf("Ingrese el puerto\n");
+    {
+        printf("Ingrese el puerto\n");
         int port;
         scanf("%d",&port);
         getchar();
