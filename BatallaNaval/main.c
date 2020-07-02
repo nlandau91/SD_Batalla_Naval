@@ -6,6 +6,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <ifaddrs.h>
+#include "battleship.h"
 
 void texto()
 {
@@ -117,12 +118,25 @@ int join_game(char* hostname, int port)
     return sock;
 }
 
+//inicializa el gamestate
+int init_gamestate(Gamestate* gamestate)
+{
+    //para cada barco a ingresar
+    //preguntarle al usuario coordenadas y orientacion
+    //luego llamar a putship() y agregarlo a la lista de barcos
+
+    //el tablero del oponente se inicializa vacio
+    return 0;
+}
+
 int play_game(int socket, int mode)
 {
     int valread;
     char receive_buffer[1024] = {0};
     char send_buffer[1024] = {0};
 
+    Gamestate* gamestate;
+    init_gamestate(gamestate);
 
 
     if(mode == 1) //soy el host, comienzo la partida
