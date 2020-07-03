@@ -118,12 +118,51 @@ int join_game(char* hostname, int port)
     return sock;
 }
 
+
+
 //inicializa el gamestate
 int init_gamestate(Gamestate* gamestate)
 {
+    Ship* ship;
+    ship = create_ship(CARRIER);
+    gamestate->ships[0] = *ship;
+    ship = create_ship(BATTLESHIP);
+    gamestate->ships[1] = *ship;
+    ship = create_ship(BATTLESHIP);
+    gamestate->ships[2] = *ship;
+    ship = create_ship(BATTLESHIP);
+    gamestate->ships[3] = *ship;
+    ship = create_ship(DESTROYER);
+    gamestate->ships[4] = *ship;
+    ship = create_ship(DESTROYER);
+    gamestate->ships[5] = *ship;
+    ship = create_ship(DESTROYER);
+    gamestate->ships[6] = *ship;
+    ship = create_ship(FRIGATE);
+    gamestate->ships[7] = *ship;
+    ship = create_ship(FRIGATE);
+    gamestate->ships[8] = *ship;
     //para cada barco a ingresar
     //preguntarle al usuario coordenadas y orientacion
+    for(int i = 0; i < 9; i++)
+    {
+        int valido = 0;
+        while(valido>0)
+        printf("Colocando nave de tipo '%s'...\n",gamestate->ships[i].nombre);
+        printf("Ingrese la coordenada X entre 0 y 9, de izquierda a derecha:\n");
+        //guardar input en barco
+        printf("Ingrese la coordenada Y entre 0 y 9, de arriba a abajo:\n");
+        //guardar input en barco
+        printf("Ingrese la orientacion 'h' para horizontal o 'v' para vertical\n");
+        //guardar input en barco
+
+        //intengamos poner el barco en mi tablero
+        valido = putship(gamestate->myboard,&gamestate->ships[i]);
+
+    }
+
     //luego llamar a putship() y agregarlo a la lista de barcos
+
 
     //el tablero del oponente se inicializa vacio
     return 0;
@@ -135,7 +174,7 @@ int play_game(int socket, int mode)
     char receive_buffer[1024] = {0};
     char send_buffer[1024] = {0};
 
-    Gamestate* gamestate;
+    Gamestate* gamestate = (Gamestate*)malloc(sizeof(Gamestate));
     init_gamestate(gamestate);
 
 
@@ -148,6 +187,7 @@ int play_game(int socket, int mode)
     while(1)
     {
         valread = read( socket, receive_buffer, 1024);
+        printf("%d\n",valread);
         printf("El: %s\n",receive_buffer);
         printf("Vos: ");
         fgets(send_buffer, sizeof(send_buffer), stdin);
