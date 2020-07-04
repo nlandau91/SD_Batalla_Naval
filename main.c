@@ -186,7 +186,8 @@ int init_gamestate(Gamestate* gamestate)
             valido = putship(gamestate->myboard,&gamestate->myships[i]);
         }
     }
-    gamestate->state = PLAYING;
+    gamestate->state = WAITING;
+    return EXIT_SUCCESS;
 }
 
 int play_game(int socket, int mode)
@@ -195,10 +196,24 @@ int play_game(int socket, int mode)
     char send_buffer[8] = {0};
 
     Gamestate gamestate;
-    init_gamestate(&gamestate);
+    if(!init_gamestate(&gamestate) == EXIT_SUCCESS)
+    {
+        return EXIT_FAILURE;
+    }
+
+    //esto es para que el jugador que creo la partida empiece
+    //idealmente implementamos alguna forma aleatoria para elegir quien empieza
+    if(mode == 1)
+    {
+        gamestate.state = SHOOTING;
+    }
+    if(mode == 2)
+    {
+        gamestate.state = WAITING;
+    }
 
     //gameloop
-    while(gamestate.state == PLAYING)
+    while((gamestate.state != WON) && (gamestate.state != LOST))
     {
         //imprimo el estado del juego
         print_gamestate(&gamestate);
@@ -207,7 +222,7 @@ int play_game(int socket, int mode)
         char y = '0';
         int res;
         //modo 1 me toca disparar
-        if(mode == 1)
+        if(gamestate.state == SHOOTING)
         {
             fflush(stdin);
 
@@ -228,35 +243,30 @@ int play_game(int socket, int mode)
             //revisamos el resultado del disparo
             if(receive_buffer[0] == MISS)
             {
-                printf("AGUA! Ahora le toca al oponente...\n\n");
+                printf("AGUA!\n\n");
                 mode = 2;
                 res = WATER;
             }
             if(receive_buffer[0] == HIT)
             {
-                printf("TOCADO! Vuelve a disparar...\n\n");
+                printf("TOCADO!\n\n");
                 res = SHIP;
             }
             if(receive_buffer[0] == SUNK)
             {
-
+                printf("HUNDIDO!\n\n");
                 gamestate.hisships--;
-                if(gamestate.hisships>0)
+                res = DESTROYED;
+                if(gamestate.hisships==0)
                 {
-                printf("HUNDIDO! Vuelve a disparar...\n\n");
-                }
-                else
-                {
-                    printf("HUNDIDO! Has ganado!\n\n");
                     gamestate.state = WON;
                 }
-                res = DESTROYED;
             }
             gamestate.hisboard[x - '0'][y - '0'] = res;
 
         }
         //modo 2 me toca recibir los disparos del oponente
-        if(mode == 2)
+        if(gamestate.state == WAITING)
         {
             //recibo las coordenadas del disparo del oponente
             read(socket, receive_buffer, 1);
@@ -267,7 +277,7 @@ int play_game(int socket, int mode)
             res = checkHit(gamestate.myboard, x, y);
             if(res == MISS)
             {
-                mode = 1;
+                gamestate.state = SHOOTING;
             }
             send_buffer[0] = res;
             send(socket, send_buffer, 1, 0);
@@ -350,8 +360,12 @@ int main()
         printf("Error al crear o unirse a la partida...\n");
     }
 
-   //a jugar!
+    //a jugar!
     int res = play_game(new_socket, opcion);
+    if(res == EXIT_FAILURE)
+    {
+        printf("Oops, hubo un problema...\n\n");
+    }
     if(res == WON)
     {
 

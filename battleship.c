@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include "battleship.h"
 
 //ship default configurations
@@ -88,15 +89,21 @@ int checkHit(Ship* board[10][10], int x, int y)
 }
 
 //imprime una representacion del gamestate por pantalla
+//idealmente imprime ambos tableros en modo ascii
+//por el momento solo imprime cuantos barcos le queda a cada uno
 void print_gamestate(Gamestate* gamestate)
 {
-
+    int cant = 0;
+    for(int i = 0; i<9; i++)
+    {
+        if(gamestate->myships->hitsremaining > 0)
+        {
+            cant++;
+        }
+    }
+    printf("Mis barcos: %d\n",cant);
+    printf("Barcos de mi oponente: %d\n",gamestate->hisships);
+    //  if(gamestate->)
 
 }
 
-//inicia el tablero, colocando los barcos
-int setup()
-{
-
-    return 0;
-}
