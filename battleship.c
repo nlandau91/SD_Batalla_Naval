@@ -97,14 +97,15 @@ void print_gamestate(Gamestate* gamestate)
     int cant = 0;
     for(int i = 0; i<9; i++)
     {
-        if(gamestate->myships->hitsremaining > 0)
+        if(gamestate->myships[i].hitsremaining > 0)
         {
             cant++;
         }
     }
     printf("Mis barcos: %d\n",cant);
     printf("Barcos de mi oponente: %d\n",gamestate->hisships);
-    //  if(gamestate->)
+
+    //aca imprimiria los tableros iterando sobre gamestate->myboard y gamestate->hisboard
 }
 
 int autoaddships(Gamestate* gamestate)
