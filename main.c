@@ -49,7 +49,7 @@ int create_game(int port)
         return -1;
     }
 
-    // Forcefully attaching socket to the port 8080
+    // Forcefully attaching socket to the port
     if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT,
                    &opt, sizeof(opt)))
     {
@@ -60,7 +60,7 @@ int create_game(int port)
     address.sin_addr.s_addr = INADDR_ANY;
     address.sin_port = htons( port );
 
-    // Forcefully attaching socket to the port 8080
+    // Forcefully attaching socket to the port
     if (bind(server_fd, (struct sockaddr *)&address,
              sizeof(address))<0)
     {
@@ -123,75 +123,142 @@ int join_game(char* hostname, int port)
 //inicializa el gamestate
 int init_gamestate(Gamestate* gamestate)
 {
+
+    //el tablero del oponente se inicializa con posiciones desconocidas
+    for(int i = 0; i < 10; i++)
+    {
+        for(int j = 0; j < 10; j++)
+        {
+            gamestate->hisboard[i][j] = UNKNOWN;
+        }
+    }
+    return 0;
+
+    //el oponente inicia con sus nueve naves
+    gamestate->hisships = 9;
+
+    //creamos las nueve naves que luego ubicaremos en nuestro tablero
     Ship* ship;
     ship = create_ship(CARRIER);
-    gamestate->ships[0] = *ship;
+    gamestate->myships[0] = *ship;
     ship = create_ship(BATTLESHIP);
-    gamestate->ships[1] = *ship;
+    gamestate->myships[1] = *ship;
     ship = create_ship(BATTLESHIP);
-    gamestate->ships[2] = *ship;
+    gamestate->myships[2] = *ship;
     ship = create_ship(BATTLESHIP);
-    gamestate->ships[3] = *ship;
+    gamestate->myships[3] = *ship;
     ship = create_ship(DESTROYER);
-    gamestate->ships[4] = *ship;
+    gamestate->myships[4] = *ship;
     ship = create_ship(DESTROYER);
-    gamestate->ships[5] = *ship;
+    gamestate->myships[5] = *ship;
     ship = create_ship(DESTROYER);
-    gamestate->ships[6] = *ship;
+    gamestate->myships[6] = *ship;
     ship = create_ship(FRIGATE);
-    gamestate->ships[7] = *ship;
+    gamestate->myships[7] = *ship;
     ship = create_ship(FRIGATE);
-    gamestate->ships[8] = *ship;
-    //para cada barco a ingresar
-    //preguntarle al usuario coordenadas y orientacion
+    gamestate->myships[8] = *ship;
+
+    //agregamos nuestras naves a nuestro tablero
     for(int i = 0; i < 9; i++)
     {
-        int valido = 0;
-        while(valido>0)
-        printf("Colocando nave de tipo '%s'...\n",gamestate->ships[i].nombre);
-        printf("Ingrese la coordenada X entre 0 y 9, de izquierda a derecha:\n");
-        //guardar input en barco
-        printf("Ingrese la coordenada Y entre 0 y 9, de arriba a abajo:\n");
-        //guardar input en barco
-        printf("Ingrese la orientacion 'h' para horizontal o 'v' para vertical\n");
-        //guardar input en barco
+        int valido = -1;
+        while(valido<0)
+        {
+            printf("Colocando nave de tipo '%s'...\n",gamestate->myships[i].nombre);
+            printf("Ingrese la coordenada X entre 0 y 9, de izquierda a derecha:\n");
+            scanf("%d",&gamestate->myships[i].x);
+            printf("Ingrese la coordenada Y entre 0 y 9, de arriba a abajo:\n");
+            scanf("%d",&gamestate->myships[i].y);
 
-        //intengamos poner el barco en mi tablero
-        valido = putship(gamestate->myboard,&gamestate->ships[i]);
+            printf("Ingrese la orientacion 'h' para horizontal o 'v' para vertical\n");
+            //guardar input en barco
+            char orientacion;
+            scanf("%c",&orientacion);
+            if(orientacion == 'h')
+            {
+                gamestate->myships[i].orientacion = HORIZONTAL;
+            }
+            if(orientacion == 'v')
+            {
+                gamestate->myships[i].orientacion = VERTICAL;
+            }
 
+            //intengamos poner el barco en mi tablero
+            valido = putship(gamestate->myboard,&gamestate->myships[i]);
+        }
     }
-
-    //luego llamar a putship() y agregarlo a la lista de barcos
-
-
-    //el tablero del oponente se inicializa vacio
-    return 0;
 }
 
 int play_game(int socket, int mode)
 {
     int valread;
-    char receive_buffer[1024] = {0};
-    char send_buffer[1024] = {0};
+    char receive_buffer[8] = {0};
+    char send_buffer[8] = {0};
 
-    Gamestate* gamestate = (Gamestate*)malloc(sizeof(Gamestate));
-    init_gamestate(gamestate);
+    Gamestate gamestate;
+    init_gamestate(&gamestate);
 
-
-    if(mode == 1) //soy el host, comienzo la partida
+    //gameloop
+    while(gamestate.hisships>0)
     {
-        printf("Vos: ");
-        fgets(send_buffer, sizeof(send_buffer), stdin);
-        send(socket, send_buffer, strlen(send_buffer), 0);
-    }
-    while(1)
-    {
-        valread = read( socket, receive_buffer, 1024);
-        printf("%d\n",valread);
-        printf("El: %s\n",receive_buffer);
-        printf("Vos: ");
-        fgets(send_buffer, sizeof(send_buffer), stdin);
-        send(socket, send_buffer, strlen(send_buffer), 0);
+        char x = '0';
+        char y = '0';
+        //modo 1 me toca disparar
+        if(mode == 1)
+        {
+            fflush(stdin);
+
+            printf("Tienes que disparar.\n");
+            printf("Ingrese la coordenada X [0-9]:\n");
+            scanf("%c",&x);
+            send_buffer[0] = x;
+
+            printf("Ingrese la coordenada X [0-9]:\n");
+            scanf("%c",&y);
+            send_buffer[1] = y;
+
+            //envio el disparo y espero la respuesta
+            printf("Disparando...\n");
+            send(socket, send_buffer, 2, 0);
+            valread = read(socket, receive_buffer, 1);
+
+            //revisamos el resultado del disparo
+            int res;
+            if(receive_buffer[0] == MISS)
+            {
+                printf("AGUA! Ahora le toca al oponente...\n\n");
+                mode = 2;
+                res = WATER;
+            }
+            if(receive_buffer[0] == HIT)
+            {
+                printf("TOCADO! Vuelve a disparar...\n\n");
+                res = SHIP;
+            }
+            if(receive_buffer[0] == SUNK)
+            {
+
+                gamestate.hisships--;
+                if(gamestate.hisships>0)
+                {
+                printf("HUNDIDO! Vuelve a disparar...\n\n");
+                }
+                else
+                {
+                    printf("HUNDIDO! Has ganado!\n\n");
+                }
+                res = DESTROYED;
+            }
+            gamestate.hisboard[x - '0'][y - '0'] = res;
+
+        }
+        //modo 2 me toca recibir los disparos del oponente
+        if(mode == 2)
+        {
+
+            valread = read(socket, receive_buffer, 1);
+
+        }
     }
 
     return 0;

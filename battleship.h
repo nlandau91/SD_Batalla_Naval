@@ -6,10 +6,16 @@
 
 enum ship_types {FRIGATE, DESTROYER, BATTLESHIP, CARRIER};
 
-#define MISS 0
-#define HIT 1
-#define SUNK 2
+//definiciones para la respuesta a un disparo
+#define MISS 48 //0
+#define HIT 49 //1
+#define SUNK 50 //2
 
+//definiciones para lo que vamos a representar en pantalla
+#define UNKNOWN 0 //una posicion donde no se sabe que hay
+#define WATER 1 //una posicion donde ya disparamos y sabemos que hay agua
+#define SHIP 2 //una posicion donde disparamos y golpeamos un barco
+#define DESTROYED 3 //una posicion donde hay un barco hundido
 
 //estructura del barco
 typedef struct Ship
@@ -27,7 +33,9 @@ typedef struct Gamestate
 {
     Ship* myboard[10][10];
     int hisboard[10][10];
-    Ship ships[9];
+    Ship myships[9];
+    int hisships;
+
 } Gamestate;
 
 //intenta colocar un barco en el tablero
