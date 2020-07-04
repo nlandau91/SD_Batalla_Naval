@@ -17,6 +17,10 @@ enum ship_types {FRIGATE, DESTROYER, BATTLESHIP, CARRIER};
 #define SHIP 2 //una posicion donde disparamos y golpeamos un barco
 #define DESTROYED 3 //una posicion donde hay un barco hundido
 
+#define PLAYING 0
+#define WON 1
+#define LOST 2
+
 //estructura del barco
 typedef struct Ship
 {
@@ -35,6 +39,7 @@ typedef struct Gamestate
     int hisboard[10][10];
     Ship myships[9];
     int hisships;
+    int state;
 
 } Gamestate;
 

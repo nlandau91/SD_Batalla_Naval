@@ -123,7 +123,6 @@ int join_game(char* hostname, int port)
 //inicializa el gamestate
 int init_gamestate(Gamestate* gamestate)
 {
-
     //el tablero del oponente se inicializa con posiciones desconocidas
     for(int i = 0; i < 10; i++)
     {
@@ -187,11 +186,11 @@ int init_gamestate(Gamestate* gamestate)
             valido = putship(gamestate->myboard,&gamestate->myships[i]);
         }
     }
+    gamestate->state = PLAYING;
 }
 
 int play_game(int socket, int mode)
 {
-    int valread;
     char receive_buffer[8] = {0};
     char send_buffer[8] = {0};
 
@@ -199,10 +198,14 @@ int play_game(int socket, int mode)
     init_gamestate(&gamestate);
 
     //gameloop
-    while(gamestate.hisships>0)
+    while(gamestate.state == PLAYING)
     {
+        //imprimo el estado del juego
+        print_gamestate(&gamestate);
+
         char x = '0';
         char y = '0';
+        int res;
         //modo 1 me toca disparar
         if(mode == 1)
         {
@@ -220,10 +223,9 @@ int play_game(int socket, int mode)
             //envio el disparo y espero la respuesta
             printf("Disparando...\n");
             send(socket, send_buffer, 2, 0);
-            valread = read(socket, receive_buffer, 1);
+            read(socket, receive_buffer, 1);
 
             //revisamos el resultado del disparo
-            int res;
             if(receive_buffer[0] == MISS)
             {
                 printf("AGUA! Ahora le toca al oponente...\n\n");
@@ -246,6 +248,7 @@ int play_game(int socket, int mode)
                 else
                 {
                     printf("HUNDIDO! Has ganado!\n\n");
+                    gamestate.state = WON;
                 }
                 res = DESTROYED;
             }
@@ -255,13 +258,42 @@ int play_game(int socket, int mode)
         //modo 2 me toca recibir los disparos del oponente
         if(mode == 2)
         {
+            //recibo las coordenadas del disparo del oponente
+            read(socket, receive_buffer, 1);
+            x = receive_buffer[0];
+            y = receive_buffer[1];
 
-            valread = read(socket, receive_buffer, 1);
+            //evaluo el disparo
+            res = checkHit(gamestate.myboard, x, y);
+            if(res == MISS)
+            {
+                mode = 1;
+            }
+            send_buffer[0] = res;
+            send(socket, send_buffer, 1, 0);
+            //me fijo si era mi ultimo barco
+            if(res == SUNK)
+            {
+                int i = 0;
+                while(i<9)
+                {
+                    if(gamestate.myships[i].hitsremaining != 0)
+                    {
+                        break;
+                    }
+                    i++;
+                }
+                //te hundieron todos los barcos
+                if(i == 9)
+                {
+                    gamestate.state = LOST;
+                }
 
+            }
         }
     }
 
-    return 0;
+    return gamestate.state;
 }
 
 int main()
@@ -317,7 +349,17 @@ int main()
     {
         printf("Error al crear o unirse a la partida...\n");
     }
-    play_game(new_socket, opcion);
+
+   //a jugar!
+    int res = play_game(new_socket, opcion);
+    if(res == WON)
+    {
+
+    }
+    if(res == LOST)
+    {
+
+    }
 
     return 0;
 }
