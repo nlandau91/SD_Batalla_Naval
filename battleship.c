@@ -57,12 +57,10 @@ int putship(Ship* board[10][10], Ship* ship)
 }
 
 
-
-Ship* create_ship(int type)
+int create_ship(Ship* ship, int type)
 {
-    Ship* ship = (Ship*)malloc(sizeof(Ship));
     *ship = default_ships[type];
-    return ship;
+    return 0;
 }
 
 //decide si un intento es un hit, miss o hundido

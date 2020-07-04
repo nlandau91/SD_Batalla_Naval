@@ -129,6 +129,8 @@ int join_game(char* hostname, int port)
 //inicializa el gamestate
 int init_gamestate(Gamestate* gamestate)
 {
+    //int debugnumber = 1;
+    //printf("Debugn number %d\n",debugnumber++);
     //el tablero del oponente se inicializa con posiciones desconocidas
     for(int i = 0; i < 10; i++)
     {
@@ -137,31 +139,21 @@ int init_gamestate(Gamestate* gamestate)
             gamestate->hisboard[i][j] = UNKNOWN;
         }
     }
-    return 0;
 
     //el oponente inicia con sus nueve naves
     gamestate->hisships = 9;
 
     //creamos las nueve naves que luego ubicaremos en nuestro tablero
-    Ship* ship;
-    ship = create_ship(CARRIER);
-    gamestate->myships[0] = *ship;
-    ship = create_ship(BATTLESHIP);
-    gamestate->myships[1] = *ship;
-    ship = create_ship(BATTLESHIP);
-    gamestate->myships[2] = *ship;
-    ship = create_ship(BATTLESHIP);
-    gamestate->myships[3] = *ship;
-    ship = create_ship(DESTROYER);
-    gamestate->myships[4] = *ship;
-    ship = create_ship(DESTROYER);
-    gamestate->myships[5] = *ship;
-    ship = create_ship(DESTROYER);
-    gamestate->myships[6] = *ship;
-    ship = create_ship(FRIGATE);
-    gamestate->myships[7] = *ship;
-    ship = create_ship(FRIGATE);
-    gamestate->myships[8] = *ship;
+
+    create_ship(&gamestate->myships[0], CARRIER);
+    create_ship(&gamestate->myships[1], BATTLESHIP);
+    create_ship(&gamestate->myships[2], BATTLESHIP);
+    create_ship(&gamestate->myships[3], BATTLESHIP);
+    create_ship(&gamestate->myships[4], DESTROYER);
+    create_ship(&gamestate->myships[5], DESTROYER);
+    create_ship(&gamestate->myships[6], DESTROYER);;
+    create_ship(&gamestate->myships[7], FRIGATE);
+    create_ship(&gamestate->myships[8], FRIGATE);
 
     //agregamos nuestras naves a nuestro tablero
     for(int i = 0; i < 9; i++)
@@ -195,6 +187,11 @@ int init_gamestate(Gamestate* gamestate)
 
             //intengamos poner el barco en mi tablero
             valido = putship(gamestate->myboard,&gamestate->myships[i]);
+            if(valido<0)
+            {
+                printf("No se pudo colocar la nave. Intente nuevamente...\n\n");
+            }
+
         }
     }
     gamestate->state = WAITING;

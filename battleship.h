@@ -54,7 +54,7 @@ int checkHit(Ship* board[10][10], int x, int y);
 void print_gamestate(Gamestate* gamestate);
 
 //crea una nave
-Ship* create_ship(int type);
+int create_ship(Ship* ship, int type);
 
 
 
