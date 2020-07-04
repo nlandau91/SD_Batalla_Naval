@@ -45,10 +45,10 @@ typedef struct Gamestate
 } Gamestate;
 
 //intenta colocar un barco en el tablero
-int putship(Ship* board[10][10], Ship* ship);
+int putship(Ship * (*board)[][10], Ship* ship);
 
 //decide si un intento es un hit, miss o hundido
-int checkHit(Ship* board[10][10], int x, int y);
+int checkHit(Ship *(*board)[][10], int x, int y);
 
 //imprime una representacion del gamestate por pantalla
 void print_gamestate(Gamestate* gamestate);
@@ -56,6 +56,7 @@ void print_gamestate(Gamestate* gamestate);
 //crea una nave
 int create_ship(Ship* ship, int type);
 
+int autoaddships(Gamestate* gamestate);
 
 
 #endif //BATTLESHIP_H_

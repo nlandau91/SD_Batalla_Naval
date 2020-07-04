@@ -161,44 +161,55 @@ int init_gamestate(Gamestate* gamestate)
             gamestate->myboard[i][j] = NULL;
         }
     }
-
-    //agregamos nuestras naves a nuestro tablero
-    for(int i = 0; i < 9; i++)
+    char input;
+    printf("Si quieres que las naves se ubiquen automaticamente, pulse 's'\n");
+    printf("De lo contrario, pulse 'n'...\n");
+    input = getc(stdin);
+    clearstdin();
+    if(input == 's')
     {
-        int valido = -1;
-        char input;
-        while(valido<0)
+        autoaddships(gamestate);
+    }
+    else
+    {
+
+        //agregamos nuestras naves a nuestro tablero
+        for(int i = 0; i < 9; i++)
         {
-            printf("Colocando nave de tipo '%s'...\n",gamestate->myships[i].nombre);
-            printf("Ingrese la coordenada X entre 0 y 9, de izquierda a derecha:\n");
-            input = getc(stdin);
-            clearstdin();
-            gamestate->myships[i].x = input - '0';
-            printf("Ingrese la coordenada Y entre 0 y 9, de arriba a abajo:\n");
-            input = getc(stdin);
-            clearstdin();
-            gamestate->myships[i].y = input - '0';
-
-            printf("Ingrese la orientacion 'h' para horizontal o 'v' para vertical\n");
-            //guardar input en barco
-            input = getc(stdin);
-            clearstdin();
-            if(input == 'h')
+            int valido = -1;
+            while(valido<0)
             {
-                gamestate->myships[i].orientacion = HORIZONTAL;
-            }
-            if(input == 'v')
-            {
-                gamestate->myships[i].orientacion = VERTICAL;
-            }
+                printf("Colocando nave de tipo '%s'...\n",gamestate->myships[i].nombre);
+                printf("Ingrese la coordenada X entre 0 y 9, de izquierda a derecha:\n");
+                input = getc(stdin);
+                clearstdin();
+                gamestate->myships[i].x = input - '0';
+                printf("Ingrese la coordenada Y entre 0 y 9, de arriba a abajo:\n");
+                input = getc(stdin);
+                clearstdin();
+                gamestate->myships[i].y = input - '0';
 
-            //intengamos poner el barco en mi tablero
-            valido = putship(gamestate->myboard,&gamestate->myships[i]);
-            if(valido<0)
-            {
-                printf("No se pudo colocar la nave. Intente nuevamente...\n\n");
-            }
+                printf("Ingrese la orientacion 'h' para horizontal o 'v' para vertical\n");
+                //guardar input en barco
+                input = getc(stdin);
+                clearstdin();
+                if(input == 'h')
+                {
+                    gamestate->myships[i].orientacion = HORIZONTAL;
+                }
+                if(input == 'v')
+                {
+                    gamestate->myships[i].orientacion = VERTICAL;
+                }
 
+                //intengamos poner el barco en mi tablero
+                valido = putship(&gamestate->myboard,&gamestate->myships[i]);
+                if(valido<0)
+                {
+                    printf("No se pudo colocar la nave. Intente nuevamente...\n\n");
+                }
+
+            }
         }
     }
     gamestate->state = WAITING;
@@ -239,15 +250,13 @@ int play_game(int socket, int mode)
         //modo 1 me toca disparar
         if(gamestate.state == SHOOTING)
         {
-            fflush(stdin);
-
             printf("Tienes que disparar.\n");
             printf("Ingrese la coordenada X [0-9]:\n");
             x = getc(stdin);
             clearstdin();
             send_buffer[0] = x;
 
-            printf("Ingrese la coordenada X [0-9]:\n");
+            printf("Ingrese la coordenada Y [0-9]:\n");
             y = getc(stdin);
             clearstdin();
             send_buffer[1] = y;
@@ -261,7 +270,7 @@ int play_game(int socket, int mode)
             if(receive_buffer[0] == MISS)
             {
                 printf("AGUA!\n\n");
-                mode = 2;
+                gamestate.state = WAITING;
                 res = WATER;
             }
             if(receive_buffer[0] == HIT)
@@ -285,22 +294,30 @@ int play_game(int socket, int mode)
         //modo 2 me toca recibir los disparos del oponente
         if(gamestate.state == WAITING)
         {
+            printf("Esperando disparo del oponente...\n\n");
             //recibo las coordenadas del disparo del oponente
-            read(socket, receive_buffer, 1);
+            read(socket, receive_buffer, 2);
             x = receive_buffer[0];
             y = receive_buffer[1];
+            printf("Recibido disparo en la posicion [%d,%d]\n\n",receive_buffer[0] - '0',receive_buffer[1] - '0');
 
             //evaluo el disparo
-            res = checkHit(gamestate.myboard, x, y);
+            res = checkHit(&gamestate.myboard, x - '0', y - '0');
             if(res == MISS)
             {
+                printf("AGUA!\n\n");
                 gamestate.state = SHOOTING;
+            }
+            if(res == HIT)
+            {
+                printf("TOCADO!\n\n");
             }
             send_buffer[0] = res;
             send(socket, send_buffer, 1, 0);
             //me fijo si era mi ultimo barco
             if(res == SUNK)
             {
+                printf("HUNDIDO!\n\n");
                 int i = 0;
                 while(i<9)
                 {

@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "battleship.h"
+#include <time.h>
 
 //ship default configurations
 Ship default_ships[4] =
@@ -12,7 +13,7 @@ Ship default_ships[4] =
 };
 
 //intenta colocar un barco en el tablero
-int putship(Ship* board[10][10], Ship* ship)
+int putship(Ship *(*board)[][10], Ship* ship)
 {
     if(ship->orientacion == HORIZONTAL)
     {
@@ -26,12 +27,12 @@ int putship(Ship* board[10][10], Ship* ship)
         {
 
             //si hay colision con otra nave
-            if(board[i][ship->y])
+            if((*board)[i][ship->y])
             {
                 return -1;
             }
             //colocamos la nave en el tablero
-            board[i][ship->y] = ship;
+            (*board)[i][ship->y] = ship;
         }
     }
 
@@ -46,12 +47,12 @@ int putship(Ship* board[10][10], Ship* ship)
         for(int i = ship->y; i < ship->largo + ship->y; i++)
         {
             //si hay colision con otra nave
-            if(board[ship->x][i])
+            if((*board)[ship->x][i])
             {
                 return -1;
             }
             //colocamos la nave en el tablero
-            board[ship->x][i] = ship;
+            (*board)[ship->x][i] = ship;
         }
     }
     return 0;
@@ -66,17 +67,14 @@ int create_ship(Ship* ship, int type)
 
 //decide si un intento es un hit, miss o hundido
 //si es un hit, reduce los hitsremaining
-int checkHit(Ship* board[10][10], int x, int y)
+int checkHit(Ship *(*board)[][10], int x, int y)
 {
-    if(!board[x][y])
+    printf("Checking hit on [%d,%d]\n\n",x,y);
+
+    if((*board)[x][y])
     {
-        return MISS;
-    }
-    else
-    {
-        Ship* ship = board[x][y];
-        ship->hitsremaining--;
-        if(ship->hitsremaining)
+        (*board)[x][y]->hitsremaining--;
+        if((*board)[x][y]->hitsremaining > 0)
         {
             return HIT;
         }
@@ -84,6 +82,10 @@ int checkHit(Ship* board[10][10], int x, int y)
         {
             return SUNK;
         }
+    }
+    else
+    {
+        return MISS;
     }
 }
 
@@ -103,6 +105,33 @@ void print_gamestate(Gamestate* gamestate)
     printf("Mis barcos: %d\n",cant);
     printf("Barcos de mi oponente: %d\n",gamestate->hisships);
     //  if(gamestate->)
+}
 
+int autoaddships(Gamestate* gamestate)
+{
+    srand(time(0));
+    for(int i = 0; i < 9; i++)
+    {
+        int valido = -1;
+        while(valido<0)
+        {
+            gamestate->myships[i].x = rand() % 10;
+            gamestate->myships[i].y = rand() % 10;
+            if(rand() % 2)
+            {
+                gamestate->myships[i].orientacion = HORIZONTAL;
+            }
+            else
+            {
+                gamestate->myships[i].orientacion = VERTICAL;
+            }
+            valido = putship(&gamestate->myboard,&gamestate->myships[i]);
+            if(valido==0)
+            {
+                printf("%s colocado en la posicion [%d,%d]\n",gamestate->myships[i].nombre,gamestate->myships[i].x,gamestate->myships[i].y);
+            }
+        }
+    }
+    return 0;
 }
 
