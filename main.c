@@ -15,6 +15,12 @@ void texto()
     printf("2) Unirse a una partida\n\n");
 }
 
+void clearstdin()
+{
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF) { }
+}
+
 void print_addresses()
 {
     struct ifaddrs *ifap, *ifa;
@@ -161,23 +167,28 @@ int init_gamestate(Gamestate* gamestate)
     for(int i = 0; i < 9; i++)
     {
         int valido = -1;
+        char input;
         while(valido<0)
         {
             printf("Colocando nave de tipo '%s'...\n",gamestate->myships[i].nombre);
             printf("Ingrese la coordenada X entre 0 y 9, de izquierda a derecha:\n");
-            scanf("%d",&gamestate->myships[i].x);
+            input = getc(stdin);
+            clearstdin();
+            gamestate->myships[i].x = input - '0';
             printf("Ingrese la coordenada Y entre 0 y 9, de arriba a abajo:\n");
-            scanf("%d",&gamestate->myships[i].y);
+            input = getc(stdin);
+            clearstdin();
+            gamestate->myships[i].y = input - '0';
 
             printf("Ingrese la orientacion 'h' para horizontal o 'v' para vertical\n");
             //guardar input en barco
-            char orientacion;
-            scanf("%c",&orientacion);
-            if(orientacion == 'h')
+            input = getc(stdin);
+            clearstdin();
+            if(input == 'h')
             {
                 gamestate->myships[i].orientacion = HORIZONTAL;
             }
-            if(orientacion == 'v')
+            if(input == 'v')
             {
                 gamestate->myships[i].orientacion = VERTICAL;
             }
@@ -228,11 +239,13 @@ int play_game(int socket, int mode)
 
             printf("Tienes que disparar.\n");
             printf("Ingrese la coordenada X [0-9]:\n");
-            scanf("%c",&x);
+            x = getc(stdin);
+            clearstdin();
             send_buffer[0] = x;
 
             printf("Ingrese la coordenada X [0-9]:\n");
-            scanf("%c",&y);
+            y = getc(stdin);
+            clearstdin();
             send_buffer[1] = y;
 
             //envio el disparo y espero la respuesta
@@ -313,33 +326,33 @@ int main()
     printf("Batalla Naval 2020 GOTY Edition\n\n");
     texto();
 
-    int opcion;
-    fflush(stdin);
-    scanf("%d",&opcion);
-    getchar();
+    char opcion;
+    opcion = getc(stdin);
+    clearstdin();
 
-    while(!(opcion == 1 || opcion ==2))
+    while(!(opcion == '1' || opcion == '2'))
     {
-        printf("%d no es una opcion valida.\n",opcion);
+        printf("%c no es una opcion valida.\n",opcion);
         printf("Elija una opcion valida.\n\n");
         texto();
-        scanf("%d",&opcion);
-        getchar();
+        opcion = getc(stdin);
+        clearstdin();
     }
 
-    int new_socket = -1;;
-    if(opcion == 1)
+    int new_socket = -1;
+    int port;
+    char buf[16] = {0};
+    if(opcion == '1')
     {
         printf("Ingrese el puerto\n");
-        int port;
-        scanf("%d",&port);
-        getchar();
+        fgets(buf,sizeof(buf),stdin);
+        port = atoi(buf);
 
         new_socket = create_game(port);
     }
     else
     {
-        if(opcion == 2)
+        if(opcion == '2')
         {
             printf("Ingrese el hostname\n");
             char hostname[16] = {0};
@@ -348,9 +361,8 @@ int main()
             //char* hostname = "127.0.0.1";
 
             printf("Ingrese el puerto\n");
-            int port;
-            scanf("%d",&port);
-            getchar();
+            fgets(buf,sizeof(buf),stdin);
+            port = atoi(buf);
 
             new_socket = join_game(hostname,port);
         }
@@ -361,7 +373,7 @@ int main()
     }
 
     //a jugar!
-    int res = play_game(new_socket, opcion);
+    int res = play_game(new_socket, opcion - '0');
     if(res == EXIT_FAILURE)
     {
         printf("Oops, hubo un problema...\n\n");
