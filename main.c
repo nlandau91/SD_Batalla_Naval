@@ -129,8 +129,6 @@ int join_game(char* hostname, int port)
 //inicializa el gamestate
 int init_gamestate(Gamestate* gamestate)
 {
-    //int debugnumber = 1;
-    //printf("Debugn number %d\n",debugnumber++);
     //el tablero del oponente se inicializa con posiciones desconocidas
     for(int i = 0; i < 10; i++)
     {
@@ -154,6 +152,15 @@ int init_gamestate(Gamestate* gamestate)
     create_ship(&gamestate->myships[6], DESTROYER);;
     create_ship(&gamestate->myships[7], FRIGATE);
     create_ship(&gamestate->myships[8], FRIGATE);
+
+    //vaciamos nuestro tablero para luego cargar los barcos
+    for(int i = 0; i < 10; i++)
+    {
+        for(int j = 0; j < 10; j++)
+        {
+            gamestate->myboard[i][j] = NULL;
+        }
+    }
 
     //agregamos nuestras naves a nuestro tablero
     for(int i = 0; i < 9; i++)

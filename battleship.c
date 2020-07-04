@@ -16,43 +16,44 @@ int putship(Ship* board[10][10], Ship* ship)
 {
     if(ship->orientacion == HORIZONTAL)
     {
+        //la nave no entra en el tablero
         if((ship->x + ship->largo) > 10)
         {
             return -1;
         }
+        //veo si hay colision con otra nave
         for(int i = ship->x; i < ship->largo + ship->x; i++)
         {
-            if(!board[i][ship->y])
-            {
-                board[i][ship->y] = ship;
-            }
-            else
+
+            //si hay colision con otra nave
+            if(board[i][ship->y])
             {
                 return -1;
             }
+            //colocamos la nave en el tablero
+            board[i][ship->y] = ship;
         }
     }
 
     if(ship->orientacion == VERTICAL)
     {
+        //la nave no entra en el tablero
         if((ship->y + ship->largo) > 10)
         {
             return -1;
         }
+        //veo si hay colision con otra nave
         for(int i = ship->y; i < ship->largo + ship->y; i++)
         {
-            if(!board[ship->x][i])
-            {
-                board[ship->x][i] = ship;
-            }
-            else
+            //si hay colision con otra nave
+            if(board[ship->x][i])
             {
                 return -1;
             }
+            //colocamos la nave en el tablero
+            board[ship->x][i] = ship;
         }
     }
-
-
     return 0;
 }
 
