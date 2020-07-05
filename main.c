@@ -6,57 +6,156 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <ifaddrs.h>
+#include <time.h>
 #include "battleship.h"
 #include "connection.h"
 
-void texto()
+int texto()
 {
     printf("Desea crear una partida o unirse a una partida?\n");
     printf("1) Crear una partida\n");
     printf("2) Unirse a una partida\n\n");
+    return EXIT_SUCCESS;
 }
 
-void clearstdin()
+int clearstdin()
 {
     int c;
     while ((c = getchar()) != '\n' && c != EOF) { }
+    return EXIT_SUCCESS;
 }
 
-//inicializa el gamestate
-int init_gamestate(Gamestate* gamestate)
+int init_shiparray(Ship (*shiparray)[9])
 {
-    //el tablero del oponente se inicializa con posiciones desconocidas
+    create_ship(&(*shiparray)[0], CARRIER);
+    create_ship(&(*shiparray)[1], BATTLESHIP);
+    create_ship(&(*shiparray)[2], BATTLESHIP);
+    create_ship(&(*shiparray)[3], BATTLESHIP);
+    create_ship(&(*shiparray)[4], DESTROYER);
+    create_ship(&(*shiparray)[5], DESTROYER);
+    create_ship(&(*shiparray)[6], DESTROYER);;
+    create_ship(&(*shiparray)[7], FRIGATE);
+    create_ship(&(*shiparray)[8], FRIGATE);
+    return EXIT_SUCCESS;
+}
+
+int init_intboard(int (*intboard)[][10])
+{
     for(int i = 0; i < 10; i++)
     {
         for(int j = 0; j < 10; j++)
         {
-            gamestate->hisboard[i][j] = UNKNOWN;
+            (*intboard)[i][j] = UNKNOWN;
+
         }
     }
+    return EXIT_SUCCESS;
+}
+
+int init_shipboard(Ship* (*shipboard)[][10])
+{
+    for(int i = 0; i < 10; i++)
+    {
+        for(int j = 0; j < 10; j++)
+        {
+            (*shipboard)[i][j] = NULL;
+
+        }
+    }
+    return EXIT_SUCCESS;
+}
+
+//coloca las naves automaticamente en el tablero de forma aleatoria
+int autoaddships(Gamestate* gamestate)
+{
+    char* orientaciones[2] = {"horizontal","vertical"};
+    srand(time(0));
+    for(int i = 0; i < 9; i++)
+    {
+        int valido = EXIT_FAILURE;
+        while(valido!=EXIT_SUCCESS)
+        {
+            gamestate->myships[i].x = rand() % 10;
+            gamestate->myships[i].y = rand() % 10;
+            if(rand() % 2)
+            {
+                gamestate->myships[i].orientacion = HORIZONTAL;
+            }
+            else
+            {
+                gamestate->myships[i].orientacion = VERTICAL;
+            }
+            valido = putship(&gamestate->myboard,&gamestate->myships[i]);
+            if(valido == EXIT_SUCCESS)
+            {
+                printf("%s colocado en la posicion [%d,%d] con orientacion %s\n",gamestate->myships[i].nombre,gamestate->myships[i].x,gamestate->myships[i].y,orientaciones[gamestate->myships[i].orientacion]);
+            }
+        }
+    }
+    return EXIT_SUCCESS;
+}
+
+//pide input al usuario para colocar las naves manualmente
+int manualaddships(Gamestate* gamestate)
+{
+    for(int i = 0; i < 9; i++)
+    {   print_shipboard(&gamestate->myboard);
+        int valido = EXIT_FAILURE;
+        while(valido!=EXIT_SUCCESS)
+        {
+            char input;
+            printf("Colocando nave de tipo '%s'...\n",gamestate->myships[i].nombre);
+            printf("Ingrese la coordenada X entre 0 y 9, de izquierda a derecha:\n");
+            input = getc(stdin);
+            clearstdin();
+            gamestate->myships[i].x = input - '0';
+            printf("Ingrese la coordenada Y entre 0 y 9, de arriba a abajo:\n");
+            input = getc(stdin);
+            clearstdin();
+            gamestate->myships[i].y = input - '0';
+
+            printf("Ingrese la orientacion 'h' para horizontal o 'v' para vertical\n");
+            //guardar input en barco
+            input = getc(stdin);
+            clearstdin();
+            if(input == 'h')
+            {
+                gamestate->myships[i].orientacion = HORIZONTAL;
+            }
+            if(input == 'v')
+            {
+                gamestate->myships[i].orientacion = VERTICAL;
+            }
+
+            //intengamos poner el barco en mi tablero
+            valido = putship(&gamestate->myboard,&gamestate->myships[i]);
+            if(valido == EXIT_SUCCESS)
+            {
+                printf("%s colocado en la posicion [%d,%d]\n",gamestate->myships[i].nombre,gamestate->myships[i].x,gamestate->myships[i].y);
+            }
+            if(valido != EXIT_SUCCESS)
+            {
+                printf("No se pudo colocar la nave. Intente nuevamente...\n\n");
+            }
+        }
+    }
+    return EXIT_SUCCESS;
+}
+//inicializa el gamestate
+int init_gamestate(Gamestate* gamestate)
+{
+    //el tablero del oponente se inicializa con posiciones desconocidas
+    init_intboard(&gamestate->hisboard);
 
     //el oponente inicia con sus nueve naves
     gamestate->hisships = 9;
 
     //creamos las nueve naves que luego ubicaremos en nuestro tablero
-
-    create_ship(&gamestate->myships[0], CARRIER);
-    create_ship(&gamestate->myships[1], BATTLESHIP);
-    create_ship(&gamestate->myships[2], BATTLESHIP);
-    create_ship(&gamestate->myships[3], BATTLESHIP);
-    create_ship(&gamestate->myships[4], DESTROYER);
-    create_ship(&gamestate->myships[5], DESTROYER);
-    create_ship(&gamestate->myships[6], DESTROYER);;
-    create_ship(&gamestate->myships[7], FRIGATE);
-    create_ship(&gamestate->myships[8], FRIGATE);
+    init_shiparray(&gamestate->myships);
 
     //vaciamos nuestro tablero para luego cargar los barcos
-    for(int i = 0; i < 10; i++)
-    {
-        for(int j = 0; j < 10; j++)
-        {
-            gamestate->myboard[i][j] = NULL;
-        }
-    }
+    init_shipboard(&gamestate->myboard);
+
     char input;
     printf("Si quieres que las naves se ubiquen automaticamente, pulse 's'\n");
     printf("De lo contrario, pulse 'n'...\n");
@@ -68,45 +167,7 @@ int init_gamestate(Gamestate* gamestate)
     }
     else
     {
-
-        //agregamos nuestras naves a nuestro tablero
-        for(int i = 0; i < 9; i++)
-        {
-            int valido = -1;
-            while(valido<0)
-            {
-                printf("Colocando nave de tipo '%s'...\n",gamestate->myships[i].nombre);
-                printf("Ingrese la coordenada X entre 0 y 9, de izquierda a derecha:\n");
-                input = getc(stdin);
-                clearstdin();
-                gamestate->myships[i].x = input - '0';
-                printf("Ingrese la coordenada Y entre 0 y 9, de arriba a abajo:\n");
-                input = getc(stdin);
-                clearstdin();
-                gamestate->myships[i].y = input - '0';
-
-                printf("Ingrese la orientacion 'h' para horizontal o 'v' para vertical\n");
-                //guardar input en barco
-                input = getc(stdin);
-                clearstdin();
-                if(input == 'h')
-                {
-                    gamestate->myships[i].orientacion = HORIZONTAL;
-                }
-                if(input == 'v')
-                {
-                    gamestate->myships[i].orientacion = VERTICAL;
-                }
-
-                //intengamos poner el barco en mi tablero
-                valido = putship(&gamestate->myboard,&gamestate->myships[i]);
-                if(valido<0)
-                {
-                    printf("No se pudo colocar la nave. Intente nuevamente...\n\n");
-                }
-
-            }
-        }
+        manualaddships(gamestate);
     }
     gamestate->state = WAITING;
     return EXIT_SUCCESS;
@@ -114,15 +175,12 @@ int init_gamestate(Gamestate* gamestate)
 
 int play_game(int socket, int mode)
 {
-    char receive_buffer[8] = {0};
-    char send_buffer[8] = {0};
-
     Gamestate gamestate;
-    if(!init_gamestate(&gamestate) == EXIT_SUCCESS)
+    if(init_gamestate(&gamestate) == EXIT_FAILURE)
     {
+        perror("Error: init_gamestate");
         return EXIT_FAILURE;
     }
-
     //esto es para que el jugador que creo la partida empiece
     //idealmente implementamos alguna forma aleatoria para elegir quien empieza
     if(mode == 1)
@@ -133,6 +191,8 @@ int play_game(int socket, int mode)
     {
         gamestate.state = WAITING;
     }
+    char receive_buffer[8] = {0};
+    char send_buffer[8] = {0};
 
     //gameloop
     while((gamestate.state != WON) && (gamestate.state != LOST))
@@ -209,10 +269,8 @@ int play_game(int socket, int mode)
                         gamestate.hisboard[rcv_x+i][rcv_y] = res;
                     }
                 }
-
             }
             gamestate.hisboard[x - '0'][y - '0'] = res;
-
         }
         else
         {
@@ -270,12 +328,10 @@ int play_game(int socket, int mode)
                             send(socket, send_buffer, 5, 0);
                         }
                     }
-
                 }
             }
         }
     }
-
     return gamestate.state;
 }
 
@@ -340,11 +396,11 @@ int main()
     }
     if(res == WON)
     {
-		printf("Ganaste!\n\n");
+        printf("Ganaste!\n\n");
     }
     if(res == LOST)
     {
-		printf("Perdiste!\n\n");
+        printf("Perdiste!\n\n");
     }
 
     return 0;

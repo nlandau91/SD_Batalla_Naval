@@ -51,12 +51,15 @@ int putship(Ship * (*board)[][10], Ship* ship);
 int checkHit(Ship *(*board)[][10], int x, int y);
 
 //imprime una representacion del gamestate por pantalla
-void print_gamestate(Gamestate* gamestate);
+int print_gamestate(Gamestate* gamestate);
 
 //crea una nave
 int create_ship(Ship* ship, int type);
 
-int autoaddships(Gamestate* gamestate);
+//imprime un tablero de naves que representa el tablero del jugador
+int print_intboard(int (*intboard)[][10]);
 
+//imprime un tablero de ints que representa el tablero del oponente
+int print_shipboard(Ship *(*shipboard)[][10]);
 
 #endif //BATTLESHIP_H_

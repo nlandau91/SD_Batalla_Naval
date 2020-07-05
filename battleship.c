@@ -1,7 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "battleship.h"
-#include <time.h>
 
 //ship default configurations
 Ship default_ships[4] =
@@ -20,7 +19,7 @@ int putship(Ship *(*board)[][10], Ship* ship)
         //la nave no entra en el tablero
         if((ship->x + ship->largo) > 10)
         {
-            return -1;
+            return EXIT_FAILURE;
         }
         //veo si hay colision con otra nave
         for(int i = ship->x; i < ship->largo + ship->x; i++)
@@ -28,7 +27,7 @@ int putship(Ship *(*board)[][10], Ship* ship)
             //si hay colision con otra nave
             if((*board)[i][ship->y])
             {
-                return -1;
+                return EXIT_FAILURE;
             }
         }
         //no hubo colision
@@ -44,7 +43,7 @@ int putship(Ship *(*board)[][10], Ship* ship)
         //la nave no entra en el tablero
         if((ship->y + ship->largo) > 10)
         {
-            return -1;
+            return EXIT_FAILURE;
         }
         //veo si hay colision con otra nave
         for(int i = ship->y; i < ship->largo + ship->y; i++)
@@ -52,7 +51,7 @@ int putship(Ship *(*board)[][10], Ship* ship)
             //si hay colision con otra nave
             if((*board)[ship->x][i])
             {
-                return -1;
+                return EXIT_FAILURE;
             }
         }
         //no hubo colision
@@ -62,16 +61,15 @@ int putship(Ship *(*board)[][10], Ship* ship)
             //colocamos la nave en el tablero
             (*board)[ship->x][i] = ship;
         }
-
     }
-    return 0;
+    return EXIT_SUCCESS;
 }
 
 
 int create_ship(Ship* ship, int type)
 {
     *ship = default_ships[type];
-    return 0;
+    return EXIT_SUCCESS;
 }
 
 //decide si un intento es un hit, miss o hundido
@@ -99,18 +97,70 @@ int checkHit(Ship *(*board)[][10], int x, int y)
 }
 
 //imprime una representacion del gamestate por pantalla
-void print_gamestate(Gamestate* gamestate)
+int print_gamestate(Gamestate* gamestate)
 {
 
     printf("Barcos de mi oponente: %d\n",gamestate->hisships);
     printf("Tablero del oponente:\n");
+    print_intboard(&gamestate->hisboard);
+
+    //cuento cuantos barcos me quedan
+    int cant = 0;
+    for(int i = 0; i<9; i++)
+    {
+        if(gamestate->myships[i].hitsremaining > 0)
+        {
+            cant++;
+        }
+    }
+    printf("Mis barcos: %d\n",cant);
+    printf("Mi tablero:\n");
+    print_shipboard(&gamestate->myboard);
+    return EXIT_SUCCESS;
+}
+
+//imprime el tablero del jugador
+int print_shipboard(Ship *(*shipboard)[][10])
+{
     for(int j = 0; j < 10; j++)
     {
         printf("| ");
         for(int i = 0; i < 10; i++)
         {
             char c;
-            int act = gamestate->hisboard[i][j];
+            if((*shipboard)[i][j])
+            {
+                if((*shipboard)[i][j]->hitsremaining > 0)
+                {
+                    c = 'S';
+                }
+                else
+                {
+                    c = 'D';
+                }
+            }
+            else{
+                c = 'W';
+            }
+            printf("%c ",c);
+        }
+        printf("|\n");
+    }
+
+    return EXIT_SUCCESS;
+}
+
+
+//imprime el tablero del oponente
+int print_intboard(int (*intboard)[][10])
+{
+    for(int j = 0; j < 10; j++)
+    {
+        printf("| ");
+        for(int i = 0; i < 10; i++)
+        {
+            char c;
+            int act = (*intboard)[i][j];
             if(act == UNKNOWN)
             {
                 c = '?';
@@ -132,67 +182,5 @@ void print_gamestate(Gamestate* gamestate)
         printf("|\n");
     }
 
-    int cant = 0;
-    for(int i = 0; i<9; i++)
-    {
-        if(gamestate->myships[i].hitsremaining > 0)
-        {
-            cant++;
-        }
-    }
-    printf("Mis barcos: %d\n",cant);
-    printf("Mi tablero:\n");
-    for(int j = 0; j < 10; j++)
-    {
-        printf("| ");
-        for(int i = 0; i < 10; i++)
-        {
-            char c;
-            if(gamestate->myboard[i][j])
-            {
-                if(gamestate->myboard[i][j]->hitsremaining > 0)
-                {
-                    c = 'S';
-                }
-                else
-                {
-                    c = 'D';
-                }
-            }
-            else{
-                c = 'W';
-            }
-            printf("%c ",c);
-        }
-        printf("|\n");
-    }
+    return EXIT_SUCCESS;
 }
-
-int autoaddships(Gamestate* gamestate)
-{
-    srand(time(0));
-    for(int i = 0; i < 9; i++)
-    {
-        int valido = -1;
-        while(valido<0)
-        {
-            gamestate->myships[i].x = rand() % 10;
-            gamestate->myships[i].y = rand() % 10;
-            if(rand() % 2)
-            {
-                gamestate->myships[i].orientacion = HORIZONTAL;
-            }
-            else
-            {
-                gamestate->myships[i].orientacion = VERTICAL;
-            }
-            valido = putship(&gamestate->myboard,&gamestate->myships[i]);
-            if(valido==0)
-            {
-                printf("%s colocado en la posicion [%d,%d]\n",gamestate->myships[i].nombre,gamestate->myships[i].x,gamestate->myships[i].y);
-            }
-        }
-    }
-    return 0;
-}
-
