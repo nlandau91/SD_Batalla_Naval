@@ -1,8 +1,9 @@
-Por el momento solo hay conexion entre pares y una chat por turnos
-
-Hay que implementar la logica del juego en si y su interfaz grafica
-
-Refactorizar/modularizar codigo, por el momento es un unico .c
+Checkeo de entrada
+Manejo de errores
+No permitir naves pegadas (putship)
+Testear ingreso manual de naves (una paja)
+Decidir quien empieza
+La regla de 15 segundos para tomar un disparo (es necesario eso?)
 
 
 
