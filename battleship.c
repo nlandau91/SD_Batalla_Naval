@@ -188,9 +188,11 @@ int print_gamestate(Gamestate* gamestate)
 //imprime el tablero del jugador
 int print_shipboard(Ship *(*shipboard)[][10])
 {
+    printf("   0 1 2 3 4 5 6 7 8 9\n");
+    printf("  ---------------------\n");
     for(int j = 0; j < 10; j++)
     {
-        printf("| ");
+        printf("%d| ",j);
         for(int i = 0; i < 10; i++)
         {
             char c;
@@ -213,7 +215,7 @@ int print_shipboard(Ship *(*shipboard)[][10])
         }
         printf("|\n");
     }
-
+    printf("  ---------------------\n");
     return EXIT_SUCCESS;
 }
 
@@ -221,9 +223,11 @@ int print_shipboard(Ship *(*shipboard)[][10])
 //imprime el tablero del oponente
 int print_intboard(enum tile (*intboard)[][10])
 {
+    printf("   0 1 2 3 4 5 6 7 8 9\n");
+    printf("  ---------------------\n");
     for(int j = 0; j < 10; j++)
     {
-        printf("| ");
+        printf("%d| ",j);
         for(int i = 0; i < 10; i++)
         {
             char c;
@@ -248,6 +252,7 @@ int print_intboard(enum tile (*intboard)[][10])
         }
         printf("|\n");
     }
+    printf("  ---------------------\n");
 
     return EXIT_SUCCESS;
 }
