@@ -66,7 +66,7 @@ int putship(Ship *(*board)[][10], Ship* ship)
 }
 
 
-int create_ship(Ship* ship, int type)
+int create_ship(Ship* ship, ship_type type)
 {
     *ship = default_ships[type];
     return EXIT_SUCCESS;
@@ -100,22 +100,22 @@ int checkHit(Ship *(*board)[][10], int x, int y)
 int print_gamestate(Gamestate* gamestate)
 {
 
-    printf("Barcos de mi oponente: %d\n",gamestate->hisships);
+    printf("Barcos de mi oponente: %d\n",gamestate->hisShips);
     printf("Tablero del oponente:\n");
-    print_intboard(&gamestate->hisboard);
+    print_intboard(&gamestate->hisBoard);
 
     //cuento cuantos barcos me quedan
     int cant = 0;
     for(int i = 0; i<9; i++)
     {
-        if(gamestate->myships[i].hitsremaining > 0)
+        if(gamestate->myShips[i].hitsremaining > 0)
         {
             cant++;
         }
     }
     printf("Mis barcos: %d\n",cant);
     printf("Mi tablero:\n");
-    print_shipboard(&gamestate->myboard);
+    print_shipboard(&gamestate->myBoard);
     return EXIT_SUCCESS;
 }
 
@@ -152,7 +152,7 @@ int print_shipboard(Ship *(*shipboard)[][10])
 
 
 //imprime el tablero del oponente
-int print_intboard(int (*intboard)[][10])
+int print_intboard(enum tile (*intboard)[][10])
 {
     for(int j = 0; j < 10; j++)
     {

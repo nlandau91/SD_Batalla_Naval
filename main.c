@@ -39,7 +39,7 @@ int init_shiparray(Ship (*shiparray)[9])
     return EXIT_SUCCESS;
 }
 
-int init_intboard(int (*intboard)[][10])
+int init_tileboard(enum tile (*intboard)[][10])
 {
     for(int i = 0; i < 10; i++)
     {
@@ -75,20 +75,20 @@ int autoaddships(Gamestate* gamestate)
         int valido = EXIT_FAILURE;
         while(valido!=EXIT_SUCCESS)
         {
-            gamestate->myships[i].x = rand() % 10;
-            gamestate->myships[i].y = rand() % 10;
+            gamestate->myShips[i].x = rand() % 10;
+            gamestate->myShips[i].y = rand() % 10;
             if(rand() % 2)
             {
-                gamestate->myships[i].orientacion = HORIZONTAL;
+                gamestate->myShips[i].orientacion = HORIZONTAL;
             }
             else
             {
-                gamestate->myships[i].orientacion = VERTICAL;
+                gamestate->myShips[i].orientacion = VERTICAL;
             }
-            valido = putship(&gamestate->myboard,&gamestate->myships[i]);
+            valido = putship(&gamestate->myBoard,&gamestate->myShips[i]);
             if(valido == EXIT_SUCCESS)
             {
-                printf("%s colocado en la posicion [%d,%d] con orientacion %s\n",gamestate->myships[i].nombre,gamestate->myships[i].x,gamestate->myships[i].y,orientaciones[gamestate->myships[i].orientacion]);
+                printf("%s colocado en la posicion [%d,%d] con orientacion %s\n",gamestate->myShips[i].nombre,gamestate->myShips[i].x,gamestate->myShips[i].y,orientaciones[gamestate->myShips[i].orientacion]);
             }
         }
     }
@@ -99,20 +99,20 @@ int autoaddships(Gamestate* gamestate)
 int manualaddships(Gamestate* gamestate)
 {
     for(int i = 0; i < 9; i++)
-    {   print_shipboard(&gamestate->myboard);
+    {   print_shipboard(&gamestate->myBoard);
         int valido = EXIT_FAILURE;
         while(valido!=EXIT_SUCCESS)
         {
             char input;
-            printf("Colocando nave de tipo '%s'...\n",gamestate->myships[i].nombre);
+            printf("Colocando nave de tipo '%s'...\n",gamestate->myShips[i].nombre);
             printf("Ingrese la coordenada X entre 0 y 9, de izquierda a derecha:\n");
             input = getc(stdin);
             clearstdin();
-            gamestate->myships[i].x = input - '0';
+            gamestate->myShips[i].x = input - '0';
             printf("Ingrese la coordenada Y entre 0 y 9, de arriba a abajo:\n");
             input = getc(stdin);
             clearstdin();
-            gamestate->myships[i].y = input - '0';
+            gamestate->myShips[i].y = input - '0';
 
             printf("Ingrese la orientacion 'h' para horizontal o 'v' para vertical\n");
             //guardar input en barco
@@ -120,18 +120,18 @@ int manualaddships(Gamestate* gamestate)
             clearstdin();
             if(input == 'h')
             {
-                gamestate->myships[i].orientacion = HORIZONTAL;
+                gamestate->myShips[i].orientacion = HORIZONTAL;
             }
             if(input == 'v')
             {
-                gamestate->myships[i].orientacion = VERTICAL;
+                gamestate->myShips[i].orientacion = VERTICAL;
             }
 
             //intengamos poner el barco en mi tablero
-            valido = putship(&gamestate->myboard,&gamestate->myships[i]);
+            valido = putship(&gamestate->myBoard,&gamestate->myShips[i]);
             if(valido == EXIT_SUCCESS)
             {
-                printf("%s colocado en la posicion [%d,%d]\n",gamestate->myships[i].nombre,gamestate->myships[i].x,gamestate->myships[i].y);
+                printf("%s colocado en la posicion [%d,%d]\n",gamestate->myShips[i].nombre,gamestate->myShips[i].x,gamestate->myShips[i].y);
             }
             if(valido != EXIT_SUCCESS)
             {
@@ -145,16 +145,16 @@ int manualaddships(Gamestate* gamestate)
 int init_gamestate(Gamestate* gamestate)
 {
     //el tablero del oponente se inicializa con posiciones desconocidas
-    init_intboard(&gamestate->hisboard);
+    init_tileboard(&gamestate->hisBoard);
 
     //el oponente inicia con sus nueve naves
-    gamestate->hisships = 9;
+    gamestate->hisShips = 9;
 
     //creamos las nueve naves que luego ubicaremos en nuestro tablero
-    init_shiparray(&gamestate->myships);
+    init_shiparray(&gamestate->myShips);
 
     //vaciamos nuestro tablero para luego cargar los barcos
-    init_shipboard(&gamestate->myboard);
+    init_shipboard(&gamestate->myBoard);
 
     char input;
     printf("Si quieres que las naves se ubiquen automaticamente, pulse 's'\n");
@@ -169,7 +169,7 @@ int init_gamestate(Gamestate* gamestate)
     {
         manualaddships(gamestate);
     }
-    gamestate->state = WAITING;
+    gamestate->myState = WAITING;
     return EXIT_SUCCESS;
 }
 
@@ -185,17 +185,17 @@ int play_game(int socket, int mode)
     //idealmente implementamos alguna forma aleatoria para elegir quien empieza
     if(mode == 1)
     {
-        gamestate.state = SHOOTING;
+        gamestate.myState = SHOOTING;
     }
     if(mode == 2)
     {
-        gamestate.state = WAITING;
+        gamestate.myState = WAITING;
     }
     char receive_buffer[8] = {0};
     char send_buffer[8] = {0};
 
     //gameloop
-    while((gamestate.state != WON) && (gamestate.state != LOST))
+    while((gamestate.myState != WON) && (gamestate.myState != LOST))
     {
         //imprimo el estado del juego
         print_gamestate(&gamestate);
@@ -204,7 +204,7 @@ int play_game(int socket, int mode)
         char y = '0';
         int res;
         //modo 1 me toca disparar
-        if(gamestate.state == SHOOTING)
+        if(gamestate.myState == SHOOTING)
         {
             printf("Tienes que disparar.\n");
             printf("Ingrese la coordenada X [0-9]:\n");
@@ -226,7 +226,7 @@ int play_game(int socket, int mode)
             if(receive_buffer[0] == MISS)
             {
                 printf("AGUA!\n\n");
-                gamestate.state = WAITING;
+                gamestate.myState = WAITING;
                 res = WATER;
             }
             if(receive_buffer[0] == HIT)
@@ -238,7 +238,7 @@ int play_game(int socket, int mode)
             {
                 printf("HUNDIDO!\n\n");
                 res = DESTROYED;
-                gamestate.hisships--;
+                gamestate.hisShips--;
 
                 //informacion de la nave destruida
                 //necesaria para actualizar el tablero
@@ -248,9 +248,9 @@ int play_game(int socket, int mode)
                 int rcv_orientacion = receive_buffer[4] - '0';
 
                 //si no le quedan mas naves al oponente, ganamos
-                if(gamestate.hisships==0)
+                if(gamestate.hisShips==0)
                 {
-                    gamestate.state = WON;
+                    gamestate.myState = WON;
                 }
 
                 //actualizamos la informacion del tablero del oponente
@@ -259,23 +259,23 @@ int play_game(int socket, int mode)
                 {
                     for(int i = 0; i < rcv_size; i++)
                     {
-                        gamestate.hisboard[rcv_x][rcv_y+i] = res;
+                        gamestate.hisBoard[rcv_x][rcv_y+i] = res;
                     }
                 }
                 else
                 {
                     for(int i = 0; i < rcv_size; i++)
                     {
-                        gamestate.hisboard[rcv_x+i][rcv_y] = res;
+                        gamestate.hisBoard[rcv_x+i][rcv_y] = res;
                     }
                 }
             }
-            gamestate.hisboard[x - '0'][y - '0'] = res;
+            gamestate.hisBoard[x - '0'][y - '0'] = res;
         }
         else
         {
             //modo 2 me toca recibir los disparos del oponente
-            if(gamestate.state == WAITING)
+            if(gamestate.myState == WAITING)
             {
                 printf("Esperando disparo del oponente...\n\n");
                 //recibo las coordenadas del disparo del oponente
@@ -285,12 +285,12 @@ int play_game(int socket, int mode)
                 printf("Recibido disparo en la posicion [%d,%d]\n\n",receive_buffer[0] - '0',receive_buffer[1] - '0');
 
                 //evaluo el disparo
-                res = checkHit(&gamestate.myboard, x - '0', y - '0');
+                res = checkHit(&gamestate.myBoard, x - '0', y - '0');
                 send_buffer[0] = res;
                 if(res == MISS)
                 {
                     printf("AGUA!\n\n");
-                    gamestate.state = SHOOTING;
+                    gamestate.myState = SHOOTING;
                     send(socket, send_buffer, 1, 0);
                 }
                 else
@@ -309,7 +309,7 @@ int play_game(int socket, int mode)
                             while(i<9)
                             {
                                 //me fijo si era mi ultimo barco
-                                if(gamestate.myships[i].hitsremaining != 0)
+                                if(gamestate.myShips[i].hitsremaining != 0)
                                 {
                                     break;
                                 }
@@ -318,13 +318,13 @@ int play_game(int socket, int mode)
                             //te hundieron todos los barcos
                             if(i == 9)
                             {
-                                gamestate.state = LOST;
+                                gamestate.myState = LOST;
                             }
 
-                            send_buffer[1] = gamestate.myboard[x - '0'][y - '0']->x + '0';
-                            send_buffer[2] = gamestate.myboard[x - '0'][y - '0']->y + '0';
-                            send_buffer[3] = gamestate.myboard[x - '0'][y - '0']->largo + '0';
-                            send_buffer[4] = gamestate.myboard[x - '0'][y - '0']->orientacion + '0';
+                            send_buffer[1] = gamestate.myBoard[x - '0'][y - '0']->x + '0';
+                            send_buffer[2] = gamestate.myBoard[x - '0'][y - '0']->y + '0';
+                            send_buffer[3] = gamestate.myBoard[x - '0'][y - '0']->largo + '0';
+                            send_buffer[4] = gamestate.myBoard[x - '0'][y - '0']->orientacion + '0';
                             send(socket, send_buffer, 5, 0);
                         }
                     }
@@ -332,13 +332,14 @@ int play_game(int socket, int mode)
             }
         }
     }
-    return gamestate.state;
+    return gamestate.myState;
 }
 
 int main()
 {
 
     system("clear");
+    printf("|---------------------------v_1.0-|\n");
     printf("Batalla Naval 2020 GOTY Edition\n\n");
     texto();
 

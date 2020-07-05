@@ -1,26 +1,15 @@
 #ifndef BATTLESHIP_H_
 #define BATTLESHIP_H_
 
-#define HORIZONTAL 0
-#define VERTICAL 1
+typedef enum orientation {HORIZONTAL, VERTICAL} orientation;
 
-enum ship_types {FRIGATE, DESTROYER, BATTLESHIP, CARRIER};
+typedef enum ship_type {FRIGATE, DESTROYER, BATTLESHIP, CARRIER} ship_type;
 
-//definiciones para la respuesta a un disparo
-#define MISS 48 //0
-#define HIT 49 //1
-#define SUNK 50 //2
+typedef enum tile {UNKNOWN, WATER, SHIP, DESTROYED} tile;
 
-//definiciones para lo que vamos a representar en pantalla
-#define UNKNOWN 0 //una posicion donde no se sabe que hay
-#define WATER 1 //una posicion donde ya disparamos y sabemos que hay agua
-#define SHIP 2 //una posicion donde disparamos y golpeamos un barco
-#define DESTROYED 3 //una posicion donde hay un barco hundido
+typedef enum state {SHOOTING, WAITING, WON, LOST} state;
 
-#define SHOOTING 0
-#define WAITING 1
-#define WON 2
-#define LOST 3
+typedef enum result {MISS=48,HIT=49,SUNK=50} result;
 
 //estructura del barco
 typedef struct Ship
@@ -29,18 +18,18 @@ typedef struct Ship
     int largo; //cantidad de posiciones que ocupa
     int x; //posision horizontal en el tablero
     int y; //posicion vertical en el tablero
-    int orientacion; //vertical u horizontal
+    orientation orientacion; //vertical u horizontal
     int hitsremaining; //hits restantes para hundir al barco
 } Ship;
 
 //estructura que almacena el gamestate
 typedef struct Gamestate
 {
-    Ship* myboard[10][10];
-    int hisboard[10][10];
-    Ship myships[9];
-    int hisships;
-    int state;
+    Ship* myBoard[10][10];
+    tile hisBoard[10][10];
+    Ship myShips[9];
+    int hisShips;
+    state myState;
 
 } Gamestate;
 
@@ -54,10 +43,10 @@ int checkHit(Ship *(*board)[][10], int x, int y);
 int print_gamestate(Gamestate* gamestate);
 
 //crea una nave
-int create_ship(Ship* ship, int type);
+int create_ship(Ship* ship, ship_type type);
 
 //imprime un tablero de naves que representa el tablero del jugador
-int print_intboard(int (*intboard)[][10]);
+int print_intboard(enum tile (*intboard)[][10]);
 
 //imprime un tablero de ints que representa el tablero del oponente
 int print_shipboard(Ship *(*shipboard)[][10]);
