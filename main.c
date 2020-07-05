@@ -264,7 +264,7 @@ int play_game(int socket, int mode)
             //envio el disparo y espero la respuesta
             printf("Disparando...\n");
             send(socket, send_buffer, 2, 0);
-            read(socket, receive_buffer, 1);
+            read(socket, receive_buffer, 5);
 
             //revisamos el resultado del disparo
             if(receive_buffer[0] == MISS)
@@ -281,58 +281,101 @@ int play_game(int socket, int mode)
             if(receive_buffer[0] == SUNK)
             {
                 printf("HUNDIDO!\n\n");
-                gamestate.hisships--;
                 res = DESTROYED;
+                gamestate.hisships--;
+
+                //informacion de la nave destruida
+                //necesaria para actualizar el tablero
+                int rcv_x = receive_buffer[1] - '0';
+                int rcv_y = receive_buffer[2] - '0';
+                int rcv_size = receive_buffer[3] - '0';
+                int rcv_orientacion = receive_buffer[4] - '0';
+
+                //si no le quedan mas naves al oponente, ganamos
                 if(gamestate.hisships==0)
                 {
                     gamestate.state = WON;
                 }
+
+                //actualizamos la informacion del tablero del oponente
+                //hay que cambiar los "ship" por "destroyed"
+                if(rcv_orientacion == VERTICAL)
+                {
+                    for(int i = 0; i < rcv_size; i++)
+                    {
+                        gamestate.hisboard[rcv_x][rcv_y+i] = res;
+                    }
+                }
+                else
+                {
+                    for(int i = 0; i < rcv_size; i++)
+                    {
+                        gamestate.hisboard[rcv_x+i][rcv_y] = res;
+                    }
+                }
+
             }
             gamestate.hisboard[x - '0'][y - '0'] = res;
 
         }
-        //modo 2 me toca recibir los disparos del oponente
-        if(gamestate.state == WAITING)
+        else
         {
-            printf("Esperando disparo del oponente...\n\n");
-            //recibo las coordenadas del disparo del oponente
-            read(socket, receive_buffer, 2);
-            x = receive_buffer[0];
-            y = receive_buffer[1];
-            printf("Recibido disparo en la posicion [%d,%d]\n\n",receive_buffer[0] - '0',receive_buffer[1] - '0');
+            //modo 2 me toca recibir los disparos del oponente
+            if(gamestate.state == WAITING)
+            {
+                printf("Esperando disparo del oponente...\n\n");
+                //recibo las coordenadas del disparo del oponente
+                read(socket, receive_buffer, 2);
+                x = receive_buffer[0];
+                y = receive_buffer[1];
+                printf("Recibido disparo en la posicion [%d,%d]\n\n",receive_buffer[0] - '0',receive_buffer[1] - '0');
 
-            //evaluo el disparo
-            res = checkHit(&gamestate.myboard, x - '0', y - '0');
-            if(res == MISS)
-            {
-                printf("AGUA!\n\n");
-                gamestate.state = SHOOTING;
-            }
-            if(res == HIT)
-            {
-                printf("TOCADO!\n\n");
-            }
-            send_buffer[0] = res;
-            send(socket, send_buffer, 1, 0);
-            //me fijo si era mi ultimo barco
-            if(res == SUNK)
-            {
-                printf("HUNDIDO!\n\n");
-                int i = 0;
-                while(i<9)
+                //evaluo el disparo
+                res = checkHit(&gamestate.myboard, x - '0', y - '0');
+                send_buffer[0] = res;
+                if(res == MISS)
                 {
-                    if(gamestate.myships[i].hitsremaining != 0)
+                    printf("AGUA!\n\n");
+                    gamestate.state = SHOOTING;
+                    send(socket, send_buffer, 1, 0);
+                }
+                else
+                {
+                    if(res == HIT)
                     {
-                        break;
+                        printf("TOCADO!\n\n");
+                        send(socket, send_buffer, 1, 0);
                     }
-                    i++;
-                }
-                //te hundieron todos los barcos
-                if(i == 9)
-                {
-                    gamestate.state = LOST;
-                }
+                    else
+                    {
+                        if(res == SUNK)
+                        {
+                            printf("HUNDIDO!\n\n");
+                            int i = 0;
+                            while(i<9)
+                            {
+                                //me fijo si era mi ultimo barco
+                                if(gamestate.myships[i].hitsremaining != 0)
+                                {
+                                    break;
+                                }
+                                i++;
+                            }
+                            //te hundieron todos los barcos
+                            if(i == 9)
+                            {
+                                gamestate.state = LOST;
+                            }
 
+                            send_buffer[1] = gamestate.myboard[x - '0'][y - '0']->x + '0';
+                            send_buffer[2] = gamestate.myboard[x - '0'][y - '0']->y + '0';
+                            send_buffer[3] = gamestate.myboard[x - '0'][y - '0']->largo + '0';
+                            send_buffer[4] = gamestate.myboard[x - '0'][y - '0']->orientacion + '0';
+                            send(socket, send_buffer, 5, 0);
+                        }
+                    }
+
+                }
             }
         }
     }

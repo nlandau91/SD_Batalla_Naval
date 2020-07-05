@@ -25,13 +25,16 @@ int putship(Ship *(*board)[][10], Ship* ship)
         //veo si hay colision con otra nave
         for(int i = ship->x; i < ship->largo + ship->x; i++)
         {
-
             //si hay colision con otra nave
             if((*board)[i][ship->y])
             {
                 return -1;
             }
-            //colocamos la nave en el tablero
+        }
+        //no hubo colision
+        //colocamos la nave en el tablero
+         for(int i = ship->x; i < ship->largo + ship->x; i++)
+        {
             (*board)[i][ship->y] = ship;
         }
     }
@@ -51,9 +54,15 @@ int putship(Ship *(*board)[][10], Ship* ship)
             {
                 return -1;
             }
+        }
+        //no hubo colision
+        //colocamos la nave en el tablero
+        for(int i = ship->y; i < ship->largo + ship->y; i++)
+        {
             //colocamos la nave en el tablero
             (*board)[ship->x][i] = ship;
         }
+
     }
     return 0;
 }
@@ -102,10 +111,39 @@ void print_gamestate(Gamestate* gamestate)
             cant++;
         }
     }
-    printf("Mis barcos: %d\n",cant);
     printf("Barcos de mi oponente: %d\n",gamestate->hisships);
+    printf("Tablero del oponente:\n");
 
     //aca imprimiria los tableros iterando sobre gamestate->myboard y gamestate->hisboard
+    for(int j = 0; j < 10; j++)
+    {
+        printf("| ");
+        for(int i = 0; i < 10; i++)
+        {
+            char c;
+            int act = gamestate->hisboard[i][j];
+            if(act == UNKNOWN)
+            {
+                c = '?';
+            }
+            if(act == WATER)
+            {
+                c = 'W';
+            }
+            if(act == SHIP)
+            {
+                c = 'S';
+            }
+            if(act == DESTROYED)
+            {
+                c = 'D';
+            }
+            printf("%c ",c);
+        }
+        printf("|\n");
+    }
+
+    printf("Mis barcos: %d\n",cant);
 }
 
 int autoaddships(Gamestate* gamestate)
