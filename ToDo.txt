@@ -1,6 +1,5 @@
 Checkeo de entrada
 Manejo de errores
-No permitir naves pegadas (putship)
 Testear ingreso manual de naves (una paja)
 Decidir quien empieza
 La regla de 15 segundos para tomar un disparo (es necesario eso?)
