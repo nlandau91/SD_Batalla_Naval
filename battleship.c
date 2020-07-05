@@ -99,22 +99,11 @@ int checkHit(Ship *(*board)[][10], int x, int y)
 }
 
 //imprime una representacion del gamestate por pantalla
-//idealmente imprime ambos tableros en modo ascii
-//por el momento solo imprime cuantos barcos le queda a cada uno
 void print_gamestate(Gamestate* gamestate)
 {
-    int cant = 0;
-    for(int i = 0; i<9; i++)
-    {
-        if(gamestate->myships[i].hitsremaining > 0)
-        {
-            cant++;
-        }
-    }
+
     printf("Barcos de mi oponente: %d\n",gamestate->hisships);
     printf("Tablero del oponente:\n");
-
-    //aca imprimiria los tableros iterando sobre gamestate->myboard y gamestate->hisboard
     for(int j = 0; j < 10; j++)
     {
         printf("| ");
@@ -143,7 +132,40 @@ void print_gamestate(Gamestate* gamestate)
         printf("|\n");
     }
 
+    int cant = 0;
+    for(int i = 0; i<9; i++)
+    {
+        if(gamestate->myships[i].hitsremaining > 0)
+        {
+            cant++;
+        }
+    }
     printf("Mis barcos: %d\n",cant);
+    printf("Mi tablero:\n");
+    for(int j = 0; j < 10; j++)
+    {
+        printf("| ");
+        for(int i = 0; i < 10; i++)
+        {
+            char c;
+            if(gamestate->myboard[i][j])
+            {
+                if(gamestate->myboard[i][j]->hitsremaining > 0)
+                {
+                    c = 'S';
+                }
+                else
+                {
+                    c = 'D';
+                }
+            }
+            else{
+                c = 'W';
+            }
+            printf("%c ",c);
+        }
+        printf("|\n");
+    }
 }
 
 int autoaddships(Gamestate* gamestate)
