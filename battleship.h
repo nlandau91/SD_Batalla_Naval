@@ -34,10 +34,10 @@ typedef struct Gamestate
 } Gamestate;
 
 //intenta colocar un barco en el tablero
-int putship(Ship * (*board)[][10], Ship* ship);
+int put_ship(Ship * (*board)[][10], Ship* ship);
 
 //decide si un intento es un hit, miss o hundido
-int checkHit(Ship *(*board)[][10], int x, int y);
+int check_hit(Ship *(*board)[][10], int x, int y);
 
 //imprime una representacion del gamestate por pantalla
 int print_gamestate(Gamestate* gamestate);

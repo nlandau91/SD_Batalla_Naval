@@ -85,7 +85,7 @@ int autoaddships(Gamestate* gamestate)
             {
                 gamestate->myShips[i].orientacion = VERTICAL;
             }
-            valido = putship(&gamestate->myBoard,&gamestate->myShips[i]);
+            valido = put_ship(&gamestate->myBoard,&gamestate->myShips[i]);
             if(valido == EXIT_SUCCESS)
             {
                 printf("%s colocado en la posicion [%d,%d] con orientacion %s\n",gamestate->myShips[i].nombre,gamestate->myShips[i].x,gamestate->myShips[i].y,orientaciones[gamestate->myShips[i].orientacion]);
@@ -128,7 +128,7 @@ int manualaddships(Gamestate* gamestate)
             }
 
             //intengamos poner el barco en mi tablero
-            valido = putship(&gamestate->myBoard,&gamestate->myShips[i]);
+            valido = put_ship(&gamestate->myBoard,&gamestate->myShips[i]);
             if(valido == EXIT_SUCCESS)
             {
                 printf("%s colocado en la posicion [%d,%d]\n",gamestate->myShips[i].nombre,gamestate->myShips[i].x,gamestate->myShips[i].y);
@@ -245,7 +245,7 @@ int play_game(int socket, int mode)
                 int rcv_x = receive_buffer[1] - '0';
                 int rcv_y = receive_buffer[2] - '0';
                 int rcv_size = receive_buffer[3] - '0';
-                int rcv_orientacion = receive_buffer[4] - '0';
+                orientation rcv_orientacion = receive_buffer[4] - '0';
 
                 //si no le quedan mas naves al oponente, ganamos
                 if(gamestate.hisShips==0)
@@ -285,7 +285,7 @@ int play_game(int socket, int mode)
                 printf("Recibido disparo en la posicion [%d,%d]\n\n",receive_buffer[0] - '0',receive_buffer[1] - '0');
 
                 //evaluo el disparo
-                res = checkHit(&gamestate.myBoard, x - '0', y - '0');
+                res = check_hit(&gamestate.myBoard, x - '0', y - '0');
                 send_buffer[0] = res;
                 if(res == MISS)
                 {

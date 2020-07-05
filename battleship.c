@@ -11,8 +11,9 @@ Ship default_ships[4] =
     {"carrier",4,0,0,0,4}
 };
 
-//intenta colocar un barco en el tablero
-int putship(Ship *(*board)[][10], Ship* ship)
+//intenta colocar una nave en el tablero
+//la posicion ya esta ingresada en la nave
+int put_ship(Ship *(*board)[][10], Ship* ship)
 {
     if(ship->orientacion == HORIZONTAL)
     {
@@ -20,6 +21,22 @@ int putship(Ship *(*board)[][10], Ship* ship)
         if((ship->x + ship->largo) > 10)
         {
             return EXIT_FAILURE;
+        }
+        //veo si tengo una nave inmediatamente detras
+        if(ship->x > 0)
+        {
+            if((*board)[ship->x - 1][ship->y])
+            {
+                return EXIT_FAILURE;
+            }
+        }
+        //veo si tengo una nave inmediatamente adelante
+        if((ship->x + ship->largo) < 10)
+        {
+            if((*board)[(ship->x + ship->largo)][ship->y])
+            {
+                return EXIT_FAILURE;
+            }
         }
         //veo si hay colision con otra nave
         for(int i = ship->x; i < ship->largo + ship->x; i++)
@@ -29,10 +46,27 @@ int putship(Ship *(*board)[][10], Ship* ship)
             {
                 return EXIT_FAILURE;
             }
+
+            //veo si hay una nave inmediatamente arriba
+            if(ship->y > 0)
+            {
+                if((*board)[i][ship->y - 1])
+                {
+                    return EXIT_FAILURE;
+                }
+            }
+            //veo si hay una nave inmediatamente abajo
+            if(ship->y < 9)
+            {
+                if((*board)[i][ship->y + 1])
+                {
+                    return EXIT_FAILURE;
+                }
+            }
         }
         //no hubo colision
         //colocamos la nave en el tablero
-         for(int i = ship->x; i < ship->largo + ship->x; i++)
+        for(int i = ship->x; i < ship->largo + ship->x; i++)
         {
             (*board)[i][ship->y] = ship;
         }
@@ -45,6 +79,22 @@ int putship(Ship *(*board)[][10], Ship* ship)
         {
             return EXIT_FAILURE;
         }
+        //veo si tengo una nave inmediatamente arriba
+        if(ship->y > 0)
+        {
+            if((*board)[ship->x][ship->y - 1])
+            {
+                return EXIT_FAILURE;
+            }
+        }
+        //veo si tengo una nave inmediatamente abajo
+        if((ship->y + ship->largo) < 10)
+        {
+            if((*board)[ship->x][(ship->y + ship->largo)])
+            {
+                return EXIT_FAILURE;
+            }
+        }
         //veo si hay colision con otra nave
         for(int i = ship->y; i < ship->largo + ship->y; i++)
         {
@@ -52,6 +102,22 @@ int putship(Ship *(*board)[][10], Ship* ship)
             if((*board)[ship->x][i])
             {
                 return EXIT_FAILURE;
+            }
+            //veo si hay una nave inmediatamente atras
+            if(ship->x > 0)
+            {
+                if((*board)[ship->x - 1][i])
+                {
+                    return EXIT_FAILURE;
+                }
+            }
+            //veo si hay una nave inmediatamente adelante
+            if(ship->x < 9)
+            {
+                if((*board)[ship->x + 1][i])
+                {
+                    return EXIT_FAILURE;
+                }
             }
         }
         //no hubo colision
@@ -65,7 +131,7 @@ int putship(Ship *(*board)[][10], Ship* ship)
     return EXIT_SUCCESS;
 }
 
-
+//crea una nave de tipo type y la devuelve en la direccion pasada por parametro
 int create_ship(Ship* ship, ship_type type)
 {
     *ship = default_ships[type];
@@ -74,7 +140,7 @@ int create_ship(Ship* ship, ship_type type)
 
 //decide si un intento es un hit, miss o hundido
 //si es un hit, reduce los hitsremaining
-int checkHit(Ship *(*board)[][10], int x, int y)
+int check_hit(Ship *(*board)[][10], int x, int y)
 {
     printf("Checking hit on [%d,%d]\n\n",x,y);
 
@@ -139,7 +205,8 @@ int print_shipboard(Ship *(*shipboard)[][10])
                     c = 'D';
                 }
             }
-            else{
+            else
+            {
                 c = 'W';
             }
             printf("%c ",c);
