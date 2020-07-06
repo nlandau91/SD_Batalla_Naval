@@ -9,7 +9,7 @@ int clearstdin()
 
 int charToInt(char c)
 {
-   return c - '0';
+    return c - '0';
 }
 
 char intToChar(int n)

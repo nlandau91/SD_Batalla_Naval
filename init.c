@@ -38,7 +38,8 @@ int autoaddships(Gamestate* gamestate)
 int manualaddships(Gamestate* gamestate)
 {
     for(int i = 0; i < 9; i++)
-    {   print_shipboard(&gamestate->myBoard);
+    {
+        print_shipboard(&gamestate->myBoard);
         int valido = EXIT_FAILURE;
         while(valido!=EXIT_SUCCESS)
         {

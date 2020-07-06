@@ -1,8 +1,10 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <unistd.h>
 #include <ifaddrs.h>
 #include <arpa/inet.h>
 #include <string.h>
+
 #include "connection.h"
 #include "utils.h"
 
@@ -64,15 +66,15 @@ int create_game(int port)
         perror("listen");
         return -1;
     }
-	print_addresses();
-	printf("Esperando oponente...\n");
+    print_addresses();
+    printf("Esperando oponente...\n");
     if ((new_socket = accept(server_fd, (struct sockaddr *)&address,
                              (socklen_t*)&addrlen))<0)
     {
         perror("accept");
         return -1;
     }
-	printf("Oponente conectado! Comenzando...\n\n");
+    printf("Oponente conectado! Comenzando...\n\n");
     return new_socket;
 }
 
@@ -105,7 +107,7 @@ int join_game(char* hostname, int port)
     printf("Conectado!\n\n");
     return sock;
 }
-int shot_request(int socket, int x, int y)
+int send_shot(int socket, int x, int y)
 {
     char payload[2];
     payload[0] = intToChar(x);
@@ -115,12 +117,23 @@ int shot_request(int socket, int x, int y)
     return EXIT_SUCCESS;
 }
 
-int shot_response(int socket, int type, int argc, char argv[])
+int wait_shot_resp(int socket, char buf[5])
+{
+    read(socket, buf, 5);
+    return EXIT_SUCCESS;
+}
+int respond_shot(int socket, int type, int argc, char argv[])
 {
     char payload[1+argc];
-    payload[0] = intToChar(type);
+    payload[0] = type;
     strncpy(&payload[1], argv, argc);
     send(socket, payload, sizeof(payload),0);
 
+    return EXIT_SUCCESS;
+}
+
+int receive_shot(int socket, char buf[2])
+{
+    read(socket, buf, 2);
     return EXIT_SUCCESS;
 }
