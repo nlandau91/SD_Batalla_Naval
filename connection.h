@@ -11,4 +11,8 @@ int create_game(int port);
 //intento conectarme a un oponente
 int join_game(char* hostname, int port);
 
+int shot_request(int socket, int x, int y);
+
+int shot_response(int socket, int type, int argc, char argv[]);
+
 #endif //CONNECTION_H_

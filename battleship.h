@@ -46,7 +46,7 @@ int print_gamestate(Gamestate* gamestate);
 int create_ship(Ship* ship, ship_type type);
 
 //imprime un tablero de naves que representa el tablero del jugador
-int print_intboard(enum tile (*intboard)[][10]);
+int print_tileboard(enum tile (*intboard)[][10]);
 
 //imprime un tablero de ints que representa el tablero del oponente
 int print_shipboard(Ship *(*shipboard)[][10]);

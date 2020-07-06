@@ -34,22 +34,25 @@ int play_game(int socket, Gamestate* gamestate)
         //imprimo el estado del juego
         print_gamestate(gamestate);
 
-        char x = '0';
-        char y = '0';
+        int x;
+        int y;
         int res;
         //modo 1 me toca disparar
         if(gamestate->myState == SHOOTING)
         {
+            char input;
             printf("Tienes que disparar.\n");
             printf("Ingrese la coordenada X [0-9]:\n");
-            x = getc(stdin);
+            input = getc(stdin);
             clearstdin();
-            send_buffer[0] = x;
+            x = charToInt(input);
+            send_buffer[0] = input;
 
             printf("Ingrese la coordenada Y [0-9]:\n");
-            y = getc(stdin);
+            input = getc(stdin);
             clearstdin();
-            send_buffer[1] = y;
+            y = charToInt(input);
+            send_buffer[1] = input;
 
             //envio el disparo y espero la respuesta
             printf("Disparando...\n");
@@ -76,10 +79,10 @@ int play_game(int socket, Gamestate* gamestate)
 
                 //informacion de la nave destruida
                 //necesaria para actualizar el tablero
-                int rcv_x = receive_buffer[1] - '0';
-                int rcv_y = receive_buffer[2] - '0';
-                int rcv_size = receive_buffer[3] - '0';
-                orientation rcv_orientacion = receive_buffer[4] - '0';
+                int rcv_x = charToInt(receive_buffer[1]);
+                int rcv_y = charToInt(receive_buffer[2]);
+                int rcv_size = charToInt(receive_buffer[3]);
+                orientation rcv_orientacion = charToInt(receive_buffer[4]);
 
                 //si no le quedan mas naves al oponente, ganamos
                 if(gamestate->hisShips==0)
@@ -104,7 +107,7 @@ int play_game(int socket, Gamestate* gamestate)
                     }
                 }
             }
-            gamestate->hisBoard[x - '0'][y - '0'] = res;
+            gamestate->hisBoard[x][y] = res;
         }
         else
         {
@@ -114,12 +117,12 @@ int play_game(int socket, Gamestate* gamestate)
                 printf("Esperando disparo del oponente...\n\n");
                 //recibo las coordenadas del disparo del oponente
                 read(socket, receive_buffer, 2);
-                x = receive_buffer[0];
-                y = receive_buffer[1];
-                printf("Recibido disparo en la posicion [%d,%d]\n\n",receive_buffer[0] - '0',receive_buffer[1] - '0');
+                x = charToInt(receive_buffer[0]);
+                y = charToInt(receive_buffer[1]);
+                printf("Recibido disparo en la posicion [%d,%d]\n\n",x,y);
 
                 //evaluo el disparo
-                res = check_hit(&gamestate->myBoard, x - '0', y - '0');
+                res = check_hit(&gamestate->myBoard, x, y);
                 send_buffer[0] = res;
                 if(res == MISS)
                 {
@@ -155,10 +158,10 @@ int play_game(int socket, Gamestate* gamestate)
                                 gamestate->myState = LOST;
                             }
 
-                            send_buffer[1] = gamestate->myBoard[x - '0'][y - '0']->x + '0';
-                            send_buffer[2] = gamestate->myBoard[x - '0'][y - '0']->y + '0';
-                            send_buffer[3] = gamestate->myBoard[x - '0'][y - '0']->largo + '0';
-                            send_buffer[4] = gamestate->myBoard[x - '0'][y - '0']->orientacion + '0';
+                            send_buffer[1] = intToChar(gamestate->myBoard[x][y]->x);
+                            send_buffer[2] = intToChar(gamestate->myBoard[x][y]->y);
+                            send_buffer[3] = intToChar(gamestate->myBoard[x][y]->largo);
+                            send_buffer[4] = intToChar(gamestate->myBoard[x][y]->orientacion);
                             send(socket, send_buffer, 5, 0);
                         }
                     }

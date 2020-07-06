@@ -168,7 +168,7 @@ int print_gamestate(Gamestate* gamestate)
 
     printf("Barcos de mi oponente: %d\n",gamestate->hisShips);
     printf("Tablero del oponente:\n");
-    print_intboard(&gamestate->hisBoard);
+    print_tileboard(&gamestate->hisBoard);
 
     //cuento cuantos barcos me quedan
     int cant = 0;
@@ -221,7 +221,7 @@ int print_shipboard(Ship *(*shipboard)[][10])
 
 
 //imprime el tablero del oponente
-int print_intboard(enum tile (*intboard)[][10])
+int print_tileboard(tile (*tileboard)[][10])
 {
     printf("   0 1 2 3 4 5 6 7 8 9\n");
     printf("  ---------------------\n");
@@ -231,7 +231,7 @@ int print_intboard(enum tile (*intboard)[][10])
         for(int i = 0; i < 10; i++)
         {
             char c;
-            int act = (*intboard)[i][j];
+            int act = (*tileboard)[i][j];
             if(act == UNKNOWN)
             {
                 c = '?';

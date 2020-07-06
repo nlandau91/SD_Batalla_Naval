@@ -47,11 +47,11 @@ int manualaddships(Gamestate* gamestate)
             printf("Ingrese la coordenada X entre 0 y 9, de izquierda a derecha:\n");
             input = getc(stdin);
             clearstdin();
-            gamestate->myShips[i].x = input - '0';
+            gamestate->myShips[i].x = charToInt(input);
             printf("Ingrese la coordenada Y entre 0 y 9, de arriba a abajo:\n");
             input = getc(stdin);
             clearstdin();
-            gamestate->myShips[i].y = input - '0';
+            gamestate->myShips[i].y = charToInt(input);
 
             printf("Ingrese la orientacion 'h' para horizontal o 'v' para vertical\n");
             //guardar input en barco
@@ -100,13 +100,13 @@ int init_shiparray(Ship (*shiparray)[9])
     return EXIT_SUCCESS;
 }
 
-int init_tileboard(enum tile (*intboard)[][10])
+int init_tileboard(tile (*tileboard)[][10])
 {
     for(int i = 0; i < 10; i++)
     {
         for(int j = 0; j < 10; j++)
         {
-            (*intboard)[i][j] = UNKNOWN;
+            (*tileboard)[i][j] = UNKNOWN;
 
         }
     }

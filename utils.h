@@ -3,4 +3,8 @@
 
 int clearstdin();
 
+int charToInt(char c);
+
+char intToChar(int n);
+
 #endif

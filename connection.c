@@ -1,7 +1,10 @@
+#include <stdlib.h>
 #include <stdio.h>
 #include <ifaddrs.h>
 #include <arpa/inet.h>
+#include <string.h>
 #include "connection.h"
+#include "utils.h"
 
 void print_addresses()
 {
@@ -36,6 +39,7 @@ int create_game(int port)
         perror("socket failed");
         return -1;
     }
+
 
     // Forcefully attaching socket to the port
     if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT,
@@ -100,4 +104,23 @@ int join_game(char* hostname, int port)
     }
     printf("Conectado!\n\n");
     return sock;
+}
+int shot_request(int socket, int x, int y)
+{
+    char payload[2];
+    payload[0] = intToChar(x);
+    payload[1] = intToChar(y);
+    send(socket, payload, sizeof(payload), 0);
+
+    return EXIT_SUCCESS;
+}
+
+int shot_response(int socket, int type, int argc, char argv[])
+{
+    char payload[1+argc];
+    payload[0] = intToChar(type);
+    strncpy(&payload[1], argv, argc);
+    send(socket, payload, sizeof(payload),0);
+
+    return EXIT_SUCCESS;
 }
