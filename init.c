@@ -5,7 +5,11 @@
 #include "utils.h"
 #include "time.h"
 
-
+/**
+    Inserta las naves automaticamente en el tablero
+    @param gamestate el gamestate que aloja las naves y el tablero
+    @return un codigo indicando si tuvo exito la funcion
+*/
 int autoaddships(Gamestate* gamestate)
 {
     char* orientaciones[2] = {"horizontal","vertical"};
@@ -35,6 +39,12 @@ int autoaddships(Gamestate* gamestate)
     return EXIT_SUCCESS;
 }
 
+/**
+    Inserta las naves de forma manual en el tablero
+    Le pide input al usuario para ubicarlas
+    @param gamestate el gamestate que aloja las naves y el tablero
+    @return un codigo indicando si tuvo exito la funcion
+*/
 int manualaddships(Gamestate* gamestate)
 {
     for(int i = 0; i < 9; i++)
@@ -55,7 +65,7 @@ int manualaddships(Gamestate* gamestate)
             gamestate->myShips[i].y = charToInt(input);
 
             printf("Ingrese la orientacion 'h' para horizontal o 'v' para vertical\n");
-            //guardar input en barco
+            //guardar input en nave
             input = getc(stdin);
             clearstdin();
             if(input == 'h')
@@ -67,7 +77,7 @@ int manualaddships(Gamestate* gamestate)
                 gamestate->myShips[i].orientacion = VERTICAL;
             }
 
-            //intengamos poner el barco en mi tablero
+            //intengamos poner la nave en mi tablero
             valido = put_ship(&gamestate->myBoard,&gamestate->myShips[i]);
             if(valido == EXIT_SUCCESS)
             {
@@ -82,11 +92,11 @@ int manualaddships(Gamestate* gamestate)
     return EXIT_SUCCESS;
 }
 
-
-
-
-
-
+/**
+    Inicializa el arreglo de naves pasado por parametro
+    @param shiparray puntero al arreglo de naves que sera inicializado
+    @return un codigo indicando si tuvo exito la funcion
+*/
 int init_shiparray(Ship (*shiparray)[9])
 {
     create_ship(&(*shiparray)[0], CARRIER);
@@ -101,6 +111,11 @@ int init_shiparray(Ship (*shiparray)[9])
     return EXIT_SUCCESS;
 }
 
+/**
+    Inicializa tablero de tiles pasado por parametro
+    @param tileboard puntero al tablero de tiles que sera inicializado
+    @return un codigo indicando si tuvo exito la funcion
+*/
 int init_tileboard(tile (*tileboard)[][10])
 {
     for(int i = 0; i < 10; i++)
@@ -114,6 +129,11 @@ int init_tileboard(tile (*tileboard)[][10])
     return EXIT_SUCCESS;
 }
 
+/**
+    Inicializa el tablero de naves pasado por parametro
+    @param shipboard puntero al tablero de naves que sera inicializado
+    @return un codigo indicando si tuvo exito la funcion
+*/
 int init_shipboard(Ship* (*shipboard)[][10])
 {
     for(int i = 0; i < 10; i++)
@@ -127,7 +147,6 @@ int init_shipboard(Ship* (*shipboard)[][10])
     return EXIT_SUCCESS;
 }
 
-
 int init_gamestate(Gamestate* gamestate)
 {
     //el tablero del oponente se inicializa con posiciones desconocidas
@@ -139,7 +158,7 @@ int init_gamestate(Gamestate* gamestate)
     //creamos las nueve naves que luego ubicaremos en nuestro tablero
     init_shiparray(&gamestate->myShips);
 
-    //vaciamos nuestro tablero para luego cargar los barcos
+    //vaciamos nuestro tablero para luego cargar los naves
     init_shipboard(&gamestate->myBoard);
 
     char input;

@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+
 int clearstdin()
 {
     int c;

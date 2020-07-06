@@ -143,14 +143,14 @@ int play_game(int socket, Gamestate* gamestate)
                     int i = 0;
                     while(i<9)
                     {
-                        //me fijo si era mi ultimo barco
-                        if(gamestate->myShips[i].hitsremaining != 0)
+                        //me fijo si era mi ultimo nave
+                        if(gamestate->myShips[i].hitsRemaining != 0)
                         {
                             break;
                         }
                         i++;
                     }
-                    //te hundieron todos los barcos
+                    //te hundieron todos los naves
                     if(i == 9)
                     {
                         gamestate->myState = LOST;

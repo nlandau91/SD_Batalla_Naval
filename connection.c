@@ -107,6 +107,7 @@ int join_game(char* hostname, int port)
     printf("Conectado!\n\n");
     return sock;
 }
+
 int send_shot(int socket, int x, int y)
 {
     char payload[2];
@@ -122,6 +123,7 @@ int wait_shot_resp(int socket, char buf[5])
     read(socket, buf, 5);
     return EXIT_SUCCESS;
 }
+
 int respond_shot(int socket, int type, int argc, char argv[])
 {
     char payload[1+argc];

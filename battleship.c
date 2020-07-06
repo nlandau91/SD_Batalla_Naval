@@ -2,7 +2,9 @@
 #include <stdio.h>
 #include "battleship.h"
 
-//ship default configurations
+/**
+    Configuraciones por default de las naves
+*/
 Ship default_ships[4] =
 {
     {"frigate",1,0,0,0,1},
@@ -11,8 +13,6 @@ Ship default_ships[4] =
     {"carrier",4,0,0,0,4}
 };
 
-//intenta colocar una nave en el tablero
-//la posicion ya esta ingresada en la nave
 int put_ship(Ship *(*board)[][10], Ship* ship)
 {
     if(ship->orientacion == HORIZONTAL)
@@ -131,23 +131,20 @@ int put_ship(Ship *(*board)[][10], Ship* ship)
     return EXIT_SUCCESS;
 }
 
-//crea una nave de tipo type y la devuelve en la direccion pasada por parametro
 int create_ship(Ship* ship, ship_type type)
 {
     *ship = default_ships[type];
     return EXIT_SUCCESS;
 }
 
-//decide si un intento es un hit, miss o hundido
-//si es un hit, reduce los hitsremaining
 int check_hit(Ship *(*board)[][10], int x, int y)
 {
     printf("Checking hit on [%d,%d]\n\n",x,y);
 
     if((*board)[x][y])
     {
-        (*board)[x][y]->hitsremaining--;
-        if((*board)[x][y]->hitsremaining > 0)
+        (*board)[x][y]->hitsRemaining--;
+        if((*board)[x][y]->hitsRemaining > 0)
         {
             return HIT;
         }
@@ -162,30 +159,28 @@ int check_hit(Ship *(*board)[][10], int x, int y)
     }
 }
 
-//imprime una representacion del gamestate por pantalla
 int print_gamestate(Gamestate* gamestate)
 {
 
-    printf("Barcos de mi oponente: %d\n",gamestate->hisShips);
+    printf("Naves de mi oponente: %d\n",gamestate->hisShips);
     printf("Tablero del oponente:\n");
     print_tileboard(&gamestate->hisBoard);
 
-    //cuento cuantos barcos me quedan
+    //cuento cuantos naves me quedan
     int cant = 0;
     for(int i = 0; i<9; i++)
     {
-        if(gamestate->myShips[i].hitsremaining > 0)
+        if(gamestate->myShips[i].hitsRemaining > 0)
         {
             cant++;
         }
     }
-    printf("Mis barcos: %d\n",cant);
+    printf("Mis naves: %d\n",cant);
     printf("Mi tablero:\n");
     print_shipboard(&gamestate->myBoard);
     return EXIT_SUCCESS;
 }
 
-//imprime el tablero del jugador
 int print_shipboard(Ship *(*shipboard)[][10])
 {
     printf("   0 1 2 3 4 5 6 7 8 9\n");
@@ -198,7 +193,7 @@ int print_shipboard(Ship *(*shipboard)[][10])
             char c;
             if((*shipboard)[i][j])
             {
-                if((*shipboard)[i][j]->hitsremaining > 0)
+                if((*shipboard)[i][j]->hitsRemaining > 0)
                 {
                     c = 'S';
                 }
@@ -219,8 +214,6 @@ int print_shipboard(Ship *(*shipboard)[][10])
     return EXIT_SUCCESS;
 }
 
-
-//imprime el tablero del oponente
 int print_tileboard(tile (*tileboard)[][10])
 {
     printf("   0 1 2 3 4 5 6 7 8 9\n");
