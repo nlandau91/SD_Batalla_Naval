@@ -21,4 +21,11 @@ int charToInt(char c);
 */
 char intToChar(int n);
 
+/**
+    Lee un par de enteros y los devuelve
+    @param coords un arreglo donde se devolveran las coordenadas leidas
+    @returns un arreglo de dos enteros
+*/
+int read_coords(int coords[2]);
+
 #endif

@@ -99,8 +99,7 @@ typedef struct Gamestate
 int put_ship(Ship * (*board)[][10], Ship* ship);
 
 /**
-    Decide si un disparo es hit, miss, o hundido
-    Si es hit, reduce hits_remaining de la nave en 1
+    Decide si un disparo es hit o miss
     @param board puntero al tablero de naves donde se hara el checkeo
     @param x coordenada x del disparo
     @param y coordenada y del disparo
@@ -124,17 +123,41 @@ int print_gamestate(Gamestate* gamestate);
 int create_ship(Ship* ship, ship_type type);
 
 /**
-    //Imprime un tablero de tiles por pantalla
+    Imprime un tablero de tiles por pantalla
     @param tileboard es el puntero al tablero de tiles que se imprimira
     @return un codigo indicando si tuvo exito la funcion
 */
 int print_tileboard(tile (*tileboard)[][10]);
-
 /**
-    //Imprime un tablero de naves por pantalla
+    Imprime un tablero de naves por pantalla
     @param shipboard es el puntero al tablero de nave que se imprimira
     @return un codigo indicando si tuvo exito la funcion
 */
 int print_shipboard(Ship *(*shipboard)[][10]);
+
+/**
+    Checkea si se perdio la partida
+    @param gamestate el gamestate correspondiente a esta partida
+    @returns LOST si se perdio la partida, el estado anterior en caso contrario
+*/
+state check_loss(Gamestate* gamestate);
+
+/**
+    Checkea si se gano la partida
+    @param gamestate el gamestate correspondiente a esta partida
+    @returns WON si se gano la partida, el estado anterior en caso contrario
+*/
+state check_win(Gamestate* gamestate);
+
+/**
+    Destruye la nave de un oponente
+    @param gamestate gamestate de esta partida
+    @param x coordenada x de la nave destruida
+    @param y coordenada y de la nave destruida
+    @param size tamaño de la nave destruida
+    @param orientacion orientacion de la nave destruida
+*/
+int destroy_enemy_ship(Gamestate* gamestate, int x, int y, int size, orientation orientacion);
+
 
 #endif //BATTLESHIP_H_

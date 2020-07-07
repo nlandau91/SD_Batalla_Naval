@@ -53,21 +53,24 @@ int manualaddships(Gamestate* gamestate)
         int valido = EXIT_FAILURE;
         while(valido!=EXIT_SUCCESS)
         {
-            char input;
             printf("Colocando nave de tipo '%s'...\n",gamestate->myShips[i].nombre);
-            printf("Ingrese la coordenada X entre 0 y 9, de izquierda a derecha:\n");
-            input = getc(stdin);
-            clearstdin();
-            gamestate->myShips[i].x = charToInt(input);
-            printf("Ingrese la coordenada Y entre 0 y 9, de arriba a abajo:\n");
-            input = getc(stdin);
-            clearstdin();
-            gamestate->myShips[i].y = charToInt(input);
+            int coords[2];
+            read_coords(coords);
+            gamestate->myShips[i].x = coords[0];
+            gamestate->myShips[i].y = coords[1];
 
             printf("Ingrese la orientacion 'h' para horizontal o 'v' para vertical\n");
             //guardar input en nave
+            char input;
             input = getc(stdin);
             clearstdin();
+            while(input != 'h' && input !='v')
+            {
+                printf("Error: %c no es una orientacion valida.\n",input);
+                printf("Ingrese la orientacion 'h' para horizontal o 'v' para vertical\n");
+                input = getc(stdin);
+                clearstdin();
+            }
             if(input == 'h')
             {
                 gamestate->myShips[i].orientacion = HORIZONTAL;
@@ -166,6 +169,14 @@ int init_gamestate(Gamestate* gamestate)
     printf("De lo contrario, pulse 'n'...\n");
     input = getc(stdin);
     clearstdin();
+    while(input != 's' && input != 'n')
+    {
+        printf("Error: %c no es una opcion valida\n",input);
+        printf("Si quieres que las naves se ubiquen automaticamente, pulse 's'\n");
+        printf("De lo contrario, pulse 'n'...\n");
+        input = getc(stdin);
+        clearstdin();
+    }
     if(input == 's')
     {
         autoaddships(gamestate);

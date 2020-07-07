@@ -143,15 +143,7 @@ int check_hit(Ship *(*board)[][10], int x, int y)
 
     if((*board)[x][y])
     {
-        (*board)[x][y]->hitsRemaining--;
-        if((*board)[x][y]->hitsRemaining > 0)
-        {
-            return HIT;
-        }
-        else
-        {
-            return SUNK;
-        }
+        return HIT;
     }
     else
     {
@@ -247,5 +239,59 @@ int print_tileboard(tile (*tileboard)[][10])
     }
     printf("  ---------------------\n");
 
+    return EXIT_SUCCESS;
+}
+
+state check_loss(Gamestate* gamestate)
+{
+    state toReturn = gamestate->myState;
+    int i = 0;
+    while(i<9)
+    {
+        //me fijo si era mi ultima nave
+        if(gamestate->myShips[i].hitsRemaining != 0)
+        {
+            break;
+        }
+        i++;
+    }
+    //te hundieron todas las naves
+    if(i == 9)
+    {
+        toReturn = LOST;
+    }
+    return toReturn;
+}
+
+state check_win(Gamestate* gamestate)
+{
+    state toReturn = gamestate->myState;
+    if(gamestate->hisShips==0)
+    {
+        toReturn = WON;
+    }
+    return toReturn;
+}
+
+int destroy_enemy_ship(Gamestate* gamestate, int x, int y, int size, orientation orientacion)
+{
+    //actualizamos la informacion del tablero del oponente
+    //hay que cambiar los "ship" por "destroyed"
+    if(orientacion == VERTICAL)
+    {
+        for(int i = 0; i < size; i++)
+        {
+            gamestate->hisBoard[x][y+i] = DESTROYED;
+        }
+    }
+
+    if(orientacion == HORIZONTAL)
+    {
+        for(int i = 0; i < size; i++)
+        {
+            gamestate->hisBoard[x+i][y] = DESTROYED;
+        }
+    }
+    gamestate->hisShips--;
     return EXIT_SUCCESS;
 }

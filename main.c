@@ -23,17 +23,10 @@ int texto()
 int shooting_state(Gamestate* gamestate, int socket)
 {
     //obtenemos las coordenadas a donde disparar
-    char input;
-    printf("Tienes que disparar.\n");
-    printf("Ingrese la coordenada X [0-9]:\n");
-    input = getc(stdin);
-    clearstdin();
-    int x = charToInt(input);
-
-    printf("Ingrese la coordenada Y [0-9]:\n");
-    input = getc(stdin);
-    clearstdin();
-    int y = charToInt(input);
+    int coords[2];
+    read_coords(coords);
+    int x = coords[0];
+    int y = coords[1];
 
     //envio el disparo
     printf("Disparando...\n");
@@ -60,7 +53,6 @@ int shooting_state(Gamestate* gamestate, int socket)
     {
         printf("HUNDIDO!\n\n");
         new_tile = DESTROYED;
-        gamestate->hisShips--;
 
         //informacion de la nave destruida
         //necesaria para actualizar el tablero
@@ -69,36 +61,12 @@ int shooting_state(Gamestate* gamestate, int socket)
         int rcv_size = charToInt(receive_buffer[3]);
         orientation rcv_orientacion = charToInt(receive_buffer[4]);
 
-        //actualizamos la informacion del tablero del oponente
-        //hay que cambiar los "ship" por "destroyed"
-        if(rcv_orientacion == VERTICAL)
-        {
-            for(int i = 0; i < rcv_size; i++)
-            {
-                gamestate->hisBoard[rcv_x][rcv_y+i] = new_tile;
-            }
-        }
-        else
-        {
-            if(rcv_orientacion == HORIZONTAL)
-            {
-                for(int i = 0; i < rcv_size; i++)
-                {
-                    gamestate->hisBoard[rcv_x+i][rcv_y] = new_tile;
-                }
-            }
-            else
-            {
-                printf("Uh oh...\n");
-                printf("orientacion received: %c\n",receive_buffer[4]);
-                return EXIT_FAILURE;
-            }
-        }
-        //si no le quedan mas naves al oponente, ganamos
-        if(gamestate->hisShips==0)
-        {
-            gamestate->myState = WON;
-        }
+        //destruimos la nave
+        destroy_enemy_ship(gamestate, rcv_x, rcv_y, rcv_size, rcv_orientacion);
+
+        //vemos si ganamos
+        gamestate->myState = check_win(gamestate);
+
     }
     //actualizamos la posicion de disparo con lo que sabemos que hay ahi
     gamestate->hisBoard[x][y] = new_tile;
@@ -123,7 +91,6 @@ int waiting_state(Gamestate* gamestate, int socket)
 
         //evaluo el disparo
         res = check_hit(&gamestate->myBoard, x, y);
-        send_buffer[0] = res;
         if(res == MISS)
         {
             printf("AGUA!\n\n");
@@ -134,35 +101,27 @@ int waiting_state(Gamestate* gamestate, int socket)
         {
             printf("TOCADO!\n\n");
             argc = 1;
+            gamestate->myBoard[x][y]->hitsRemaining--;
+            if(gamestate->myBoard[x][y]->hitsRemaining == 0)
+            {
+                res = SUNK;
+            }
         }
         if(res == SUNK)
         {
             printf("HUNDIDO!\n\n");
 
-            int i = 0;
-            while(i<9)
-            {
-                //me fijo si era mi ultima nave
-                if(gamestate->myShips[i].hitsRemaining != 0)
-                {
-                    break;
-                }
-                i++;
-            }
-            //te hundieron todas las naves
-            if(i == 9)
-            {
-                gamestate->myState = LOST;
-            }
+            //vemos si perdimos
+            gamestate->myState = check_loss(gamestate);
 
             //guardamos en el buffer informacion de la nave hundida
             send_buffer[1] = intToChar(gamestate->myBoard[x][y]->x);
             send_buffer[2] = intToChar(gamestate->myBoard[x][y]->y);
             send_buffer[3] = intToChar(gamestate->myBoard[x][y]->largo);
             send_buffer[4] = intToChar(gamestate->myBoard[x][y]->orientacion);
-            printf("orientacion sent: %c\n",send_buffer[4]);
             argc = 5;
         }
+        send_buffer[0] = res;
         //enviamos la respuesta del disparo al oponente
         respond_shot(socket, send_buffer, argc);
     }
@@ -183,12 +142,13 @@ int play_game(int socket, Gamestate* gamestate)
     {
         //imprimo el estado del juego
         print_gamestate(gamestate);
-        ;
+
         //me toca disparar
         if(gamestate->myState == SHOOTING)
         {
             shooting_state(gamestate, socket);
         }
+        //me toca recibir un disparo
         else
         {
             waiting_state(gamestate, socket);
@@ -287,11 +247,11 @@ int main()
         {
             printf("Oops, hubo un problema...\n\n");
         }
-        if(res == WON)
+        if(gamestate.myState == WON)
         {
             printf("Ganaste!\n\n");
         }
-        if(res == LOST)
+        if(gamestate.myState == LOST)
         {
             printf("Perdiste!\n\n");
         }
