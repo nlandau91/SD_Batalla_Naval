@@ -124,12 +124,9 @@ int wait_shot_resp(int socket, char buf[5])
     return EXIT_SUCCESS;
 }
 
-int respond_shot(int socket, int type, int argc, char argv[])
+int respond_shot(int socket,char argv[], int argc)
 {
-    char payload[1+argc];
-    payload[0] = type;
-    strncpy(&payload[1], argv, argc);
-    send(socket, payload, sizeof(payload),0);
+    send(socket, argv, argc,0);
 
     return EXIT_SUCCESS;
 }

@@ -37,12 +37,11 @@ int send_shot(int socket, int x, int y);
 /**
     Envia un mensaje correspondiente a la respuesta a un disparo
     @param socket por el cual se enviara el mensaje
-    @param type indica el tipo de respuesta
-    @param argc indica la cantidad de argumentos de la respuesta
     @param argv contiene los argumentos de la respuesta
+    @param argc indica la cantidad de argumentos de la respuesta
     @return un codigo indicando si tuvo exito la funcion
 */
-int respond_shot(int socket, int type, int argc, char argv[]);
+int respond_shot(int socket,char argv[], int argc);
 
 /**
     Espera por un mensaje de disparo

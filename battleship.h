@@ -87,7 +87,6 @@ typedef struct Gamestate
     Ship myShips[9];
     int hisShips;
     state myState;
-
 } Gamestate;
 
 /**
