@@ -254,7 +254,7 @@ int main()
         char ready = 'r';
         send(new_socket, &ready, 1, 0);
         //esperamos a que el oponente este listo
-        printf("Esperando a que el oponente coloque sus naves...\n");
+        printf("Esperando a que el oponente coloque sus naves...\n\n");
         read(new_socket, &ready, 1);
 
         //a jugar!

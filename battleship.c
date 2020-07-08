@@ -154,8 +154,9 @@ int check_hit(Ship *(*board)[][10], int x, int y)
 
 int print_gamestate(Gamestate* gamestate)
 {
-
+    printf("\033[27C");
     printf("Naves de mi oponente: %d\n",gamestate->hisShips);
+    printf("\033[27C");
     printf("Tablero del oponente:\n");
     print_tileboard(&gamestate->hisBoard);
 
@@ -168,6 +169,7 @@ int print_gamestate(Gamestate* gamestate)
             cant++;
         }
     }
+    printf("\033[14A");
     printf("Mis naves: %d\n",cant);
     printf("Mi tablero:\n");
     print_shipboard(&gamestate->myBoard);
@@ -222,9 +224,11 @@ int print_shipboard(Ship *(*shipboard)[][10])
 
 int print_tileboard(tile (*tileboard)[][10])
 {
+    printf("\033[27C");
     printf("  0|1|2|3|4|5|6|7|8|9\n");
     for(int j = 0; j < 10; j++)
     {
+        printf("\033[27C");
         printf("%d|",j);
         for(int i = 0; i < 10; i++)
         {
@@ -268,6 +272,7 @@ int print_tileboard(tile (*tileboard)[][10])
         }
         printf("|%d\n",j);
     }
+    printf("\033[27C");
     printf("  0|1|2|3|4|5|6|7|8|9\n");
 
     return EXIT_SUCCESS;
