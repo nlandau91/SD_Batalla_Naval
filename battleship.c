@@ -175,11 +175,10 @@ int print_gamestate(Gamestate* gamestate)
 
 int print_shipboard(Ship *(*shipboard)[][10])
 {
-    printf("   0 1 2 3 4 5 6 7 8 9\n");
-    printf("  ---------------------\n");
+    printf("  0|1|2|3|4|5|6|7|8|9\n");
     for(int j = 0; j < 10; j++)
     {
-        printf("%d| ",j);
+        printf("%d|",j);
         for(int i = 0; i < 10; i++)
         {
             char c;
@@ -187,57 +186,72 @@ int print_shipboard(Ship *(*shipboard)[][10])
             {
                 if((*shipboard)[i][j]->hitsRemaining > 0)
                 {
+                    //color de letra negro y fondo blanco
+                    printf("\033[30;47m");
                     c = 'S';
                 }
                 else
                 {
+                    //color de letra negro y fondo rojo
+                    printf("\033[30;41m");
                     c = 'D';
                 }
             }
             else
             {
+                //color de letra negro y fondo cyan
+                printf("\033[30;46m");
                 c = 'W';
             }
             printf("%c ",c);
+            printf("\033[0m");
         }
-        printf("|\n");
+        printf("|%d\n",j);
     }
-    printf("  ---------------------\n");
+    printf("  0|1|2|3|4|5|6|7|8|9\n");
     return EXIT_SUCCESS;
 }
 
 int print_tileboard(tile (*tileboard)[][10])
 {
-    printf("   0 1 2 3 4 5 6 7 8 9\n");
-    printf("  ---------------------\n");
+    printf("  0|1|2|3|4|5|6|7|8|9\n");
     for(int j = 0; j < 10; j++)
     {
-        printf("%d| ",j);
+        printf("%d|",j);
         for(int i = 0; i < 10; i++)
         {
             char c;
             int act = (*tileboard)[i][j];
             if(act == UNKNOWN)
             {
+                //color de letra blanco y fondo negro
+                printf("\033[37;40m");
                 c = '?';
             }
             if(act == WATER)
             {
+                //color de letra negro y fondo cyan
+                printf("\033[30;46m");
                 c = 'W';
             }
             if(act == SHIP)
             {
+                //color de letra negro y fondo blanco
+                printf("\033[30;47m");
                 c = 'S';
             }
             if(act == DESTROYED)
             {
+                //color de letra negro y fondo rojo
+                printf("\033[30;41m");
                 c = 'D';
             }
             printf("%c ",c);
+            printf("\033[0m");
         }
-        printf("|\n");
+        printf("|%d\n",j);
     }
-    printf("  ---------------------\n");
+    printf("  0|1|2|3|4|5|6|7|8|9\n");
 
     return EXIT_SUCCESS;
 }
