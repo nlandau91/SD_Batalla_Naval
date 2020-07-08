@@ -25,6 +25,12 @@ int shooting_state(Gamestate* gamestate, int socket)
     //obtenemos las coordenadas a donde disparar
     int coords[2];
     read_coords(coords);
+    //me fijo si no habia disparado ya en ese lugar
+    while(gamestate->hisBoard[coords[0]][coords[1]] != UNKNOWN)
+    {
+        printf("Error: ya disparaste en las coordenadas [%d,%d]\n",coords[0],coords[1]);
+        read_coords(coords);
+    }
     int x = coords[0];
     int y = coords[1];
 

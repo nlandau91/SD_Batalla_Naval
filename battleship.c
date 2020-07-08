@@ -6,7 +6,7 @@
 /**
     Configuraciones por default de las naves
 */
-Ship default_ships[4] =
+static const Ship default_ships[4] =
 {
     {"frigate",1,0,0,0,1},
     {"destroyer",2,0,0,0,2},
