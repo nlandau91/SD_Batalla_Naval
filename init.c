@@ -62,14 +62,16 @@ int manualaddships(Gamestate* gamestate)
             printf("Ingrese la orientacion 'h' para horizontal o 'v' para vertical\n");
             //guardar input en nave
             char input;
-            input = getc(stdin);
-            clearstdin();
+            //input = getc(stdin);
+            //clearstdin();
+            while((input = get_input()) < 0);
             while(input != 'h' && input !='v')
             {
                 printf("Error: %c no es una orientacion valida.\n",input);
                 printf("Ingrese la orientacion 'h' para horizontal o 'v' para vertical\n");
-                input = getc(stdin);
-                clearstdin();
+                //input = getc(stdin);
+                //clearstdin();
+                while((input = get_input()) < 0);
             }
             if(input == 'h')
             {
@@ -167,15 +169,17 @@ int init_gamestate(Gamestate* gamestate)
     char input;
     printf("Si quieres que las naves se ubiquen automaticamente, pulse 's'\n");
     printf("De lo contrario, pulse 'n'...\n");
-    input = getc(stdin);
-    clearstdin();
+    //input = getc(stdin);
+    while((input = get_input()) < 0);
+    //if (input != '\n') clearstdin();
     while(input != 's' && input != 'n')
     {
         printf("Error: %c no es una opcion valida\n",input);
         printf("Si quieres que las naves se ubiquen automaticamente, pulse 's'\n");
         printf("De lo contrario, pulse 'n'...\n");
-        input = getc(stdin);
-        clearstdin();
+        while((input = get_input()) < 0);
+        //input = getc(stdin);
+        //clearstdin();
     }
     if(input == 's')
     {

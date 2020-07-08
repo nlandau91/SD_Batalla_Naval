@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <ctype.h>
 #include "utils.h"
 
 #define ANSI_COLOR_RESET   "\x1b[0m"
@@ -34,27 +35,31 @@ int read_coords(int coords[2])
     char input;
 
     printf("Ingrese la coordenada X [0-9]:\n");
-    input = getc(stdin);
-    clearstdin();
+    //input = getc(stdin);
+    //clearstdin();
+    while((input = get_input()) < 0);
     while(!(input >= '0' && input <='9'))
     {
         printf("Error: %c no es una coordenada valida.",input);
         printf("Ingrese la coordenada X [0-9]:\n");
-        input = getc(stdin);
-        clearstdin();
+        while((input = get_input()) < 0);
+        //input = getc(stdin);
+        //clearstdin();
     }
     coords[0] = charToInt(input);
 
 
     printf("Ingrese la coordenada Y [0-9]:\n");
-    input = getc(stdin);
-    clearstdin();
+    //input = getc(stdin);
+    //clearstdin();
+    while((input = get_input()) < 0);
     while(!(input >= '0' && input <= '9'))
     {
         printf("Error: %c no es una coordenada valida.",input);
         printf("Ingrese la coordenada Y [0-9]:\n");
-        input = getc(stdin);
-        clearstdin();
+        while((input = get_input()) < 0);
+        //input = getc(stdin);
+        //clearstdin();
     }
     coords[1] = charToInt(input);
     return EXIT_SUCCESS;
@@ -73,4 +78,23 @@ void set_fg_color(color fgColor)
 void color_reset()
 {
     printf(ANSI_COLOR_RESET);
+}
+
+char get_input()
+{
+    char c ;
+    c = getc(stdin);
+    if(isprint(c))
+    {
+        clearstdin(0);
+    }
+    else
+    {
+        if(c != '\n')
+        {
+            clearstdin();
+        }
+        return -1;
+    }
+    return c;
 }

@@ -12,20 +12,20 @@
 #define DEFAULT_PORT 1914
 #define DEFAULT_HOSTNAME "127.0.0.1"
 
-int texto()
+void texto()
 {
     printf("Desea crear una partida o unirse a una partida?\n");
     printf("1) Crear una partida\n");
     printf("2) Unirse a una partida\n\n");
-    return EXIT_SUCCESS;
 }
 
+//aqui se realizan las acciones correspondientes a un jugador que tiene que disparar
 int shooting_state(Gamestate* gamestate, int socket)
 {
     //obtenemos las coordenadas a donde disparar
     int coords[2];
     read_coords(coords);
-    //me fijo si no habia disparado ya en ese lugar
+    //me fijo si ya habia disparado en ese lugar
     while(gamestate->hisBoard[coords[0]][coords[1]] != UNKNOWN)
     {
         printf("Error: ya disparaste en las coordenadas [%d,%d]\n",coords[0],coords[1]);
@@ -67,18 +67,19 @@ int shooting_state(Gamestate* gamestate, int socket)
         int rcv_size = charToInt(receive_buffer[3]);
         orientation rcv_orientacion = charToInt(receive_buffer[4]);
 
-        //destruimos la nave
+        //destruimos la nave y actualizamos el tablero
         destroy_enemy_ship(gamestate, rcv_x, rcv_y, rcv_size, rcv_orientacion);
 
         //vemos si ganamos
         gamestate->myState = check_win(gamestate);
 
     }
-    //actualizamos la posicion de disparo con lo que sabemos que hay ahi
+    //actualizamos el tablero
     gamestate->hisBoard[x][y] = new_tile;
     return 0;
 }
 
+//aqui se realizan las acciones correspondientes a un jugador que esta esperando un disparo
 int waiting_state(Gamestate* gamestate, int socket)
 {
     //me toca recibir los disparos del oponente
@@ -136,12 +137,6 @@ int waiting_state(Gamestate* gamestate, int socket)
 
 int play_game(int socket, Gamestate* gamestate)
 {
-    if(init_gamestate(gamestate) == EXIT_FAILURE)
-    {
-        perror("Error: init_gamestate");
-        return EXIT_FAILURE;
-    }
-
     //gameloop
     //se juega hasta que ganes o pierdas
     while((gamestate->myState != WON) && (gamestate->myState != LOST))
@@ -175,15 +170,17 @@ int main()
 
     //vamos a crear una partida o a unirnos a una?
     char opcion;
-    opcion = getc(stdin);
-    clearstdin();
+    //opcion = getc(stdin);
+    //clearstdin();
+    while((opcion = get_input()) < 0);
     while(!(opcion == '1' || opcion == '2'))
     {
         printf("%c no es una opcion valida.\n",opcion);
         printf("Elija una opcion valida.\n\n");
         texto();
-        opcion = getc(stdin);
-        clearstdin();
+        while((opcion = get_input()) < 0);
+        //opcion = getc(stdin);
+        //clearstdin();
     }
 
     int new_socket = -1;
@@ -213,7 +210,7 @@ int main()
             printf("Ingrese el hostname [default: %s]\n",DEFAULT_HOSTNAME);
             char* hostname = malloc(sizeof(16 * 'a'));
             fgets(hostname,sizeof(hostname),stdin);
-            if(strlen(hostname) < 2)
+            if(strlen(hostname) < 7)
             {
                 hostname = DEFAULT_HOSTNAME;
             }
@@ -247,6 +244,19 @@ int main()
     }
     else
     {
+        //inicializamos el juego, colocamos las naves
+        if(init_gamestate(&gamestate) == EXIT_FAILURE)
+        {
+            perror("Error: init_gamestate");
+            return EXIT_FAILURE;
+        }
+        //avisamos al oponente que ya estamos listos
+        char ready = 'r';
+        send(new_socket, &ready, 1, 0);
+        //esperamos a que el oponente este listo
+        printf("Esperando a que el oponente coloque sus naves...\n");
+        read(new_socket, &ready, 1);
+
         //a jugar!
         int res = play_game(new_socket, &gamestate);
         if(res == EXIT_FAILURE)

@@ -46,4 +46,11 @@ char intToChar(int n);
 */
 int read_coords(int coords[2]);
 
+/**
+    Lee un char de stdin y lo devuelve
+    Borra el resto de la line
+    @returns el char leido, o -1 si el char no era imprimible
+*/
+char get_input();
+
 #endif
