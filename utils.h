@@ -1,6 +1,24 @@
 #ifndef UTILS_H_
 #define UTILS_H
 
+typedef enum color
+{
+    BLACK,
+    RED,
+    GREEN,
+    YELLOW,
+    BLUE,
+    MAGENTA,
+    CYAN,
+    WHITE
+} color;
+
+void set_bg_color(color bgColor);
+
+void set_fg_color(color bgColor);
+
+void color_reset();
+
 /**
     Limpia stdin de los caracteres que pueden
     quedar restantes luego de un funcion como scanf

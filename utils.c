@@ -1,5 +1,16 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include "utils.h"
+
+#define ANSI_COLOR_RESET   "\x1b[0m"
+
+static const char *fg_color_string[] = {
+    "\x1b[30m", "\x1b[31m", "\x1b[32m", "\x1b[33m","\x1b[34m", "\x1b[35m", "\x1b[36m", "\x1b[37m"
+};
+
+static const char *bg_color_string[] = {
+    "\x1b[40m", "\x1b[41m", "\x1b[42m", "\x1b[43m","\x1b[44m", "\x1b[45m", "\x1b[46m", "\x1b[47m"
+};
 
 int clearstdin()
 {
@@ -47,4 +58,19 @@ int read_coords(int coords[2])
     }
     coords[1] = charToInt(input);
     return EXIT_SUCCESS;
+}
+
+void set_bg_color(color bgColor)
+{
+    printf("%s",bg_color_string[bgColor]);
+}
+
+void set_fg_color(color fgColor)
+{
+    printf("%s",fg_color_string[fgColor]);
+}
+
+void color_reset()
+{
+    printf(ANSI_COLOR_RESET);
 }

@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "battleship.h"
+#include "utils.h"
 
 /**
     Configuraciones por default de las naves
@@ -187,24 +188,31 @@ int print_shipboard(Ship *(*shipboard)[][10])
                 if((*shipboard)[i][j]->hitsRemaining > 0)
                 {
                     //color de letra negro y fondo blanco
-                    printf("\033[30;47m");
+                    set_fg_color(BLACK);
+                    set_bg_color(WHITE);
+                  //  printf("\033[30;47m");
                     c = 'S';
                 }
                 else
                 {
                     //color de letra negro y fondo rojo
-                    printf("\033[30;41m");
+                    set_fg_color(BLACK);
+                    set_bg_color(RED);
+                    //printf("\033[30;41m");
                     c = 'D';
                 }
             }
             else
             {
                 //color de letra negro y fondo cyan
-                printf("\033[30;46m");
+                set_fg_color(BLACK);
+                set_bg_color(CYAN);
+               // printf("\033[30;46m");
                 c = 'W';
             }
             printf("%c ",c);
-            printf("\033[0m");
+            color_reset();
+           // printf("\033[0m");
         }
         printf("|%d\n",j);
     }
@@ -225,29 +233,38 @@ int print_tileboard(tile (*tileboard)[][10])
             if(act == UNKNOWN)
             {
                 //color de letra blanco y fondo negro
-                printf("\033[37;40m");
+                set_fg_color(WHITE);
+                set_bg_color(BLACK);
+                //printf("\033[37;40m");
                 c = '?';
             }
             if(act == WATER)
             {
                 //color de letra negro y fondo cyan
-                printf("\033[30;46m");
+                set_fg_color(BLACK);
+                set_bg_color(CYAN);
+                //printf("\033[30;46m");
                 c = 'W';
             }
             if(act == SHIP)
             {
                 //color de letra negro y fondo blanco
-                printf("\033[30;47m");
+                set_fg_color(BLACK);
+                set_bg_color(WHITE);
+                //printf("\033[30;47m");
                 c = 'S';
             }
             if(act == DESTROYED)
             {
                 //color de letra negro y fondo rojo
-                printf("\033[30;41m");
+                set_fg_color(BLACK);
+                set_bg_color(RED);
+                //printf("\033[30;41m");
                 c = 'D';
             }
             printf("%c ",c);
-            printf("\033[0m");
+            color_reset();
+            //printf("\033[0m");
         }
         printf("|%d\n",j);
     }
