@@ -180,34 +180,27 @@ int print_gamestate(Gamestate* gamestate)
 int** getGUIShipsAux(Ship *(*shipboard)[][10])
 {
     int **arr=(int **)malloc(sizeof(int *)*10);
-    printf("Creado el arreglo donde voy a pintar");
     int i,j;
     for(i = 0; i < 10; i++)
     {
         arr[i]=(int *)malloc(sizeof(int)*10);
-        printf("Creada la fila donde voy a pintar.\n");
         for(j = 0; j < 10; j++)
         {
             if((*shipboard)[i][j])
             {
                 if((*shipboard)[i][j]->hitsRemaining > 0)
                 {
-                    printf("PINTANDING.\n");
+
                     arr[i][j] = 1;
-                    printf("Terminanding.\n");
                 }
                 else
                 {
-                    printf("2.\n");
                     arr[i][j] = 2;
-                    printf("Termino 2.\n");
                 }
             }
             else
             {
-                printf("0\n");
                 arr[i][j] = 3;
-                printf("Termino 0.\n");
             }
         }
     }

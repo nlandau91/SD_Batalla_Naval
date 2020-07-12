@@ -155,7 +155,18 @@ void pintarBarcos()
         {
             if(arr[i][j] == 1)
             {
+                gtk_widget_set_name(positionButtons[i][j], "myButton_white");
+                gtk_button_set_label (GTK_BUTTON(positionButtons[i][j]), "S");
+            }
+            if(arr[i][j] == 2)
+            {
                 gtk_widget_set_name(positionButtons[i][j], "myButton_red");
+                gtk_button_set_label (GTK_BUTTON(positionButtons[i][j]), "D");
+            }
+            if(arr[i][j] == 3)
+            {
+                gtk_widget_set_name(positionButtons[i][j], "myButton_blue");
+                gtk_button_set_label (GTK_BUTTON(positionButtons[i][j]), "W");
             }
         }
     }
