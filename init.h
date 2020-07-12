@@ -8,5 +8,6 @@
     @return un codigo indicando si tuvo exito la funcion
 */
 int init_gamestate(Gamestate* gamestate);
-
+int init_gamestate2(Gamestate* gamestate);
+int autoaddships(Gamestate* gamestate);
 #endif

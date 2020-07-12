@@ -159,5 +159,6 @@ state check_win(Gamestate* gamestate);
 */
 int destroy_enemy_ship(Gamestate* gamestate, int x, int y, int size, orientation orientacion);
 
+int** getGUIShips(Gamestate* gamestate);
 
 #endif //BATTLESHIP_H_

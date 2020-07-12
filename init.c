@@ -191,3 +191,18 @@ int init_gamestate(Gamestate* gamestate)
     }
     return EXIT_SUCCESS;
 }
+
+int init_gamestate2(Gamestate* gamestate)
+{
+    //el tablero del oponente se inicializa con posiciones desconocidas
+    init_tileboard(&gamestate->hisBoard);
+
+    //el oponente inicia con sus nueve naves
+    gamestate->hisShips = 9;
+
+    //creamos las nueve naves que luego ubicaremos en nuestro tablero
+    init_shiparray(&gamestate->myShips);
+
+    //vaciamos nuestro tablero para luego cargar los naves
+    init_shipboard(&gamestate->myBoard);
+}
