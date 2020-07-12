@@ -3,6 +3,16 @@ Batalla Naval multijugador en C
 Proyecto para la materia Sistemas Distribuidos
 
 
-Para compilar gui:
+La gui requiere gtk3, y para ver el archivo .glade necesitamos el programa glade.
 
-gcc -o gui gui.c -Wall `pkg-config --cflags --libs gtk+-3.0` -export-dynamic
+
+Para instalar todo alcanza con:
+
+
+sudo apt-get install glade
+
+Puede que tire un error en la MV,
+
+sudo apt-get update --fix-missing
+
+Esto lo arregla, luego hay que volver a instalar glade
