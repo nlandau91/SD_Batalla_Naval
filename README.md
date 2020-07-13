@@ -3,6 +3,13 @@ Batalla Naval multijugador en C
 Proyecto para la materia Sistemas Distribuidos
 
 
-Para compilar gui:
+Para instalar todo alcanza con:
 
-gcc -o gui gui.c -Wall `pkg-config --cflags --libs gtk+-3.0` -export-dynamic
+
+sudo apt-get install glade
+
+Puede que tire un error en la MV,
+
+sudo apt-get update --fix-missing
+
+Esto lo arregla, luego hay que volver a instalar glade
