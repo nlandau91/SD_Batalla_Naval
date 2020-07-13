@@ -212,9 +212,41 @@ int** getGUIShips(Gamestate* gamestate)
     return getGUIShipsAux(&gamestate->myBoard);
     
 }
+int** getGUIAttacksAux(tile (*tileboard)[][10])
+{
+    int **arr=(int **)malloc(sizeof(int *)*10);
+    int i,j;
+    for(i = 0; i < 10; i++)
+    {
+        arr[i]=(int *)malloc(sizeof(int)*10);
+        for(j = 0; j < 10; j++)
+        {
+            int act = (*tileboard)[i][j];
+            if(act == UNKNOWN)
+            {
+                arr[i][j] = 1;
+            }
+            if(act == WATER)
+            {
+                arr[i][j] = 2;
+            }
+            if(act == SHIP)
+            {
+                arr[i][j] = 3;
+            }
+            if(act == DESTROYED)
+            {
+                arr[i][j] = 4;
+            }
+        }
+    }
+    return arr;
+}
 
-
-
+int** getGUIAttacks(Gamestate* gamestate)
+{
+    return getGUIAttacksAux(&gamestate->hisBoard);
+}
 
 int print_shipboard(Ship *(*shipboard)[][10])
 {

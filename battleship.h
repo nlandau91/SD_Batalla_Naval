@@ -161,4 +161,6 @@ int destroy_enemy_ship(Gamestate* gamestate, int x, int y, int size, orientation
 
 int** getGUIShips(Gamestate* gamestate);
 
+int** getGUIAttacks(Gamestate* gamestate);
+
 #endif //BATTLESHIP_H_

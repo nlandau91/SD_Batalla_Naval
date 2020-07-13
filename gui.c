@@ -12,7 +12,7 @@
 #include "init.h"
 #include "utils.h"
 #include <pthread.h>
- 
+#include <semaphore.h>
  
 GtkBuilder      *builder;
 GtkWidget       *window;
@@ -26,7 +26,7 @@ GtkTextBuffer   *buffer;
 GtkWidget       *shipsContainer;
 GtkWidget       *box_insercion;
 GtkWidget       *btn_automatico,*btn_manual;
-
+sem_t mutex;
 Gamestate gamestate;
 int newSocket = -1;
 
@@ -43,10 +43,12 @@ typedef enum gameModes
     UNDEFINED
 } gameModes;
 
+int x = 0;
+int y = 0;
 void myCSS(void);
 void seguirJugando();
 int mode = UNDEFINED;
-
+int activarBotones = 0;
 int shooting_state(Gamestate* gamestate, int socket);
 int waiting_state(Gamestate* gamestate, int socket);
 void* funcionJuego(void* arg)
@@ -63,7 +65,13 @@ void* funcionJuego(void* arg)
         //me toca disparar
         if((&gamestate)->myState == SHOOTING)
         {
+            sem_wait(&mutex);
+            activarBotones=1;
+            sem_post(&mutex);
             shooting_state(&gamestate, newSocket);
+            sem_wait(&mutex);
+            activarBotones=0;
+            sem_post(&mutex);
         }
         //me toca recibir un disparo
         else
@@ -95,7 +103,7 @@ int main(int argc, char *argv[])
     box_insercion = GTK_WIDGET(gtk_builder_get_object(builder,"box_insercion"));
     btn_automatico = GTK_WIDGET(gtk_builder_get_object(builder,"btn_automatico"));
     btn_manual = GTK_WIDGET(gtk_builder_get_object(builder,"btn_manual"));
-    
+    sem_init(&mutex,0,1);
     
     //buffer = gtk_text_buffer_new (NULL);
     //gtk_text_buffer_set_text (buffer,
@@ -138,6 +146,23 @@ void positionButtonCallback(GtkWidget *button,datos* data)
 void attackButtonCallback(GtkWidget *button,datos* data)
 {
     printf("Apretaste un boton de ataque en %d-%d.\n",data->x,data->y);
+        //obtenemos las coordenadas a donde disparar
+    int coords[2];
+    coords[0] = data->x;
+    coords[1] = data->y;
+        
+    //me fijo si ya habia disparado en ese lugar
+    while((&gamestate)->hisBoard[coords[0]][coords[1]] != UNKNOWN)
+    {
+        printf("Error: ya disparaste en las coordenadas [%d,%d]\n",coords[0],coords[1]);
+        read_coords(coords);
+    }
+    x = coords[0];
+    y = coords[1];
+
+    //envio el disparo
+    printf("Disparando...\n");
+    send_shot(newSocket,x,y);
 
 }
 
@@ -203,6 +228,45 @@ void pintarBarcos()
     
 }
 
+void pintarAttackButtons()
+{
+    int **arr= getGUIAttacks(&gamestate);
+    int i = 0;
+    int j = 0;
+    for(i = 0; i<10; i++)
+    {
+        for(j = 0; j<10; j++)
+        {
+            if(arr[i][j] == 1)
+            {
+                //gtk_widget_set_name(positionButtons[i][j], "myButton_white");
+                gtk_button_set_label (GTK_BUTTON(attackButtons[i][j]), "?");
+            }
+            if(arr[i][j] == 2)
+            {
+                gtk_widget_set_name(attackButtons[i][j], "myButton_blue");
+                gtk_button_set_label (GTK_BUTTON(attackButtons[i][j]), "W");
+                gtk_widget_set_sensitive (attackButtons[i][j], FALSE);
+            }
+            if(arr[i][j] == 3)
+            {
+                gtk_widget_set_name(attackButtons[i][j], "myButton_white");
+                gtk_button_set_label (GTK_BUTTON(attackButtons[i][j]), "S");
+                gtk_widget_set_sensitive (attackButtons[i][j], FALSE);
+            }
+            if(arr[i][j] == 4)
+            {
+                gtk_widget_set_name(attackButtons[i][j], "myButton_red");
+                gtk_button_set_label (GTK_BUTTON(attackButtons[i][j]), "D");
+                gtk_widget_set_sensitive (attackButtons[i][j], FALSE);
+            }
+        }
+    }
+    while (gtk_events_pending ())
+            gtk_main_iteration ();
+}
+
+
 void insertAutomatic()
 {
     printf("Hice click en automatico.\n");
@@ -264,6 +328,7 @@ int startGameAux(int mode)
             g_signal_connect(attackButtons[i][j],"clicked",G_CALLBACK(attackButtonCallback),toSend);
             gtk_widget_set_sensitive (positionButtons[i][j], FALSE);
             gtk_widget_set_sensitive (attackButtons[i][j], FALSE);
+            gtk_button_set_label (GTK_BUTTON(attackButtons[i][j]), "?");
             gtk_grid_attach(GTK_GRID(positionGrid),positionButtons[i][j],i,j,1,1);
             gtk_grid_attach(GTK_GRID(attackGrid),attackButtons[i][j],i,j,1,1);
             gtk_widget_show(positionButtons[i][j]);
@@ -300,9 +365,11 @@ int startGameAux(int mode)
 //aqui se realizan las acciones correspondientes a un jugador que tiene que disparar
 int shooting_state(Gamestate* gamestate, int socket)
 {
+    /*
     //obtenemos las coordenadas a donde disparar
     int coords[2];
     read_coords(coords);
+        
     //me fijo si ya habia disparado en ese lugar
     while(gamestate->hisBoard[coords[0]][coords[1]] != UNKNOWN)
     {
@@ -315,7 +382,7 @@ int shooting_state(Gamestate* gamestate, int socket)
     //envio el disparo
     printf("Disparando...\n");
     send_shot(socket,x,y);
-
+*/
     //espero la respuesta
     char receive_buffer[8] = {0};
     wait_shot_resp(socket,receive_buffer);
@@ -413,6 +480,21 @@ int waiting_state(Gamestate* gamestate, int socket)
     return 0;
 }
 
+void toggleButtons(int mode)
+{
+    printf("Voy a cambiar los botones a modo: %d.\n",mode);
+    for(int i = 0; i<10; i++)
+    {
+        for(int j = 0; j<10; j++)
+        {
+            const char* cadena = gtk_button_get_label(GTK_BUTTON(attackButtons[i][j]));
+            if(!strcmp(cadena, "?"))
+                gtk_widget_set_sensitive (attackButtons[i][j], mode);
+        }
+    }
+}
+
+
 int play_game(int socket, Gamestate* gamestate)
 {
     
@@ -420,13 +502,22 @@ int play_game(int socket, Gamestate* gamestate)
     //se juega hasta que ganes o pierdas
     //pid_t pid = fork();
     pthread_t hiloJuego;
+    int ultimoModoBotones = 0;
     pthread_create(&hiloJuego,NULL,funcionJuego,(void*)1);//Creo un hilo auxiliar que maneje los semaforos
     while((gamestate->myState != WON) && (gamestate->myState != LOST))
     {
         //imprimo el estado del juego
         //if(!pid)
             //print_gamestate(gamestate);
+        sem_wait(&mutex);
+        if(activarBotones != ultimoModoBotones)
+        {
+            ultimoModoBotones = activarBotones;
+            toggleButtons(activarBotones);
+        }
+        sem_post(&mutex);
         pintarBarcos(); //El problema con esto es que se traba esperando...
+        pintarAttackButtons();
         //else{
         //while (gtk_events_pending ())
         //    gtk_main_iteration ();
