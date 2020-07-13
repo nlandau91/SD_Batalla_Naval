@@ -11,6 +11,8 @@
 #include "connection.h"
 #include "init.h"
 #include "utils.h"
+#include <pthread.h>
+ 
  
 GtkBuilder      *builder;
 GtkWidget       *window;
@@ -44,6 +46,33 @@ typedef enum gameModes
 void myCSS(void);
 void seguirJugando();
 int mode = UNDEFINED;
+
+int shooting_state(Gamestate* gamestate, int socket);
+int waiting_state(Gamestate* gamestate, int socket);
+void* funcionJuego(void* arg)
+{
+    while(((&gamestate)->myState != WON) && ((&gamestate)->myState != LOST))
+    {
+        //imprimo el estado del juego
+        //if(!pid)
+            //print_gamestate(gamestate);
+        //pintarBarcos(); //El problema con esto es que se traba esperando...
+        //else{
+        //while (gtk_events_pending ())
+        //    gtk_main_iteration ();
+        //me toca disparar
+        if((&gamestate)->myState == SHOOTING)
+        {
+            shooting_state(&gamestate, newSocket);
+        }
+        //me toca recibir un disparo
+        else
+        {
+            waiting_state(&gamestate, newSocket);
+        }
+    //}
+    }
+}
 
 int main(int argc, char *argv[])
 {
@@ -146,7 +175,6 @@ int checkPort(char* port,int length)
 void pintarBarcos()
 {
     int **arr= getGUIShips(&gamestate);
-    printf("Ya recibi.\n");
     int i = 0;
     int j = 0;
     for(i = 0; i<10; i++)
@@ -170,6 +198,8 @@ void pintarBarcos()
             }
         }
     }
+    while (gtk_events_pending ())
+            gtk_main_iteration ();
     
 }
 
@@ -262,23 +292,151 @@ int startGameAux(int mode)
     else
     {
         init_gamestate2(&gamestate);// Inicio el gamestate unicamente
-        //a jugar!
-        //int res = jugar(newSocket, &gamestate);
-        /*if(res == EXIT_FAILURE)
-        {
-            setConsoleText("Oops, hubo un problema...\n\n");
-        }
-        if(gamestate.myState == WON)
-        {
-            setConsoleText("Ganaste!\n\n");
-        }
-        if(gamestate.myState == LOST)
-        {
-            setConsoleText("Perdiste!\n\n");
-        }*/
-        //close(newSocket);
+        //Termino esta funcion
     }
 }
+
+
+//aqui se realizan las acciones correspondientes a un jugador que tiene que disparar
+int shooting_state(Gamestate* gamestate, int socket)
+{
+    //obtenemos las coordenadas a donde disparar
+    int coords[2];
+    read_coords(coords);
+    //me fijo si ya habia disparado en ese lugar
+    while(gamestate->hisBoard[coords[0]][coords[1]] != UNKNOWN)
+    {
+        printf("Error: ya disparaste en las coordenadas [%d,%d]\n",coords[0],coords[1]);
+        read_coords(coords);
+    }
+    int x = coords[0];
+    int y = coords[1];
+
+    //envio el disparo
+    printf("Disparando...\n");
+    send_shot(socket,x,y);
+
+    //espero la respuesta
+    char receive_buffer[8] = {0};
+    wait_shot_resp(socket,receive_buffer);
+
+    //revisamos el resultado del disparo
+    tile new_tile;
+    if(receive_buffer[0] == MISS)
+    {
+        printf("AGUA!\n\n");
+        gamestate->myState = WAITING;
+        new_tile = WATER;
+    }
+    if(receive_buffer[0] == HIT)
+    {
+        printf("TOCADO!\n\n");
+        new_tile = SHIP;
+    }
+    if(receive_buffer[0] == SUNK)
+    {
+        printf("HUNDIDO!\n\n");
+        new_tile = DESTROYED;
+
+        //informacion de la nave destruida
+        //necesaria para actualizar el tablero
+        int rcv_x = charToInt(receive_buffer[1]);
+        int rcv_y = charToInt(receive_buffer[2]);
+        int rcv_size = charToInt(receive_buffer[3]);
+        orientation rcv_orientacion = charToInt(receive_buffer[4]);
+
+        //destruimos la nave y actualizamos el tablero
+        destroy_enemy_ship(gamestate, rcv_x, rcv_y, rcv_size, rcv_orientacion);
+
+        //vemos si ganamos
+        gamestate->myState = check_win(gamestate);
+
+    }
+    //actualizamos el tablero
+    gamestate->hisBoard[x][y] = new_tile;
+    return 0;
+}
+
+//aqui se realizan las acciones correspondientes a un jugador que esta esperando un disparo
+int waiting_state(Gamestate* gamestate, int socket)
+{
+    //me toca recibir los disparos del oponente
+    if(gamestate->myState == WAITING)
+    {
+        result res;
+        char send_buffer[8] = {0};
+        int argc = 0;
+
+        printf("Esperando disparo del oponente...\n\n");
+        char receive_buffer[8] = {0};
+        receive_shot(socket,receive_buffer);
+        int x = charToInt(receive_buffer[0]);
+        int y = charToInt(receive_buffer[1]);
+        printf("Recibido disparo en la posicion [%d,%d]\n\n",x,y);
+
+        //evaluo el disparo
+        res = check_hit(&gamestate->myBoard, x, y);
+        if(res == MISS)
+        {
+            printf("AGUA!\n\n");
+            gamestate->myState = SHOOTING;
+            argc = 1;
+        }
+        if(res == HIT)
+        {
+            printf("TOCADO!\n\n");
+            argc = 1;
+            gamestate->myBoard[x][y]->hitsRemaining--;
+            if(gamestate->myBoard[x][y]->hitsRemaining == 0)
+            {
+                res = SUNK;
+            }
+        }
+        if(res == SUNK)
+        {
+            printf("HUNDIDO!\n\n");
+
+            //vemos si perdimos
+            gamestate->myState = check_loss(gamestate);
+
+            //guardamos en el buffer informacion de la nave hundida
+            send_buffer[1] = intToChar(gamestate->myBoard[x][y]->x);
+            send_buffer[2] = intToChar(gamestate->myBoard[x][y]->y);
+            send_buffer[3] = intToChar(gamestate->myBoard[x][y]->largo);
+            send_buffer[4] = intToChar(gamestate->myBoard[x][y]->orientacion);
+            argc = 5;
+        }
+        send_buffer[0] = res;
+        //enviamos la respuesta del disparo al oponente
+        respond_shot(socket, send_buffer, argc);
+    }
+    return 0;
+}
+
+int play_game(int socket, Gamestate* gamestate)
+{
+    
+    //gameloop
+    //se juega hasta que ganes o pierdas
+    //pid_t pid = fork();
+    pthread_t hiloJuego;
+    pthread_create(&hiloJuego,NULL,funcionJuego,(void*)1);//Creo un hilo auxiliar que maneje los semaforos
+    while((gamestate->myState != WON) && (gamestate->myState != LOST))
+    {
+        //imprimo el estado del juego
+        //if(!pid)
+            //print_gamestate(gamestate);
+        pintarBarcos(); //El problema con esto es que se traba esperando...
+        //else{
+        //while (gtk_events_pending ())
+        //    gtk_main_iteration ();
+        //me toca disparar
+
+    //}
+    }
+    return EXIT_SUCCESS;
+}
+
 
 void seguirJugando()
 {
@@ -288,7 +446,20 @@ void seguirJugando()
     //esperamos a que el oponente este listo
     read(newSocket, &ready, 1);
     printf("El oponente esta listo, asi que arranca el juego.\n");
-    
+    //a jugar!
+    int res = play_game(newSocket, &gamestate);
+    if(res == EXIT_FAILURE)
+    {
+        printf("Oops, hubo un problema...\n\n");
+    }
+    if(gamestate.myState == WON)
+    {
+        printf("Ganaste!\n\n");
+    }
+    if(gamestate.myState == LOST)
+    {
+        printf("Perdiste!\n\n");
+    }
     close(newSocket);
 }
 
@@ -303,6 +474,7 @@ void acceptGame()
         case CREATE_GAME:
             portString = (char *)gtk_entry_get_text(GTK_ENTRY(inputPort));
             newSocket = create_game(atoi(portString));
+            gamestate.myState = SHOOTING;
             //setConsoleText("Partida iniciada\n");
             startGameAux(0);
             break;
@@ -311,12 +483,15 @@ void acceptGame()
             portString = (char *)gtk_entry_get_text(GTK_ENTRY(inputPort));
             newSocket = join_game(hostname,atoi(portString));
             //setConsoleText("Partida iniciada.\n");
+            gamestate.myState = WAITING;
             startGameAux(1);
             break;
         case UNDEFINED:   
             //setConsoleText("Ocurrió un error.\n");
             exit(-1);
     }
+    //Termino la ejecucion del flujo.
+    //Ahora continuara a partir del boton presionado para ubicar barcos
 }
 
 

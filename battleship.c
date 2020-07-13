@@ -209,7 +209,6 @@ int** getGUIShipsAux(Ship *(*shipboard)[][10])
 
 int** getGUIShips(Gamestate* gamestate)
 {
-    printf("Voy a pintar.\n");
     return getGUIShipsAux(&gamestate->myBoard);
     
 }
