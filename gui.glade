@@ -4,6 +4,7 @@
   <requires lib="gtk+" version="3.20"/>
   <object class="GtkTextBuffer" id="textbuffer1"/>
   <object class="GtkWindow" id="window_main">
+    <property name="name">backgroundApp</property>
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Batalla Naval</property>
@@ -653,19 +654,6 @@
                     <property name="position">1</property>
                   </packing>
                 </child>
-                <child>
-                  <object class="GtkButton">
-                    <property name="label" translatable="yes">Listo</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">2</property>
-                  </packing>
-                </child>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -680,11 +668,14 @@
                 <property name="orientation">vertical</property>
                 <child>
                   <object class="GtkButton">
-                    <property name="label" translatable="yes">Crear Partida</property>
+                    <property name="label" translatable="yes">Quantum Mechanics</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <signal name="clicked" handler="createGame" swapped="no"/>
+                    <style>
+                      <class name="buttonInicio"/>
+                    </style>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -699,6 +690,9 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <signal name="clicked" handler="joinGame" swapped="no"/>
+                    <style>
+                      <class name="buttonInicio"/>
+                    </style>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -734,6 +728,9 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <signal name="clicked" handler="acceptGame" swapped="no"/>
+                    <style>
+                      <class name="buttonInicio"/>
+                    </style>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -741,15 +738,15 @@
                     <property name="position">4</property>
                   </packing>
                 </child>
+                <style>
+                  <class name="panelInicio"/>
+                </style>
               </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
                 <property name="position">1</property>
               </packing>
-            </child>
-            <child>
-              <placeholder/>
             </child>
           </object>
           <packing>

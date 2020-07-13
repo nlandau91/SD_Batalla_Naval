@@ -1,11 +1,49 @@
 #myButton_red{
-    background-color: red;
+    background-color: #cf6679;
+    color:black;
+}
+#myButton_red:disabled *{
+	background-color: #cf6679;
+	color:black;
 }
 
 #myButton_white{
     background-color: white;
+    color:black;
+}
+#myButton_white:disabled *{
+	background-color: white;
+	color:black;
 }
 
 #myButton_blue{
-    background-color: cyan;
+    background-color: #03dac6;
+    color:black;
+}
+
+#myButton_blue:disabled *{
+	background-color: #03dac6;
+	color:black;
+}
+
+#backgroundApp{
+	background: #121212;
+	font-family: "Roboto";
+	
+}
+
+
+
+.buttonInicio{
+	background: #1f1f1f;
+	margin-bottom: 2px;
+	color: #FFFFFF;
+	border-style: none;
+}
+
+
+.panelInicio{
+	padding-left:50px;
+	padding-right:50px;
+	padding-top: 20px;
 }

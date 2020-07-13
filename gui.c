@@ -49,6 +49,11 @@ void myCSS(void);
 void seguirJugando();
 int mode = UNDEFINED;
 int activarBotones = 0;
+int ataqueEnemigo[3]={0,0,0};
+
+
+
+
 int shooting_state(Gamestate* gamestate, int socket);
 int waiting_state(Gamestate* gamestate, int socket);
 void* funcionJuego(void* arg)
@@ -99,17 +104,17 @@ int main(int argc, char *argv[])
     positionGrid = GTK_WIDGET(gtk_builder_get_object(builder,"positionGrid"));
     attackGrid = GTK_WIDGET(gtk_builder_get_object(builder,"attackGrid"));
     shipsContainer = GTK_WIDGET(gtk_builder_get_object(builder,"shipsContainer"));
-    //console = GTK_WIDGET(gtk_builder_get_object(builder,"console"));
+    console = GTK_WIDGET(gtk_builder_get_object(builder,"console"));
     box_insercion = GTK_WIDGET(gtk_builder_get_object(builder,"box_insercion"));
     btn_automatico = GTK_WIDGET(gtk_builder_get_object(builder,"btn_automatico"));
     btn_manual = GTK_WIDGET(gtk_builder_get_object(builder,"btn_manual"));
     sem_init(&mutex,0,1);
     
-    //buffer = gtk_text_buffer_new (NULL);
-    //gtk_text_buffer_set_text (buffer,
-    //                      "Bienvenido a la batalla naval!\n",
-    //                      31);
-    //gtk_text_view_set_buffer(GTK_TEXT_VIEW(console),buffer);
+    buffer = gtk_text_buffer_new (NULL);
+    gtk_text_buffer_set_text (buffer,
+                          "Bienvenido a la batalla naval!\n",
+                          31);
+    gtk_text_view_set_buffer(GTK_TEXT_VIEW(console),buffer);
     gtk_builder_connect_signals(builder, NULL);
     g_object_unref(builder);
     gtk_widget_show(window);
@@ -328,6 +333,7 @@ int startGameAux(int mode)
             g_signal_connect(attackButtons[i][j],"clicked",G_CALLBACK(attackButtonCallback),toSend);
             gtk_widget_set_sensitive (positionButtons[i][j], FALSE);
             gtk_widget_set_sensitive (attackButtons[i][j], FALSE);
+            gtk_button_set_label (GTK_BUTTON(positionButtons[i][j]), "?");
             gtk_button_set_label (GTK_BUTTON(attackButtons[i][j]), "?");
             gtk_grid_attach(GTK_GRID(positionGrid),positionButtons[i][j],i,j,1,1);
             gtk_grid_attach(GTK_GRID(attackGrid),attackButtons[i][j],i,j,1,1);
@@ -440,7 +446,11 @@ int waiting_state(Gamestate* gamestate, int socket)
         int x = charToInt(receive_buffer[0]);
         int y = charToInt(receive_buffer[1]);
         printf("Recibido disparo en la posicion [%d,%d]\n\n",x,y);
-
+        sem_wait(&mutex);
+        ataqueEnemigo[0]=1;
+        ataqueEnemigo[1]=x;
+        ataqueEnemigo[2]=y;
+        sem_post(&mutex);
         //evaluo el disparo
         res = check_hit(&gamestate->myBoard, x, y);
         if(res == MISS)
@@ -510,6 +520,24 @@ int play_game(int socket, Gamestate* gamestate)
         //if(!pid)
             //print_gamestate(gamestate);
         sem_wait(&mutex);
+        if(ataqueEnemigo[0])
+        {
+            char str[1000];
+            char str2[100];
+            GtkTextIter start,end;
+            gtk_text_buffer_get_start_iter (buffer, &start);
+            gtk_text_buffer_get_end_iter (buffer, &end);
+            char* textoAnterior = gtk_text_buffer_get_text(buffer,&start,&end,0);
+            sprintf(str2,"Ataque enemigo en (%d,%d).\n",ataqueEnemigo[1],ataqueEnemigo[2]);
+            strcpy(str,textoAnterior);
+            strcat(str,str2);
+            gtk_text_buffer_set_text (buffer,
+                          str,
+                          strlen(str));
+            gtk_text_view_set_buffer(GTK_TEXT_VIEW(console),buffer);
+            ataqueEnemigo[0] = 0;
+        }
+        
         if(activarBotones != ultimoModoBotones)
         {
             ultimoModoBotones = activarBotones;
