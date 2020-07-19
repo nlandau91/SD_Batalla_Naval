@@ -10,4 +10,5 @@
 int init_gamestate(Gamestate* gamestate);
 int init_gamestate2(Gamestate* gamestate);
 int autoaddships(Gamestate* gamestate);
+int manualAddShipGUI(Gamestate* gamestate, int ship, int x, int y, int orientacion);
 #endif

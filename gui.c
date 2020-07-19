@@ -26,6 +26,18 @@ GtkTextBuffer   *buffer;
 GtkWidget       *shipsContainer;
 GtkWidget       *box_insercion;
 GtkWidget       *btn_automatico,*btn_manual;
+GtkWidget       *btnFrigate,*btnDestroyer,*btnBattleship,*btnCarrier;
+GtkWidget       *btnOrientation;
+
+int frigateRestantes = 2;
+int destroyerRestantes = 3;
+int battleshipRestantes = 3;
+int carrierRestantes = 1;
+//0 frigate, 1 destroyer, 2 battleship, 3 carrier
+int barcoActual = -1; 
+//0 Horizontal, 1 Vertical
+int orientacion = 0; 
+
 sem_t mutex;
 Gamestate gamestate;
 int newSocket = -1;
@@ -51,7 +63,7 @@ int mode = UNDEFINED;
 int activarBotones = 0;
 int ataqueEnemigo[3]={0,0,0};
 
-
+void pintarBarcos();
 
 
 int shooting_state(Gamestate* gamestate, int socket);
@@ -108,6 +120,12 @@ int main(int argc, char *argv[])
     box_insercion = GTK_WIDGET(gtk_builder_get_object(builder,"box_insercion"));
     btn_automatico = GTK_WIDGET(gtk_builder_get_object(builder,"btn_automatico"));
     btn_manual = GTK_WIDGET(gtk_builder_get_object(builder,"btn_manual"));
+    btnFrigate = GTK_WIDGET(gtk_builder_get_object(builder,"btnFrigate"));
+    btnDestroyer = GTK_WIDGET(gtk_builder_get_object(builder,"btnDestroyer"));
+    btnBattleship = GTK_WIDGET(gtk_builder_get_object(builder,"btnBattleship"));
+    btnCarrier = GTK_WIDGET(gtk_builder_get_object(builder,"btnCarrier"));
+    btnOrientation = GTK_WIDGET(gtk_builder_get_object(builder,"btnOrientation"));
+    
     sem_init(&mutex,0,1);
     
     buffer = gtk_text_buffer_new (NULL);
@@ -141,11 +159,109 @@ void myCSS(void){
     g_object_unref (provider);
 }
 
+void frigateCallback()
+{
+    barcoActual = 0;    
+}
+
+void destroyerCallback()
+{
+    barcoActual = 1;
+}
+
+void battleshipCallback()
+{
+    barcoActual = 2;
+}
+
+void carrierCallback()
+{
+    barcoActual = 3;
+}
+
+
+
 void positionButtonCallback(GtkWidget *button,datos* data)
 {
     printf("Apretaste un boton de posicion en %d-%d.\n",data->x,data->y);
-    gtk_widget_set_name(button, "myButton_red");
-
+    //gtk_widget_set_name(button, "myButton_red");
+    //Veo la orientacion y el barco
+    printf("Barco Actual: %d.\n",barcoActual);
+    switch(barcoActual)
+    {
+        case 0: 
+            //Voy a insertar una fragata
+            printf("Fragatas restantes: %d.\n",frigateRestantes);
+            if(!manualAddShipGUI(&gamestate,9-frigateRestantes,data->x,data->y,orientacion)){
+                printf("pudo añadirse.\n");
+                frigateRestantes--;
+                if(frigateRestantes == 0)
+                {
+                    //Desactivo el boton
+                    gtk_widget_set_sensitive (btnFrigate, FALSE);
+                }
+            }
+            break;
+        case 1:
+            //Voy a insertar un destroyer
+            printf("Destructores restantes: %d.\n",destroyerRestantes);
+            if(!manualAddShipGUI(&gamestate,7-destroyerRestantes,data->x,data->y,orientacion)){
+                printf("pudo añadirse.\n");
+                destroyerRestantes--;
+                if(destroyerRestantes == 0)
+                {
+                    //Desactivo el boton
+                    gtk_widget_set_sensitive (btnDestroyer, FALSE);
+                }
+            }
+            break;
+        case 2:
+            //Voy a ingresar un battleship
+            printf("Battleship restantes: %d.\n",battleshipRestantes);
+            if(!manualAddShipGUI(&gamestate,4-battleshipRestantes,data->x,data->y,orientacion))
+            {
+                printf("pudo añadirse.\n");
+                battleshipRestantes--;
+                if(battleshipRestantes == 0)
+                {
+                    //Desactivo el boton
+                    gtk_widget_set_sensitive (btnBattleship, FALSE);
+                } 
+            }
+            break;
+        case 3:
+            //Voy a ingresar un carrier
+            printf("PortaAviones restantes: %d.\n",carrierRestantes);
+            if(!manualAddShipGUI(&gamestate,0,data->x,data->y,orientacion))
+            {
+                printf("pudo añadirse.\n");
+                carrierRestantes--;
+                if(carrierRestantes == 0)
+                {
+                    //Desactivo el boton
+                    gtk_widget_set_sensitive (btnCarrier, FALSE);
+                } 
+            }
+            break;
+    }
+    barcoActual = -1;
+    pintarBarcos();
+    if(frigateRestantes == 0 && destroyerRestantes == 0 &&
+        battleshipRestantes == 0 && carrierRestantes == 0)
+        {
+            //Debo empezar la partida
+            gtk_widget_hide(shipsContainer);
+            /*Debo deshabilitar todos los botones de posicion*/
+            for(int i = 0; i < 10; i++)
+            {
+                for(int j = 0; j < 10; j++)
+                {
+                    gtk_widget_set_sensitive (positionButtons[i][j], FALSE);
+                }
+            }
+            //Ahora que ya agregue naves sigo el flujo del programa.
+            seguirJugando();
+        }
 }
 
 void attackButtonCallback(GtkWidget *button,datos* data)
@@ -291,6 +407,25 @@ void insertAutomatic()
 void insertManual()
 {
     printf("Hice click en manual.\n");
+    gtk_widget_hide(box_insercion);
+    gtk_widget_show(shipsContainer);
+    /*Debo habilitar todos los botones de posicion*/
+    for(int i = 0; i < 10; i++)
+    {
+        for(int j = 0; j < 10; j++)
+        {
+            gtk_widget_set_sensitive (positionButtons[i][j], TRUE);
+        }
+    }
+}
+
+void changeOrientation()
+{
+    orientacion = !orientacion;
+    if(orientacion)
+        gtk_button_set_label (GTK_BUTTON(btnOrientation), "Vertical");
+    else
+        gtk_button_set_label (GTK_BUTTON(btnOrientation), "Horizontal");
 }
 
 
@@ -363,6 +498,7 @@ int startGameAux(int mode)
     else
     {
         init_gamestate2(&gamestate);// Inicio el gamestate unicamente
+        pintarBarcos();
         //Termino esta funcion
     }
 }
@@ -371,24 +507,6 @@ int startGameAux(int mode)
 //aqui se realizan las acciones correspondientes a un jugador que tiene que disparar
 int shooting_state(Gamestate* gamestate, int socket)
 {
-    /*
-    //obtenemos las coordenadas a donde disparar
-    int coords[2];
-    read_coords(coords);
-        
-    //me fijo si ya habia disparado en ese lugar
-    while(gamestate->hisBoard[coords[0]][coords[1]] != UNKNOWN)
-    {
-        printf("Error: ya disparaste en las coordenadas [%d,%d]\n",coords[0],coords[1]);
-        read_coords(coords);
-    }
-    int x = coords[0];
-    int y = coords[1];
-
-    //envio el disparo
-    printf("Disparando...\n");
-    send_shot(socket,x,y);
-*/
     //espero la respuesta
     char receive_buffer[8] = {0};
     wait_shot_resp(socket,receive_buffer);
@@ -546,12 +664,6 @@ int play_game(int socket, Gamestate* gamestate)
         sem_post(&mutex);
         pintarBarcos(); //El problema con esto es que se traba esperando...
         pintarAttackButtons();
-        //else{
-        //while (gtk_events_pending ())
-        //    gtk_main_iteration ();
-        //me toca disparar
-
-    //}
     }
     return EXIT_SUCCESS;
 }

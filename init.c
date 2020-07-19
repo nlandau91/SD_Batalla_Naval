@@ -97,6 +97,37 @@ int manualaddships(Gamestate* gamestate)
     return EXIT_SUCCESS;
 }
 
+int manualAddShipGUI(Gamestate* gamestate, int ship, int x, int y, int orientacion)
+{
+    int valido = EXIT_FAILURE;
+    printf("Colocando nave de tipo '%s'...\n",gamestate->myShips[ship].nombre);
+    gamestate->myShips[ship].x = x;
+    gamestate->myShips[ship].y = y;
+    if(orientacion == 0)
+    {
+        gamestate->myShips[ship].orientacion = HORIZONTAL;
+    }
+    if(orientacion == 1)
+    {
+        gamestate->myShips[ship].orientacion = VERTICAL;
+    }
+    //intengamos poner la nave en mi tablero
+    valido = put_ship(&gamestate->myBoard,&gamestate->myShips[ship]);
+    if(valido == EXIT_SUCCESS)
+    {
+        printf("%s colocado en la posicion [%d,%d]\n",gamestate->myShips[ship].nombre,gamestate->myShips[ship].x,gamestate->myShips[ship].y);
+        return 0;
+    }
+    if(valido != EXIT_SUCCESS)
+    {
+        printf("No se pudo colocar la nave. Intente nuevamente...\n\n");
+        return -1;
+    }
+    
+}
+
+
+
 /**
     Inicializa el arreglo de naves pasado por parametro
     @param shiparray puntero al arreglo de naves que sera inicializado
