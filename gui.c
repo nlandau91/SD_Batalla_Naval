@@ -28,6 +28,7 @@ GtkWidget       *box_insercion;
 GtkWidget       *btn_automatico,*btn_manual;
 GtkWidget       *btnFrigate,*btnDestroyer,*btnBattleship,*btnCarrier;
 GtkWidget       *btnOrientation;
+GtkTextMark     *text_mark_end;
 
 int frigateRestantes = 2;
 int destroyerRestantes = 3;
@@ -132,7 +133,14 @@ int main(int argc, char *argv[])
     gtk_text_buffer_set_text (buffer,
                           "Bienvenido a la batalla naval!\n",
                           31);
+    GtkTextIter text_iter_end;
+    gtk_text_buffer_get_end_iter (buffer, &text_iter_end);
+    text_mark_end = gtk_text_buffer_create_mark (buffer,
+                                               NULL,
+                                               &text_iter_end,
+                                               FALSE);
     gtk_text_view_set_buffer(GTK_TEXT_VIEW(console),buffer);
+    
     gtk_builder_connect_signals(builder, NULL);
     g_object_unref(builder);
     gtk_widget_show(window);
@@ -158,6 +166,27 @@ void myCSS(void){
     gtk_css_provider_load_from_file(provider, g_file_new_for_path(myCssFile), &error);
     g_object_unref (provider);
 }
+
+void append_text(const gchar *text) {
+  if (text) {
+    /* get the text buffer */
+    GtkTextBuffer *text_buffer;
+    text_buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (console));
+
+    /* get an end iter */
+    GtkTextIter text_iter_end;
+    gtk_text_buffer_get_end_iter (text_buffer, &text_iter_end);
+
+    /* append text */
+    gtk_text_buffer_insert (text_buffer, &text_iter_end, text, strlen(text));
+
+    /* now scroll to the end using marker */
+    gtk_text_view_scroll_to_mark (GTK_TEXT_VIEW (console),
+                                  text_mark_end,
+                                  0., FALSE, 0., 0.);
+  }
+}
+
 
 void frigateCallback()
 {
@@ -640,19 +669,25 @@ int play_game(int socket, Gamestate* gamestate)
         sem_wait(&mutex);
         if(ataqueEnemigo[0])
         {
-            char str[1000];
+            /*
+            char str[3096]; //Le doy 3kb de tamaño, espero que alcance
             char str2[100];
             GtkTextIter start,end;
             gtk_text_buffer_get_start_iter (buffer, &start);
             gtk_text_buffer_get_end_iter (buffer, &end);
-            char* textoAnterior = gtk_text_buffer_get_text(buffer,&start,&end,0);
+            
+            //char* textoAnterior = gtk_text_buffer_get_text(buffer,&start,&end,0);
             sprintf(str2,"Ataque enemigo en (%d,%d).\n",ataqueEnemigo[1],ataqueEnemigo[2]);
-            strcpy(str,textoAnterior);
-            strcat(str,str2);
-            gtk_text_buffer_set_text (buffer,
+            gtk_text_buffer_insert(buffer,&end,str2,strlen(str2));
+            //strcpy(str,textoAnterior);
+            //strcat(str,str2);
+            /*gtk_text_buffer_set_text (buffer,
                           str,
                           strlen(str));
-            gtk_text_view_set_buffer(GTK_TEXT_VIEW(console),buffer);
+            gtk_text_view_set_buffer(GTK_TEXT_VIEW(console),buffer);*/
+            char str2[100];
+            sprintf(str2,"Ataque enemigo en (%d,%d).\n",ataqueEnemigo[1],ataqueEnemigo[2]);
+            append_text(str2);
             ataqueEnemigo[0] = 0;
         }
         
