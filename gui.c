@@ -622,12 +622,13 @@ int startGameAux(int mode)
 //aqui se realizan las acciones correspondientes a un jugador que tiene que disparar
 int shooting_state(Gamestate* gamestate, int socket)
 {
+    printf("Estoy en el shooting state.\n");
     imprimirHiloLogico("Tu turno. Elige donde atacar.\n",TEXT_COLOR);
     //espero la respuesta
     char receive_buffer[8] = {0};
     wait_shot_resp(socket,receive_buffer);
     printf("El buffer recibido es: %s",receive_buffer);
-    if(strcmp(receive_buffer,"/"))
+    if(strcmp(receive_buffer,"/")==0)
     {
         imprimirHiloLogico("El oponente se desconecto.\n",HIT_COLOR);
         gamestate->myState=WON;
@@ -672,9 +673,10 @@ int shooting_state(Gamestate* gamestate, int socket)
 //aqui se realizan las acciones correspondientes a un jugador que esta esperando un disparo
 int waiting_state(Gamestate* gamestate, int socket)
 {
+    
     //me toca recibir los disparos del oponente
     if(gamestate->myState == WAITING)
-    {
+    {   
         result res;
         char send_buffer[8] = {0};
         int argc = 0;
@@ -797,29 +799,51 @@ void seguirJugando()
     
     
     char ready = 'r';
-    send(newSocket, &ready, 1, 0);
-    //esperamos a que el oponente este listo
-    read(newSocket, &ready, 1);
-    printf("Lo que recibi del otro player es: %c",ready);
-    //printf("El oponente esta listo, asi que arranca el juego.\n");
-    //a jugar!
-    int res = play_game(newSocket, &gamestate);
-    if(res == EXIT_FAILURE)
-    {
-        //printf("Oops, hubo un problema...\n\n");
+    if(check_disconnect(newSocket)){
+        append_text("El oponente se desconecto.\n",HIT_COLOR);
+        gamestate.myState = WON;
     }
-    if(gamestate.myState == WON)
+    else
     {
-        pintarAttackButtons();
-        append_text("GANASTE!\n",WATER_COLOR);
+        printf("Voy a enviar.\n");
+        send(newSocket, &ready, 1, 0);
+        //esperamos a que el oponente este listo
+        printf("Envie.\n");
+        read(newSocket, &ready, 1);
+        printf("RECIBI.\n");
+        printf("Lo que recibi del otro player es: %c",ready);
+        printf("PASE EL PRINT.\n");
+        if(ready == '/')
+        {
+            append_text("El oponente se desconecto.\n",HIT_COLOR);
+            gamestate.myState = WON;
+        }
+
+        printf("Lo que recibi del otro player es: %c",ready);
+        //printf("El oponente esta listo, asi que arranca el juego.\n");
+        //a jugar!
+        int res = play_game(newSocket, &gamestate);
+        if(res == EXIT_FAILURE)
+        {
+            //printf("Oops, hubo un problema...\n\n");
+        }
+        if(gamestate.myState == WON)
+        {
+            pintarAttackButtons();
+            append_text("GANASTE!\n",WATER_COLOR);
+        }
+        if(gamestate.myState == LOST)
+        {
+            pintarBarcos();
+            pintarAttackButtons();
+            append_text("PERDISTE!\n",WATER_COLOR);
+        }
+        close(newSocket);
+    
+        
     }
-    if(gamestate.myState == LOST)
-    {
-        pintarBarcos();
-        pintarAttackButtons();
-        append_text("PERDISTE!\n",WATER_COLOR);
-    }
-    close(newSocket);
+    
+    
 }
 
 int resultado = 20;

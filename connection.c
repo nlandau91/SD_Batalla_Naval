@@ -120,9 +120,7 @@ int send_shot(int socket, int x, int y)
 
 int wait_shot_resp(int socket, char buf[5])
 {
-    printf("ESPERO LA RESPUESTA");
     read(socket, buf, 5);
-    printf("Me llego la respuesta %s",buf);
     return EXIT_SUCCESS;
 }
 
@@ -138,7 +136,6 @@ int send_disconnect(int socket)
     char aux[2] = {0};
     aux[0] = '/';
     send(socket, aux, 1,0);
-    printf("Envie el disconnect %s",aux);
     close(socket);
     return 0;
 }
@@ -148,7 +145,6 @@ int check_disconnect(int socket)
     recv(socket,resultado,1,MSG_DONTWAIT | MSG_PEEK);
     //printf("lo que obtuve del disconnect %s",resultado);
     if(strcmp(resultado,"/") == 0){
-        printf("recibi /");
         recv(socket,resultado,1,0); //consumo el msg
         return 1;
     }
