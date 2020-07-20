@@ -775,6 +775,37 @@ void seguirJugando()
     close(newSocket);
 }
 
+int resultado = 20;
+
+void* createGameThread(void* portString)
+{
+    printf("El puerto que recibo es: %s.\n",portString);
+    int aux = create_game(atoi(portString));
+    sem_wait(&mutex);
+    resultado = aux;
+    sem_post(&mutex);
+    return (void*)aux;
+}
+
+struct joinStructure
+{
+    char* hostname;
+    char* port;
+};
+
+
+int resultadoJoin = 20;
+void* joinGameThread(void* arg)
+{
+    struct joinStructure aux = *(struct joinStructure*) arg;
+    printf("datosRecibidos: %s,%s.\n",aux.hostname,aux.port);
+    int toReturn = join_game(aux.hostname,atoi(aux.port));
+    sem_wait(&mutex);
+    resultadoJoin = toReturn;
+    sem_post(&mutex);   
+    return (void*) toReturn;
+}
+
 
 char* portString,*hostname;
 pid_t pid;
@@ -789,9 +820,39 @@ void acceptGame()
             else
                 portString = "14550";
             printf("%s.\n",portString);
-            newSocket = create_game(atoi(portString));
-            gamestate.myState = SHOOTING;
-            startGameAux(0);
+            pthread_t hilito;
+            append_text("Esperando oponente.\n",TEXT_COLOR);
+            gtk_widget_set_sensitive (btnAccept, FALSE);
+            pthread_create(&hilito, NULL, createGameThread, portString);
+            int termine = 0;
+            while(!termine)
+            {
+                sem_wait(&mutex);
+                if(resultado<0)
+                {
+                    //Ocurrio un error 
+                    append_text("No se pudo iniciar\n",TEXT_COLOR);
+                    gtk_widget_set_sensitive (btnAccept, TRUE);
+                    break;
+                }
+                if(resultado != 20)
+                {
+                    //Se creo correctamente
+                    printf("ENTRO ACA.%d\n",resultado);
+                    termine = 1;
+                    newSocket = resultado;
+                }
+                sem_post(&mutex);
+                while (gtk_events_pending ())
+                    gtk_main_iteration ();
+            }
+            //newSocket = create_game(atoi(portString));
+            if(resultado>=0)
+            {
+                printf("Voy a iniciar el juego.\n");
+                gamestate.myState = SHOOTING;
+                startGameAux(0);
+            }
             break;
         case JOIN_GAME:   
             if(gtk_entry_get_text_length(GTK_ENTRY(inputIp))>0)
@@ -803,7 +864,35 @@ void acceptGame()
                 portString = (char *)gtk_entry_get_text(GTK_ENTRY(inputPort));
             else
                 portString = "14550";
-            newSocket = join_game(hostname,atoi(portString));
+            pthread_t hilito2;
+            append_text("Uniendose a partida.\n",TEXT_COLOR);
+            gtk_widget_set_sensitive (btnAccept, FALSE);
+            struct joinStructure estructurita = *(struct joinStructure*) malloc(sizeof(struct joinStructure));
+            estructurita.hostname = hostname;
+            estructurita.port = portString;
+            pthread_create(&hilito2, NULL, joinGameThread, &estructurita);
+            int termine2 = 0;
+            while(!termine2)
+            {
+                sem_wait(&mutex);
+                if(resultadoJoin<0)
+                {
+                    //Ocurrio un error 
+                    append_text("No se pudo conectar\n",TEXT_COLOR);
+                    gtk_widget_set_sensitive (btnAccept, TRUE);
+                }
+                if(resultadoJoin != 20)
+                {
+                    //Se creo correctamente
+                    printf("ENTRO ACA.%d\n",resultadoJoin);
+                    termine2 = 1;
+                    newSocket = resultadoJoin;
+                }
+                sem_post(&mutex);
+                while (gtk_events_pending ())
+                    gtk_main_iteration ();
+            }
+            //newSocket = join_game(hostname,atoi(portString));
             if(newSocket>=0){
                 gamestate.myState = WAITING;
                 startGameAux(1);
