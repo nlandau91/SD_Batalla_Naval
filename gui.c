@@ -117,6 +117,19 @@ void* funcionJuego(void* arg)
     }
 }
 
+void imprimirHiloLogico(char* texto, char* color)
+{
+    
+    sem_wait(&mutex);
+    mensaje mensaje_nuevo = *(mensaje*)malloc(sizeof(mensaje));
+    strcpy(mensaje_nuevo.msg,texto);
+    strcpy(mensaje_nuevo.color,color);
+    bufferEscritura[hay_que_escribir] = mensaje_nuevo;
+    hay_que_escribir++;
+    sem_post(&mutex);
+}
+
+
 int main(int argc, char *argv[])
 {
     XInitThreads();
@@ -236,17 +249,18 @@ void carrierCallback()
 
 void positionButtonCallback(GtkWidget *button,datos* data)
 {
-    printf("Apretaste un boton de posicion en %d-%d.\n",data->x,data->y);
+    //printf("Apretaste un boton de posicion en %d-%d.\n",data->x,data->y);
     //gtk_widget_set_name(button, "myButton_red");
     //Veo la orientacion y el barco
-    printf("Barco Actual: %d.\n",barcoActual);
+    //printf("Barco Actual: %d.\n",barcoActual);
     switch(barcoActual)
     {
         case 0: 
             //Voy a insertar una fragata
-            printf("Fragatas restantes: %d.\n",frigateRestantes);
+            //printf("Fragatas restantes: %d.\n",frigateRestantes);
             if(!manualAddShipGUI(&gamestate,9-frigateRestantes,data->x,data->y,orientacion)){
-                printf("pudo añadirse.\n");
+                //printf("pudo añadirse.\n");
+                append_text("Se añadio una fragata con exito.\n",TEXT_COLOR);
                 frigateRestantes--;
                 if(frigateRestantes == 0)
                 {
@@ -257,9 +271,10 @@ void positionButtonCallback(GtkWidget *button,datos* data)
             break;
         case 1:
             //Voy a insertar un destroyer
-            printf("Destructores restantes: %d.\n",destroyerRestantes);
+            //printf("Destructores restantes: %d.\n",destroyerRestantes);
             if(!manualAddShipGUI(&gamestate,7-destroyerRestantes,data->x,data->y,orientacion)){
-                printf("pudo añadirse.\n");
+                //printf("pudo añadirse.\n");
+                append_text("Se añadio un destructor con exito.\n",TEXT_COLOR);
                 destroyerRestantes--;
                 if(destroyerRestantes == 0)
                 {
@@ -270,10 +285,11 @@ void positionButtonCallback(GtkWidget *button,datos* data)
             break;
         case 2:
             //Voy a ingresar un battleship
-            printf("Battleship restantes: %d.\n",battleshipRestantes);
+            //printf("Battleship restantes: %d.\n",battleshipRestantes);
             if(!manualAddShipGUI(&gamestate,4-battleshipRestantes,data->x,data->y,orientacion))
             {
-                printf("pudo añadirse.\n");
+                //printf("pudo añadirse.\n");
+                append_text("Se añadio un acorazado con exito.\n",TEXT_COLOR);
                 battleshipRestantes--;
                 if(battleshipRestantes == 0)
                 {
@@ -284,10 +300,11 @@ void positionButtonCallback(GtkWidget *button,datos* data)
             break;
         case 3:
             //Voy a ingresar un carrier
-            printf("PortaAviones restantes: %d.\n",carrierRestantes);
+            //printf("PortaAviones restantes: %d.\n",carrierRestantes);
             if(!manualAddShipGUI(&gamestate,0,data->x,data->y,orientacion))
             {
-                printf("pudo añadirse.\n");
+                //printf("pudo añadirse.\n");
+                append_text("Se añadio un portaaviones con exito.\n",TEXT_COLOR);
                 carrierRestantes--;
                 if(carrierRestantes == 0)
                 {
@@ -319,7 +336,7 @@ void positionButtonCallback(GtkWidget *button,datos* data)
 
 void attackButtonCallback(GtkWidget *button,datos* data)
 {
-    printf("Apretaste un boton de ataque en %d-%d.\n",data->x,data->y);
+    //printf("Apretaste un boton de ataque en %d-%d.\n",data->x,data->y);
         //obtenemos las coordenadas a donde disparar
     int coords[2];
     coords[0] = data->x;
@@ -328,24 +345,30 @@ void attackButtonCallback(GtkWidget *button,datos* data)
     //me fijo si ya habia disparado en ese lugar
     while((&gamestate)->hisBoard[coords[0]][coords[1]] != UNKNOWN)
     {
-        printf("Error: ya disparaste en las coordenadas [%d,%d]\n",coords[0],coords[1]);
-        read_coords(coords);
+        //printf("Error: ya disparaste en las coordenadas [%d,%d]\n",coords[0],coords[1]);
+        //read_coords(coords);
+        append_text("Ya disparaste en estas coordenadas.\n",TEXT_COLOR);
     }
     x = coords[0];
     y = coords[1];
 
     //envio el disparo
-    printf("Disparando...\n");
+    //printf("Disparando...\n");
 
-    sem_wait(&mutex);
+
+
+    //sem_wait(&mutex);
     char aux[100];
     sprintf(aux,"Disparando en coordenadas (%d,%d): ",x,y);
-    printf("Mensaje disparando: %s",aux);
-    strcpy(mensaje_a_escribir.msg,aux);
-    strcpy(mensaje_a_escribir.color,TEXT_COLOR);
-    bufferEscritura[hay_que_escribir] = mensaje_a_escribir;
-    hay_que_escribir++;
-    sem_post(&mutex);
+    
+    imprimirHiloLogico(aux,TEXT_COLOR);
+    
+    //printf("Mensaje disparando: %s",aux);
+    //strcpy(mensaje_a_escribir.msg,aux);
+    //strcpy(mensaje_a_escribir.color,TEXT_COLOR);
+    //bufferEscritura[hay_que_escribir] = mensaje_a_escribir;
+    //hay_que_escribir++;
+    //sem_post(&mutex);
     //append_text("Disparando en coordenadas (x,y): ","black");
     send_shot(newSocket,x,y);
 
@@ -454,7 +477,7 @@ void pintarAttackButtons()
 
 void insertAutomatic()
 {
-    printf("Hice click en automatico.\n");
+    //printf("Hice click en automatico.\n");
     autoaddships(&gamestate);
     //Tengo que pintar los botones correspondientes
     //Para indicar donde estan los barcos.
@@ -470,7 +493,7 @@ void insertAutomatic()
 
 void insertManual()
 {
-    printf("Hice click en manual.\n");
+    //printf("Hice click en manual.\n");
     gtk_widget_hide(box_insercion);
     gtk_widget_show(shipsContainer);
     /*Debo habilitar todos los botones de posicion*/
@@ -500,7 +523,7 @@ int jugar(int socket, Gamestate* gamestate)
 int startGameAux(int mode)
 {
     gtk_widget_hide(startPanel);
-    printf("ESTOY CREANDO EL PANEL.\n");
+    //printf("ESTOY CREANDO EL PANEL.\n");
     int i,j;
     for(i = 0; i<10; i++)
     {
@@ -528,11 +551,11 @@ int startGameAux(int mode)
     }
     //gtk_widget_show(shipsContainer);
     //
-    printf("Ya termine de crear los botones.\n");
+    //printf("Ya termine de crear los botones.\n");
     gtk_widget_show(gamePanel);
-    printf("Ahi puse el panel de juego\n");
+    //printf("Ahi puse el panel de juego\n");
     gtk_widget_show(box_insercion);
-    printf("Ahi puse el panel de insercion.\n");
+    //printf("Ahi puse el panel de insercion.\n");
     
     
     if(mode == 0)
@@ -556,12 +579,13 @@ int startGameAux(int mode)
 //aqui se realizan las acciones correspondientes a un jugador que tiene que disparar
 int shooting_state(Gamestate* gamestate, int socket)
 {
-    sem_wait(&mutex);
-    strcpy(mensaje_a_escribir.msg , "Tu turno. Elige donde atacar.\n");
-    strcpy(mensaje_a_escribir.color , TEXT_COLOR);
-    bufferEscritura[hay_que_escribir] = mensaje_a_escribir;
-    hay_que_escribir++;
-    sem_post(&mutex);
+    //sem_wait(&mutex);
+    //strcpy(mensaje_a_escribir.msg , "Tu turno. Elige donde atacar.\n");
+    //strcpy(mensaje_a_escribir.color , TEXT_COLOR);
+    //bufferEscritura[hay_que_escribir] = mensaje_a_escribir;
+    //hay_que_escribir++;
+    //sem_post(&mutex);
+    imprimirHiloLogico("Tu turno. Elige donde atacar.\n",TEXT_COLOR);
     //append_text("Tu turno. Elige donde atacar.\n",TEXT_COLOR);
     //espero la respuesta
     char receive_buffer[8] = {0};
@@ -571,13 +595,14 @@ int shooting_state(Gamestate* gamestate, int socket)
     tile new_tile;
     if(receive_buffer[0] == MISS)
     {
+        imprimirHiloLogico("AGUA!\n",WATER_COLOR);
         //printf("AGUA!\n\n");
-        sem_wait(&mutex);
-        strcpy(mensaje_a_escribir.msg , "AGUA!.\n");
-        strcpy(mensaje_a_escribir.color , WATER_COLOR);
-        bufferEscritura[hay_que_escribir] = mensaje_a_escribir;
-        hay_que_escribir++;
-        sem_post(&mutex);
+        //sem_wait(&mutex);
+        //strcpy(mensaje_a_escribir.msg , "AGUA!.\n");
+        //strcpy(mensaje_a_escribir.color , WATER_COLOR);
+        //bufferEscritura[hay_que_escribir] = mensaje_a_escribir;
+        //hay_que_escribir++;
+        //sem_post(&mutex);
         //append_text("AGUA!.\n",WATER_COLOR);
         gamestate->myState = WAITING;
         new_tile = WATER;
@@ -586,24 +611,26 @@ int shooting_state(Gamestate* gamestate, int socket)
     {
         //printf("TOCADO!\n\n");
         //append_text("TOCADO!\n",HIT_COLOR);
-        sem_wait(&mutex);
-        strcpy(mensaje_a_escribir.msg , "TOCADO!.\n");
-        strcpy(mensaje_a_escribir.color , HIT_COLOR);
-        bufferEscritura[hay_que_escribir] = mensaje_a_escribir;
-        hay_que_escribir++;
-        sem_post(&mutex);
+        //sem_wait(&mutex);
+        //strcpy(mensaje_a_escribir.msg , "TOCADO!.\n");
+        //strcpy(mensaje_a_escribir.color , HIT_COLOR);
+        //bufferEscritura[hay_que_escribir] = mensaje_a_escribir;
+        //hay_que_escribir++;
+        //sem_post(&mutex);
+        imprimirHiloLogico("TOCADO!\n",HIT_COLOR);
         new_tile = SHIP;
     }
     if(receive_buffer[0] == SUNK)
     {
         //printf("HUNDIDO!\n\n");
         //append_text("TOCADO!\n",DESTROYED_COLOR);
-        sem_wait(&mutex);
-        strcpy(mensaje_a_escribir.msg , "HUNDIDO!.\n");
-        strcpy(mensaje_a_escribir.color , DESTROYED_COLOR);
-        bufferEscritura[hay_que_escribir] = mensaje_a_escribir;
-        hay_que_escribir++;
-        sem_post(&mutex);
+        //sem_wait(&mutex);
+        //strcpy(mensaje_a_escribir.msg , "HUNDIDO!.\n");
+        //strcpy(mensaje_a_escribir.color , DESTROYED_COLOR);
+        //bufferEscritura[hay_que_escribir] = mensaje_a_escribir;
+        //hay_que_escribir++;
+        //sem_post(&mutex);
+        imprimirHiloLogico("HUNDIDO!\n",DESTROYED_COLOR);
         new_tile = DESTROYED;
 
         //informacion de la nave destruida
@@ -635,22 +662,24 @@ int waiting_state(Gamestate* gamestate, int socket)
         char send_buffer[8] = {0};
         int argc = 0;
 
-        printf("Esperando disparo del oponente...\n\n");
+        //printf("Esperando disparo del oponente...\n\n");
+        
         char receive_buffer[8] = {0};
         receive_shot(socket,receive_buffer);
         int x = charToInt(receive_buffer[0]);
         int y = charToInt(receive_buffer[1]);
-        printf("Recibido disparo en la posicion [%d,%d]\n\n",x,y);
+        //printf("Recibido disparo en la posicion [%d,%d]\n\n",x,y);
 
         //append_text(str2,ATTACKED_COLOR);
-        sem_wait(&mutex);
-                char str2[100];
+        //sem_wait(&mutex);
+        char str2[100];
         sprintf(str2,"Ataque enemigo en (%d,%d): ",x,y);
-        strcpy(mensaje_a_escribir.msg,str2);
-        strcpy(mensaje_a_escribir.color,ATTACKED_COLOR);
-        bufferEscritura[hay_que_escribir] = mensaje_a_escribir;
-        hay_que_escribir++;
-        sem_post(&mutex);
+        //strcpy(mensaje_a_escribir.msg,str2);
+        //strcpy(mensaje_a_escribir.color,ATTACKED_COLOR);
+        //bufferEscritura[hay_que_escribir] = mensaje_a_escribir;
+        //hay_que_escribir++;
+        //sem_post(&mutex);
+        imprimirHiloLogico(str2,ATTACKED_COLOR);
         sem_wait(&mutex);
         ataqueEnemigo[0]=1;
         ataqueEnemigo[1]=x;
@@ -662,12 +691,13 @@ int waiting_state(Gamestate* gamestate, int socket)
         {
             //printf("AGUA!\n\n");
             //append_text("AGUA!.\n",WATER_COLOR);
-            sem_wait(&mutex);
-            strcpy(mensaje_a_escribir.msg,"AGUA!.\n");
-            strcpy(mensaje_a_escribir.color,WATER_COLOR);
-            bufferEscritura[hay_que_escribir] = mensaje_a_escribir;
-    hay_que_escribir++;
-            sem_post(&mutex);
+            //sem_wait(&mutex);
+            //strcpy(mensaje_a_escribir.msg,"AGUA!.\n");
+            //strcpy(mensaje_a_escribir.color,WATER_COLOR);
+            //bufferEscritura[hay_que_escribir] = mensaje_a_escribir;
+            //hay_que_escribir++;
+            //sem_post(&mutex);
+            imprimirHiloLogico("AGUA!\n",WATER_COLOR);
             gamestate->myState = SHOOTING;
             argc = 1;
         }
@@ -675,12 +705,13 @@ int waiting_state(Gamestate* gamestate, int socket)
         {
             //printf("TOCADO!\n\n");
             //append_text("TOCADO!\n",HIT_COLOR);
-            sem_wait(&mutex);
-            strcpy(mensaje_a_escribir.msg , "TOCADO!.\n");
-            strcpy(mensaje_a_escribir.color , HIT_COLOR);
-                bufferEscritura[hay_que_escribir] = mensaje_a_escribir;
-    hay_que_escribir++;
-            sem_post(&mutex);
+            //sem_wait(&mutex);
+            //strcpy(mensaje_a_escribir.msg , "TOCADO!.\n");
+            //strcpy(mensaje_a_escribir.color , HIT_COLOR);
+            //bufferEscritura[hay_que_escribir] = mensaje_a_escribir;
+            //hay_que_escribir++;
+            //sem_post(&mutex);
+            imprimirHiloLogico("TOCADO!\n",HIT_COLOR);
             argc = 1;
             gamestate->myBoard[x][y]->hitsRemaining--;
             if(gamestate->myBoard[x][y]->hitsRemaining == 0)
@@ -692,12 +723,13 @@ int waiting_state(Gamestate* gamestate, int socket)
         {
             //printf("HUNDIDO!\n\n");
             //append_text("HUNDIDO!\n",DESTROYED_COLOR);
-            sem_wait(&mutex);
-            strcpy(mensaje_a_escribir.msg , "HUNDIDO!.\n");
-            strcpy(mensaje_a_escribir.color , DESTROYED_COLOR);
-                bufferEscritura[hay_que_escribir] = mensaje_a_escribir;
-    hay_que_escribir++;
-            sem_post(&mutex);
+            //sem_wait(&mutex);
+            //strcpy(mensaje_a_escribir.msg , "HUNDIDO!.\n");
+            //strcpy(mensaje_a_escribir.color , DESTROYED_COLOR);
+            //bufferEscritura[hay_que_escribir] = mensaje_a_escribir;
+            //hay_que_escribir++;
+            //sem_post(&mutex);
+            imprimirHiloLogico("HUNDIDO!\n",DESTROYED_COLOR);
             //vemos si perdimos
             gamestate->myState = check_loss(gamestate);
 
@@ -717,7 +749,7 @@ int waiting_state(Gamestate* gamestate, int socket)
 
 void toggleButtons(int mode)
 {
-    printf("Voy a cambiar los botones a modo: %d.\n",mode);
+    //printf("Voy a cambiar los botones a modo: %d.\n",mode);
     for(int i = 0; i<10; i++)
     {
         for(int j = 0; j<10; j++)
