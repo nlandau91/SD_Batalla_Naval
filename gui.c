@@ -17,7 +17,7 @@
 char* DESTROYED_COLOR = "#cf6679";
 char* HIT_COLOR = "#ffa473";
 char* WATER_COLOR = "#03dac6";
-char* TEXT_COLOR = "black";
+char* TEXT_COLOR = "white";
 char* ATTACKED_COLOR = "#cf6679"; 
 int inicioElJuego = 0; 
 GtkBuilder      *builder;
@@ -85,6 +85,7 @@ void seguirJugando();
 void pintarBarcos();
 int shooting_state(Gamestate* gamestate, int socket);
 int waiting_state(Gamestate* gamestate, int socket);
+void append_text(const gchar *text, char* color);
 
 /*Funcion ejecutada por el hilo logico. Se encarga de procesar el flujo de juego*/
 void* funcionJuego(void* arg)
@@ -156,14 +157,11 @@ int main(int argc, char *argv[])
     btnBattleship = GTK_WIDGET(gtk_builder_get_object(builder,"btnBattleship"));
     btnCarrier = GTK_WIDGET(gtk_builder_get_object(builder,"btnCarrier"));
     btnOrientation = GTK_WIDGET(gtk_builder_get_object(builder,"btnOrientation"));
-    
     sem_init(&mutex,0,1);
     
     buffer = gtk_text_buffer_new (NULL);
     
-    gtk_text_buffer_set_text (buffer,
-                          "Bienvenido a la batalla naval!\n",
-                          31);
+
 
     GtkTextIter text_iter_end;
     gtk_text_buffer_get_end_iter (buffer, &text_iter_end);
@@ -173,6 +171,7 @@ int main(int argc, char *argv[])
                                                &text_iter_end,
                                                FALSE);
     gtk_text_view_set_buffer(GTK_TEXT_VIEW(console),buffer);
+    append_text("Bienvenido a la Batalla Naval!\n",TEXT_COLOR);
     gtk_builder_connect_signals(builder, NULL);
     g_object_unref(builder);
     gtk_widget_show(window);
@@ -677,6 +676,7 @@ int waiting_state(Gamestate* gamestate, int socket)
     //me toca recibir los disparos del oponente
     if(gamestate->myState == WAITING)
     {   
+        imprimirHiloLogico("Esperando ataque del oponente.\n",TEXT_COLOR);
         result res;
         char send_buffer[8] = {0};
         int argc = 0;
