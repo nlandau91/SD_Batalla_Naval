@@ -29,6 +29,14 @@ GtkWidget       *btn_automatico,*btn_manual;
 GtkWidget       *btnFrigate,*btnDestroyer,*btnBattleship,*btnCarrier;
 GtkWidget       *btnOrientation;
 GtkTextMark     *text_mark_end;
+GtkTextTag      *tag;
+
+
+char* DESTROYED_COLOR = "#cf6679";
+char* HIT_COLOR = "#ffa473";
+char* WATER_COLOR = "#03dac6";
+char* TEXT_COLOR = "black";
+char* ATTACKED_COLOR = "#cf6679";
 
 int frigateRestantes = 2;
 int destroyerRestantes = 3;
@@ -126,15 +134,18 @@ int main(int argc, char *argv[])
     btnBattleship = GTK_WIDGET(gtk_builder_get_object(builder,"btnBattleship"));
     btnCarrier = GTK_WIDGET(gtk_builder_get_object(builder,"btnCarrier"));
     btnOrientation = GTK_WIDGET(gtk_builder_get_object(builder,"btnOrientation"));
-    
+
     sem_init(&mutex,0,1);
     
     buffer = gtk_text_buffer_new (NULL);
+    
     gtk_text_buffer_set_text (buffer,
                           "Bienvenido a la batalla naval!\n",
                           31);
+
     GtkTextIter text_iter_end;
     gtk_text_buffer_get_end_iter (buffer, &text_iter_end);
+    
     text_mark_end = gtk_text_buffer_create_mark (buffer,
                                                NULL,
                                                &text_iter_end,
@@ -167,7 +178,7 @@ void myCSS(void){
     g_object_unref (provider);
 }
 
-void append_text(const gchar *text) {
+void append_text(const gchar *text, char* color) {
   if (text) {
     /* get the text buffer */
     GtkTextBuffer *text_buffer;
@@ -176,9 +187,13 @@ void append_text(const gchar *text) {
     /* get an end iter */
     GtkTextIter text_iter_end;
     gtk_text_buffer_get_end_iter (text_buffer, &text_iter_end);
-
     /* append text */
-    gtk_text_buffer_insert (text_buffer, &text_iter_end, text, strlen(text));
+    char str[256];
+    sprintf(str,"<span color='%s'>%s</span>",color,text);
+    gtk_text_buffer_insert_markup (buffer,
+                           &text_iter_end,
+                           str,
+                           strlen(str));
 
     /* now scroll to the end using marker */
     gtk_text_view_scroll_to_mark (GTK_TEXT_VIEW (console),
@@ -312,6 +327,7 @@ void attackButtonCallback(GtkWidget *button,datos* data)
 
     //envio el disparo
     printf("Disparando...\n");
+    append_text("Disparando...\n","black");
     send_shot(newSocket,x,y);
 
 }
@@ -536,6 +552,7 @@ int startGameAux(int mode)
 //aqui se realizan las acciones correspondientes a un jugador que tiene que disparar
 int shooting_state(Gamestate* gamestate, int socket)
 {
+    append_text("Tu turno. Elige donde atacar.\n",TEXT_COLOR);
     //espero la respuesta
     char receive_buffer[8] = {0};
     wait_shot_resp(socket,receive_buffer);
@@ -545,17 +562,20 @@ int shooting_state(Gamestate* gamestate, int socket)
     if(receive_buffer[0] == MISS)
     {
         printf("AGUA!\n\n");
+        append_text("AGUA!.\n",WATER_COLOR);
         gamestate->myState = WAITING;
         new_tile = WATER;
     }
     if(receive_buffer[0] == HIT)
     {
         printf("TOCADO!\n\n");
+        append_text("TOCADO!\n",HIT_COLOR);
         new_tile = SHIP;
     }
     if(receive_buffer[0] == SUNK)
     {
         printf("HUNDIDO!\n\n");
+        append_text("TOCADO!\n",DESTROYED_COLOR);
         new_tile = DESTROYED;
 
         //informacion de la nave destruida
@@ -593,6 +613,9 @@ int waiting_state(Gamestate* gamestate, int socket)
         int x = charToInt(receive_buffer[0]);
         int y = charToInt(receive_buffer[1]);
         printf("Recibido disparo en la posicion [%d,%d]\n\n",x,y);
+        char str2[100];
+        sprintf(str2,"Ataque enemigo en (%d,%d): ",x,y);
+        append_text(str2,ATTACKED_COLOR);
         sem_wait(&mutex);
         ataqueEnemigo[0]=1;
         ataqueEnemigo[1]=x;
@@ -603,12 +626,14 @@ int waiting_state(Gamestate* gamestate, int socket)
         if(res == MISS)
         {
             printf("AGUA!\n\n");
+            append_text("AGUA!.\n",WATER_COLOR);
             gamestate->myState = SHOOTING;
             argc = 1;
         }
         if(res == HIT)
         {
             printf("TOCADO!\n\n");
+            append_text("TOCADO!\n",HIT_COLOR);
             argc = 1;
             gamestate->myBoard[x][y]->hitsRemaining--;
             if(gamestate->myBoard[x][y]->hitsRemaining == 0)
@@ -619,7 +644,7 @@ int waiting_state(Gamestate* gamestate, int socket)
         if(res == SUNK)
         {
             printf("HUNDIDO!\n\n");
-
+            append_text("HUNDIDO!\n",DESTROYED_COLOR);
             //vemos si perdimos
             gamestate->myState = check_loss(gamestate);
 
@@ -685,9 +710,7 @@ int play_game(int socket, Gamestate* gamestate)
                           str,
                           strlen(str));
             gtk_text_view_set_buffer(GTK_TEXT_VIEW(console),buffer);*/
-            char str2[100];
-            sprintf(str2,"Ataque enemigo en (%d,%d).\n",ataqueEnemigo[1],ataqueEnemigo[2]);
-            append_text(str2);
+
             ataqueEnemigo[0] = 0;
         }
         
