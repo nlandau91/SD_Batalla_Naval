@@ -682,35 +682,14 @@ int play_game(int socket, Gamestate* gamestate)
     
     //gameloop
     //se juega hasta que ganes o pierdas
-    //pid_t pid = fork();
     pthread_t hiloJuego;
     int ultimoModoBotones = 0;
     pthread_create(&hiloJuego,NULL,funcionJuego,(void*)1);//Creo un hilo auxiliar que maneje los semaforos
-    while((gamestate->myState != WON) && (gamestate->myState != LOST))
+    do
     {
-        //imprimo el estado del juego
-        //if(!pid)
-            //print_gamestate(gamestate);
         sem_wait(&mutex);
         if(ataqueEnemigo[0])
         {
-            /*
-            char str[3096]; //Le doy 3kb de tamaño, espero que alcance
-            char str2[100];
-            GtkTextIter start,end;
-            gtk_text_buffer_get_start_iter (buffer, &start);
-            gtk_text_buffer_get_end_iter (buffer, &end);
-            
-            //char* textoAnterior = gtk_text_buffer_get_text(buffer,&start,&end,0);
-            sprintf(str2,"Ataque enemigo en (%d,%d).\n",ataqueEnemigo[1],ataqueEnemigo[2]);
-            gtk_text_buffer_insert(buffer,&end,str2,strlen(str2));
-            //strcpy(str,textoAnterior);
-            //strcat(str,str2);
-            /*gtk_text_buffer_set_text (buffer,
-                          str,
-                          strlen(str));
-            gtk_text_view_set_buffer(GTK_TEXT_VIEW(console),buffer);*/
-
             ataqueEnemigo[0] = 0;
         }
         
@@ -723,6 +702,8 @@ int play_game(int socket, Gamestate* gamestate)
         pintarBarcos(); //El problema con esto es que se traba esperando...
         pintarAttackButtons();
     }
+    while((gamestate->myState != WON) && (gamestate->myState != LOST));
+
     return EXIT_SUCCESS;
 }
 
@@ -734,20 +715,22 @@ void seguirJugando()
     send(newSocket, &ready, 1, 0);
     //esperamos a que el oponente este listo
     read(newSocket, &ready, 1);
-    printf("El oponente esta listo, asi que arranca el juego.\n");
+    //printf("El oponente esta listo, asi que arranca el juego.\n");
     //a jugar!
     int res = play_game(newSocket, &gamestate);
     if(res == EXIT_FAILURE)
     {
-        printf("Oops, hubo un problema...\n\n");
+        //printf("Oops, hubo un problema...\n\n");
     }
     if(gamestate.myState == WON)
     {
-        printf("Ganaste!\n\n");
+        //printf("Ganaste!\n\n");
+        append_text("GANASTE!\n",WATER_COLOR);
     }
     if(gamestate.myState == LOST)
     {
-        printf("Perdiste!\n\n");
+        //printf("Perdiste!\n\n");
+        append_text("PERDISTE!\n",WATER_COLOR);
     }
     close(newSocket);
 }
