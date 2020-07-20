@@ -157,7 +157,7 @@
                 <child>
                   <object class="GtkEntry" id="entryIp">
                     <property name="can_focus">True</property>
-                    <property name="placeholder_text" translatable="yes">Direccion IP (127.0.0.1)</property>
+                    <property name="placeholder_text" translatable="yes">Direccion IP (default: 127.0.0.1)</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -168,7 +168,7 @@
                 <child>
                   <object class="GtkEntry" id="entryPort">
                     <property name="can_focus">True</property>
-                    <property name="placeholder_text" translatable="yes">Puerto (14550)</property>
+                    <property name="placeholder_text" translatable="yes">Puerto (default: 14550)</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>

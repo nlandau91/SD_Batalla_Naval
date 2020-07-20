@@ -740,6 +740,7 @@ int play_game(int socket, Gamestate* gamestate)
     pthread_create(&hiloJuego,NULL,funcionJuego,(void*)1);//Creo un hilo auxiliar que maneje los semaforos
     do
     {
+        pintarAttackButtons();
         pintarBarcos();
         sem_wait(&mutex);
         if(ataqueEnemigo[0])
@@ -763,7 +764,7 @@ int play_game(int socket, Gamestate* gamestate)
         }
         sem_post(&mutex);
         //El problema con esto es que se traba esperando...
-        pintarAttackButtons();
+        
     }
     while((gamestate->myState != WON) && (gamestate->myState != LOST));
 
@@ -788,12 +789,14 @@ void seguirJugando()
     if(gamestate.myState == WON)
     {
         //printf("Ganaste!\n\n");
+        pintarAttackButtons();
         append_text("GANASTE!\n",WATER_COLOR);
     }
     if(gamestate.myState == LOST)
     {
         //printf("Perdiste!\n\n")
         pintarBarcos();
+        pintarAttackButtons();
         append_text("PERDISTE!\n",WATER_COLOR);
     }
     close(newSocket);

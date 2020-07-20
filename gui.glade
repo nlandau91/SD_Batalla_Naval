@@ -122,7 +122,7 @@
                 <property name="orientation">vertical</property>
                 <child>
                   <object class="GtkButton">
-                    <property name="label" translatable="yes">Quantum Mechanics</property>
+                    <property name="label" translatable="yes">Crear partida</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>

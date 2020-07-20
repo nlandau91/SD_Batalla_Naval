@@ -18,11 +18,11 @@
 }
 
 #myButton_white{
-    background-color: white;
+    background-color: #ffa473;
     color:black;
 }
 #myButton_white:disabled *{
-	background-color: white;
+	background-color: #ffa473;
 	color:black;
 }
 
