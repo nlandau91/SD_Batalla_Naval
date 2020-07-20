@@ -1,3 +1,13 @@
+#myButton_gray{
+    background-color: #121212;
+    color:white;
+}
+
+#myButton_gray:disabled *{
+    background-color: #121212;
+    color:white;
+}
+
 #myButton_red{
     background-color: #cf6679;
     color:black;
