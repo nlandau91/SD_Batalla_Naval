@@ -50,7 +50,8 @@ typedef enum result
 {
     MISS=48, /**< '0' */
     HIT=49, /**< '1' */
-    SUNK=50 /**< '2' */
+    SUNK=50, /**< '2' */
+    DISCONNECTED=51
 } result;
 
 /**

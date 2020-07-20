@@ -59,4 +59,6 @@ int receive_shot(int socket, char buf[2]);
 */
 int wait_shot_resp(int socket, char buf[5]);
 
+int send_disconnect(int socket);
+int check_disconnect(int socket);
 #endif //CONNECTION_H_

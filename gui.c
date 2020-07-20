@@ -19,7 +19,7 @@ char* HIT_COLOR = "#ffa473";
 char* WATER_COLOR = "#03dac6";
 char* TEXT_COLOR = "black";
 char* ATTACKED_COLOR = "#cf6679"; 
- 
+int inicioElJuego = 0; 
 GtkBuilder      *builder;
 GtkWidget       *window;
 GtkWidget       *inputIp,*inputPort;
@@ -92,20 +92,28 @@ void* funcionJuego(void* arg)
     while(((&gamestate)->myState != WON) && ((&gamestate)->myState != LOST))
     {
         //me toca disparar
-        if((&gamestate)->myState == SHOOTING)
+        if(check_disconnect(newSocket))
         {
-            sem_wait(&mutex);
-            activarBotones=1;
-            sem_post(&mutex);
-            shooting_state(&gamestate, newSocket);
-            sem_wait(&mutex);
-            activarBotones=0;
-            sem_post(&mutex);
+            printf("Recibi 1");
+            (&gamestate)->myState = WON;
         }
-        //me toca recibir un disparo
         else
         {
-            waiting_state(&gamestate, newSocket);
+            if((&gamestate)->myState == SHOOTING)
+            {
+                sem_wait(&mutex);
+                activarBotones=1;
+                sem_post(&mutex);
+                shooting_state(&gamestate, newSocket);
+                sem_wait(&mutex);
+                activarBotones=0;
+                sem_post(&mutex);
+            }
+            //me toca recibir un disparo
+            else
+            {
+                waiting_state(&gamestate, newSocket);
+            }   
         }
     //}
     }
@@ -321,7 +329,13 @@ void positionButtonCallback(GtkWidget *button,datos* data)
                 }
             }
             //Ahora que ya agregue naves sigo el flujo del programa.
-            seguirJugando();
+            if(check_disconnect(newSocket))
+            {
+                append_text("El oponente se desconecto.\n",HIT_COLOR);
+                (&gamestate)->myState = WON;
+            }
+            else
+                seguirJugando();
         }
 }
 
@@ -468,18 +482,27 @@ void pintarAttackButtons()
 
 void insertAutomatic()
 {
-    //printf("Hice click en automatico.\n");
-    autoaddships(&gamestate);
-    //Tengo que pintar los botones correspondientes
-    //Para indicar donde estan los barcos.
-    pintarBarcos();
-    
-    //Tengo que quitar de la vista los botones estos.
-    gtk_widget_hide(box_insercion);
-    
-    //Ahora que ya agregue naves sigo el flujo del programa.
-    seguirJugando();
-    
+    printf("Inserto automatico");
+    if(check_disconnect(newSocket))
+    {
+        append_text("El oponente se desconecto.\n",HIT_COLOR);
+        (&gamestate)->myState = WON;
+    }
+    else
+    {
+        printf("No me llego nada gg.\n");
+        //printf("Hice click en automatico.\n");
+        autoaddships(&gamestate);
+        //Tengo que pintar los botones correspondientes
+        //Para indicar donde estan los barcos.
+        pintarBarcos();
+        
+        //Tengo que quitar de la vista los botones estos.
+        gtk_widget_hide(box_insercion);
+        
+        //Ahora que ya agregue naves sigo el flujo del programa.
+        seguirJugando();
+    }
 }
 
 void insertManual()
@@ -603,37 +626,46 @@ int shooting_state(Gamestate* gamestate, int socket)
     //espero la respuesta
     char receive_buffer[8] = {0};
     wait_shot_resp(socket,receive_buffer);
-
-    //revisamos el resultado del disparo
-    tile new_tile;
-    if(receive_buffer[0] == MISS)
+    printf("El buffer recibido es: %s",receive_buffer);
+    if(strcmp(receive_buffer,"/"))
     {
-        imprimirHiloLogico("AGUA!\n",WATER_COLOR);
-        gamestate->myState = WAITING;
-        new_tile = WATER;
+        imprimirHiloLogico("El oponente se desconecto.\n",HIT_COLOR);
+        gamestate->myState=WON;
     }
-    if(receive_buffer[0] == HIT)
+    else
     {
-        imprimirHiloLogico("TOCADO!\n",HIT_COLOR);
-        new_tile = SHIP;
+        //revisamos el resultado del disparo
+        tile new_tile;
+        if(receive_buffer[0] == MISS)
+        {
+            imprimirHiloLogico("AGUA!\n",WATER_COLOR);
+            gamestate->myState = WAITING;
+            new_tile = WATER;
+        }
+        if(receive_buffer[0] == HIT)
+        {
+            imprimirHiloLogico("TOCADO!\n",HIT_COLOR);
+            new_tile = SHIP;
+        }
+        if(receive_buffer[0] == SUNK)
+        {
+            imprimirHiloLogico("HUNDIDO!\n",DESTROYED_COLOR);
+            new_tile = DESTROYED;
+            //informacion de la nave destruida
+            //necesaria para actualizar el tablero
+            int rcv_x = charToInt(receive_buffer[1]);
+            int rcv_y = charToInt(receive_buffer[2]);
+            int rcv_size = charToInt(receive_buffer[3]);
+            orientation rcv_orientacion = charToInt(receive_buffer[4]);
+            //destruimos la nave y actualizamos el tablero
+            destroy_enemy_ship(gamestate, rcv_x, rcv_y, rcv_size, rcv_orientacion);
+            //vemos si ganamos
+            gamestate->myState = check_win(gamestate);
+        }
+        //actualizamos el tablero
+        gamestate->hisBoard[x][y] = new_tile;
     }
-    if(receive_buffer[0] == SUNK)
-    {
-        imprimirHiloLogico("HUNDIDO!\n",DESTROYED_COLOR);
-        new_tile = DESTROYED;
-        //informacion de la nave destruida
-        //necesaria para actualizar el tablero
-        int rcv_x = charToInt(receive_buffer[1]);
-        int rcv_y = charToInt(receive_buffer[2]);
-        int rcv_size = charToInt(receive_buffer[3]);
-        orientation rcv_orientacion = charToInt(receive_buffer[4]);
-        //destruimos la nave y actualizamos el tablero
-        destroy_enemy_ship(gamestate, rcv_x, rcv_y, rcv_size, rcv_orientacion);
-        //vemos si ganamos
-        gamestate->myState = check_win(gamestate);
-    }
-    //actualizamos el tablero
-    gamestate->hisBoard[x][y] = new_tile;
+    
     return 0;
 }
 
@@ -650,47 +682,58 @@ int waiting_state(Gamestate* gamestate, int socket)
         receive_shot(socket,receive_buffer);
         int x = charToInt(receive_buffer[0]);
         int y = charToInt(receive_buffer[1]);
-        char str2[100];
-        sprintf(str2,"Ataque enemigo en (%d,%d): ",x,y);
-        imprimirHiloLogico(str2,ATTACKED_COLOR);
-        sem_wait(&mutex);
-        ataqueEnemigo[0]=1;
-        ataqueEnemigo[1]=x;
-        ataqueEnemigo[2]=y;
-        sem_post(&mutex);
-        //evaluo el disparo
-        res = check_hit(&gamestate->myBoard, x, y);
-        if(res == MISS)
+        if(x<0 || y<0)
         {
-            imprimirHiloLogico("AGUA!\n",WATER_COLOR);
-            gamestate->myState = SHOOTING;
-            argc = 1;
+            //Asumo que el oponente se desconecto
+            imprimirHiloLogico("El oponente se desconecto.\n",HIT_COLOR);
+            gamestate->myState = WON;
         }
-        if(res == HIT)
+        else
         {
-            imprimirHiloLogico("TOCADO!\n",HIT_COLOR);
-            argc = 1;
-            gamestate->myBoard[x][y]->hitsRemaining--;
-            if(gamestate->myBoard[x][y]->hitsRemaining == 0)
+            char str2[100];
+            sprintf(str2,"Ataque enemigo en (%d,%d): ",x,y);
+            imprimirHiloLogico(str2,ATTACKED_COLOR);
+            sem_wait(&mutex);
+            ataqueEnemigo[0]=1;
+            ataqueEnemigo[1]=x;
+            ataqueEnemigo[2]=y;
+            sem_post(&mutex);
+            //evaluo el disparo
+            res = check_hit(&gamestate->myBoard, x, y);
+            if(res == MISS)
             {
-                res = SUNK;
+                imprimirHiloLogico("AGUA!\n",WATER_COLOR);
+                gamestate->myState = SHOOTING;
+                argc = 1;
             }
+            if(res == HIT)
+            {
+                imprimirHiloLogico("TOCADO!\n",HIT_COLOR);
+                argc = 1;
+                gamestate->myBoard[x][y]->hitsRemaining--;
+                if(gamestate->myBoard[x][y]->hitsRemaining == 0)
+                {
+                    res = SUNK;
+                }
+            }
+            if(res == SUNK)
+            {
+                imprimirHiloLogico("HUNDIDO!\n",DESTROYED_COLOR);
+                //vemos si perdimos
+                gamestate->myState = check_loss(gamestate);
+                //guardamos en el buffer informacion de la nave hundida
+                send_buffer[1] = intToChar(gamestate->myBoard[x][y]->x);
+                send_buffer[2] = intToChar(gamestate->myBoard[x][y]->y);
+                send_buffer[3] = intToChar(gamestate->myBoard[x][y]->largo);
+                send_buffer[4] = intToChar(gamestate->myBoard[x][y]->orientacion);
+                argc = 5;
+            }
+            send_buffer[0] = res;
+            //enviamos la respuesta del disparo al oponente
+            respond_shot(socket, send_buffer, argc);  
         }
-        if(res == SUNK)
-        {
-            imprimirHiloLogico("HUNDIDO!\n",DESTROYED_COLOR);
-            //vemos si perdimos
-            gamestate->myState = check_loss(gamestate);
-            //guardamos en el buffer informacion de la nave hundida
-            send_buffer[1] = intToChar(gamestate->myBoard[x][y]->x);
-            send_buffer[2] = intToChar(gamestate->myBoard[x][y]->y);
-            send_buffer[3] = intToChar(gamestate->myBoard[x][y]->largo);
-            send_buffer[4] = intToChar(gamestate->myBoard[x][y]->orientacion);
-            argc = 5;
-        }
-        send_buffer[0] = res;
-        //enviamos la respuesta del disparo al oponente
-        respond_shot(socket, send_buffer, argc);
+        
+        
     }
     return 0;
 }
@@ -708,15 +751,16 @@ void toggleButtons(int mode)
         }
     }
 }
-
+pthread_t hiloJuego;
 int play_game(int socket, Gamestate* gamestate)
 {
     
     //gameloop
     //se juega hasta que ganes o pierdas
-    pthread_t hiloJuego;
+    
     int ultimoModoBotones = 0;
     pthread_create(&hiloJuego,NULL,funcionJuego,(void*)1);//Creo un hilo auxiliar que maneje los semaforos
+    inicioElJuego = 1;
     do
     {
         pintarAttackButtons();
@@ -750,10 +794,13 @@ int play_game(int socket, Gamestate* gamestate)
 void seguirJugando()
 {
     //avisamos al oponente que ya estamos listos
+    
+    
     char ready = 'r';
     send(newSocket, &ready, 1, 0);
     //esperamos a que el oponente este listo
     read(newSocket, &ready, 1);
+    printf("Lo que recibi del otro player es: %c",ready);
     //printf("El oponente esta listo, asi que arranca el juego.\n");
     //a jugar!
     int res = play_game(newSocket, &gamestate);
@@ -910,5 +957,36 @@ void acceptGame()
 // called when window is closed
 void on_window_main_destroy()
 {
+    
+    printf("Voy a enviar los mensajes correspondientes para desconectar.\n");
+    //Tengo que enviar un mensajito
+    if(newSocket>=0){
+        gamestate.myState = LOST;
+        send_disconnect(newSocket);
+        if(inicioElJuego){
+
+            pthread_kill(hiloJuego,SIGKILL);
+        }
+    }
+    /*if(gamestate.myState = SHOOTING)
+    {
+        printf("Voy a enviar -1 -1.\n");
+        char disconnectMessage[2];
+        sprintf(disconnectMessage,"%d",-1);
+        
+        send_shot(newSocket,-1,-1);
+        
+    }
+    if(gamestate.myState = WAITING)
+    {
+        printf("Voy a enviar DISCONNECTED.\n");
+        char send_buffer[8] = {0};
+        int argc = 1;
+        send_buffer[0] = DISCONNECTED;
+        respond_shot(newSocket, send_buffer, argc);
+    }*/
+    
     gtk_main_quit();
+    
+    
 }
