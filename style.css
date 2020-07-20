@@ -26,6 +26,15 @@
 	color:black;
 }
 
+#myButton_orange{
+    background-color: #ffa473;
+    color:black;
+}
+#myButton_orange:disabled *{
+	background-color: #ffa473;
+	color:black;
+}
+
 #myButton_blue{
     background-color: #03dac6;
     color:black;
@@ -34,6 +43,14 @@
 #myButton_blue:disabled *{
 	background-color: #03dac6;
 	color:black;
+}
+#myButton_labels{
+	background-color: #4a4a4a;
+	color:white;
+}
+#myButton_labels:disabled *{
+	background-color: #4a4a4a;
+	color:white;
 }
 
 #backgroundApp{

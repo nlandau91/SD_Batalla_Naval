@@ -14,6 +14,12 @@
 #include <pthread.h>
 #include <semaphore.h>
  
+char* DESTROYED_COLOR = "#cf6679";
+char* HIT_COLOR = "#ffa473";
+char* WATER_COLOR = "#03dac6";
+char* TEXT_COLOR = "black";
+char* ATTACKED_COLOR = "#cf6679"; 
+ 
 GtkBuilder      *builder;
 GtkWidget       *window;
 GtkWidget       *inputIp,*inputPort;
@@ -31,12 +37,6 @@ GtkWidget       *btnOrientation;
 GtkTextMark     *text_mark_end;
 GtkTextTag      *tag;
 
-
-char* DESTROYED_COLOR = "#cf6679";
-char* HIT_COLOR = "#ffa473";
-char* WATER_COLOR = "#03dac6";
-char* TEXT_COLOR = "black";
-char* ATTACKED_COLOR = "#cf6679";
 
 int frigateRestantes = 2;
 int destroyerRestantes = 3;
@@ -58,7 +58,6 @@ typedef struct mensaje
 
 int hay_que_escribir = 0;
 mensaje bufferEscritura[20];
-mensaje mensaje_a_escribir;
 
 typedef struct datos
 {
@@ -75,28 +74,23 @@ typedef enum gameModes
 
 int x = 0;
 int y = 0;
-void myCSS(void);
-void seguirJugando();
 int mode = UNDEFINED;
 int activarBotones = 0;
 int ataqueEnemigo[3]={0,0,0};
 
+
+/*Defino algunas funciones que son necesarias*/
+void myCSS(void);
+void seguirJugando();
 void pintarBarcos();
-
-
 int shooting_state(Gamestate* gamestate, int socket);
 int waiting_state(Gamestate* gamestate, int socket);
+
+/*Funcion ejecutada por el hilo logico. Se encarga de procesar el flujo de juego*/
 void* funcionJuego(void* arg)
 {
     while(((&gamestate)->myState != WON) && ((&gamestate)->myState != LOST))
     {
-        //imprimo el estado del juego
-        //if(!pid)
-            //print_gamestate(gamestate);
-        //pintarBarcos(); //El problema con esto es que se traba esperando...
-        //else{
-        //while (gtk_events_pending ())
-        //    gtk_main_iteration ();
         //me toca disparar
         if((&gamestate)->myState == SHOOTING)
         {
@@ -129,7 +123,6 @@ void imprimirHiloLogico(char* texto, char* color)
     sem_post(&mutex);
 }
 
-
 int main(int argc, char *argv[])
 {
     XInitThreads();
@@ -137,7 +130,6 @@ int main(int argc, char *argv[])
     myCSS();
     builder = gtk_builder_new();
     gtk_builder_add_from_file (builder, "gui.glade", NULL);
-
     window = GTK_WIDGET(gtk_builder_get_object(builder, "window_main"));
     inputIp = GTK_WIDGET(gtk_builder_get_object(builder,"entryIp"));
     inputPort = GTK_WIDGET(gtk_builder_get_object(builder,"entryPort"));
@@ -173,7 +165,6 @@ int main(int argc, char *argv[])
                                                &text_iter_end,
                                                FALSE);
     gtk_text_view_set_buffer(GTK_TEXT_VIEW(console),buffer);
-    mensaje_a_escribir = *(mensaje*)malloc(sizeof(mensaje));
     gtk_builder_connect_signals(builder, NULL);
     g_object_unref(builder);
     gtk_widget_show(window);
@@ -416,7 +407,7 @@ void pintarBarcos()
         {
             if(arr[i][j] == 1)
             {
-                gtk_widget_set_name(positionButtons[i][j], "myButton_gray");
+                gtk_widget_set_name(positionButtons[i][j], "myButton_orange");
                 gtk_button_set_label (GTK_BUTTON(positionButtons[i][j]), "S");
             }
             if(arr[i][j] == 2)
@@ -523,11 +514,40 @@ int jugar(int socket, Gamestate* gamestate)
 int startGameAux(int mode)
 {
     gtk_widget_hide(startPanel);
-    //printf("ESTOY CREANDO EL PANEL.\n");
-    int i,j;
-    for(i = 0; i<10; i++)
+    for(int i = 1; i<11; i++)
     {
-        for(j = 0; j < 10; j++)
+        char aux[2];
+        sprintf(aux,"%d",i-1);
+        GtkWidget* label = gtk_button_new ();
+        gtk_button_set_label (GTK_BUTTON(label), aux);
+        gtk_widget_set_name(label, "myButton_labels");
+        gtk_widget_set_sensitive (label, FALSE);
+        gtk_grid_attach(GTK_GRID(positionGrid),label,i,0,1,1);
+        gtk_widget_show(label);
+        GtkWidget* label2 = gtk_button_new ();
+        gtk_button_set_label (GTK_BUTTON(label2), aux);
+        gtk_widget_set_name(label2, "myButton_labels");
+        gtk_widget_set_sensitive (label2, FALSE);
+        gtk_grid_attach(GTK_GRID(positionGrid),label2,0,i,1,1);
+        gtk_widget_show(label2);
+        //Ahora con la tabla de ataques
+        GtkWidget* label3 = gtk_button_new ();
+        gtk_button_set_label (GTK_BUTTON(label3), aux);
+        gtk_widget_set_name(label3, "myButton_labels");
+        gtk_widget_set_sensitive (label3, FALSE);
+        gtk_grid_attach(GTK_GRID(attackGrid),label3,i,0,1,1);
+        gtk_widget_show(label3);
+        GtkWidget* label4 = gtk_button_new ();
+        gtk_button_set_label (GTK_BUTTON(label4), aux);
+        gtk_widget_set_name(label4, "myButton_labels");
+        gtk_widget_set_sensitive (label4, FALSE);
+        gtk_grid_attach(GTK_GRID(attackGrid),label4,0,i,1,1);
+        gtk_widget_show(label4);
+    }
+        
+    for(int i = 0; i<10; i++)
+    {
+        for(int j = 0; j < 10; j++)
         {
             positionButtons[i][j] = gtk_button_new();
             attackButtons[i][j] = gtk_button_new();
@@ -542,8 +562,8 @@ int startGameAux(int mode)
             gtk_button_set_label (GTK_BUTTON(attackButtons[i][j]), "?");
             gtk_widget_set_name(attackButtons[i][j], "myButton_gray");
             gtk_widget_set_name(positionButtons[i][j], "myButton_gray");
-            gtk_grid_attach(GTK_GRID(positionGrid),positionButtons[i][j],i,j,1,1);
-            gtk_grid_attach(GTK_GRID(attackGrid),attackButtons[i][j],i,j,1,1);
+            gtk_grid_attach(GTK_GRID(positionGrid),positionButtons[i][j],i+1,j+1,1,1);
+            gtk_grid_attach(GTK_GRID(attackGrid),attackButtons[i][j],i+1,j+1,1,1);
             gtk_widget_show(positionButtons[i][j]);
             gtk_widget_show(attackButtons[i][j]);
             
@@ -579,14 +599,7 @@ int startGameAux(int mode)
 //aqui se realizan las acciones correspondientes a un jugador que tiene que disparar
 int shooting_state(Gamestate* gamestate, int socket)
 {
-    //sem_wait(&mutex);
-    //strcpy(mensaje_a_escribir.msg , "Tu turno. Elige donde atacar.\n");
-    //strcpy(mensaje_a_escribir.color , TEXT_COLOR);
-    //bufferEscritura[hay_que_escribir] = mensaje_a_escribir;
-    //hay_que_escribir++;
-    //sem_post(&mutex);
     imprimirHiloLogico("Tu turno. Elige donde atacar.\n",TEXT_COLOR);
-    //append_text("Tu turno. Elige donde atacar.\n",TEXT_COLOR);
     //espero la respuesta
     char receive_buffer[8] = {0};
     wait_shot_resp(socket,receive_buffer);
@@ -596,56 +609,28 @@ int shooting_state(Gamestate* gamestate, int socket)
     if(receive_buffer[0] == MISS)
     {
         imprimirHiloLogico("AGUA!\n",WATER_COLOR);
-        //printf("AGUA!\n\n");
-        //sem_wait(&mutex);
-        //strcpy(mensaje_a_escribir.msg , "AGUA!.\n");
-        //strcpy(mensaje_a_escribir.color , WATER_COLOR);
-        //bufferEscritura[hay_que_escribir] = mensaje_a_escribir;
-        //hay_que_escribir++;
-        //sem_post(&mutex);
-        //append_text("AGUA!.\n",WATER_COLOR);
         gamestate->myState = WAITING;
         new_tile = WATER;
     }
     if(receive_buffer[0] == HIT)
     {
-        //printf("TOCADO!\n\n");
-        //append_text("TOCADO!\n",HIT_COLOR);
-        //sem_wait(&mutex);
-        //strcpy(mensaje_a_escribir.msg , "TOCADO!.\n");
-        //strcpy(mensaje_a_escribir.color , HIT_COLOR);
-        //bufferEscritura[hay_que_escribir] = mensaje_a_escribir;
-        //hay_que_escribir++;
-        //sem_post(&mutex);
         imprimirHiloLogico("TOCADO!\n",HIT_COLOR);
         new_tile = SHIP;
     }
     if(receive_buffer[0] == SUNK)
     {
-        //printf("HUNDIDO!\n\n");
-        //append_text("TOCADO!\n",DESTROYED_COLOR);
-        //sem_wait(&mutex);
-        //strcpy(mensaje_a_escribir.msg , "HUNDIDO!.\n");
-        //strcpy(mensaje_a_escribir.color , DESTROYED_COLOR);
-        //bufferEscritura[hay_que_escribir] = mensaje_a_escribir;
-        //hay_que_escribir++;
-        //sem_post(&mutex);
         imprimirHiloLogico("HUNDIDO!\n",DESTROYED_COLOR);
         new_tile = DESTROYED;
-
         //informacion de la nave destruida
         //necesaria para actualizar el tablero
         int rcv_x = charToInt(receive_buffer[1]);
         int rcv_y = charToInt(receive_buffer[2]);
         int rcv_size = charToInt(receive_buffer[3]);
         orientation rcv_orientacion = charToInt(receive_buffer[4]);
-
         //destruimos la nave y actualizamos el tablero
         destroy_enemy_ship(gamestate, rcv_x, rcv_y, rcv_size, rcv_orientacion);
-
         //vemos si ganamos
         gamestate->myState = check_win(gamestate);
-
     }
     //actualizamos el tablero
     gamestate->hisBoard[x][y] = new_tile;
@@ -661,24 +646,12 @@ int waiting_state(Gamestate* gamestate, int socket)
         result res;
         char send_buffer[8] = {0};
         int argc = 0;
-
-        //printf("Esperando disparo del oponente...\n\n");
-        
         char receive_buffer[8] = {0};
         receive_shot(socket,receive_buffer);
         int x = charToInt(receive_buffer[0]);
         int y = charToInt(receive_buffer[1]);
-        //printf("Recibido disparo en la posicion [%d,%d]\n\n",x,y);
-
-        //append_text(str2,ATTACKED_COLOR);
-        //sem_wait(&mutex);
         char str2[100];
         sprintf(str2,"Ataque enemigo en (%d,%d): ",x,y);
-        //strcpy(mensaje_a_escribir.msg,str2);
-        //strcpy(mensaje_a_escribir.color,ATTACKED_COLOR);
-        //bufferEscritura[hay_que_escribir] = mensaje_a_escribir;
-        //hay_que_escribir++;
-        //sem_post(&mutex);
         imprimirHiloLogico(str2,ATTACKED_COLOR);
         sem_wait(&mutex);
         ataqueEnemigo[0]=1;
@@ -689,28 +662,12 @@ int waiting_state(Gamestate* gamestate, int socket)
         res = check_hit(&gamestate->myBoard, x, y);
         if(res == MISS)
         {
-            //printf("AGUA!\n\n");
-            //append_text("AGUA!.\n",WATER_COLOR);
-            //sem_wait(&mutex);
-            //strcpy(mensaje_a_escribir.msg,"AGUA!.\n");
-            //strcpy(mensaje_a_escribir.color,WATER_COLOR);
-            //bufferEscritura[hay_que_escribir] = mensaje_a_escribir;
-            //hay_que_escribir++;
-            //sem_post(&mutex);
             imprimirHiloLogico("AGUA!\n",WATER_COLOR);
             gamestate->myState = SHOOTING;
             argc = 1;
         }
         if(res == HIT)
         {
-            //printf("TOCADO!\n\n");
-            //append_text("TOCADO!\n",HIT_COLOR);
-            //sem_wait(&mutex);
-            //strcpy(mensaje_a_escribir.msg , "TOCADO!.\n");
-            //strcpy(mensaje_a_escribir.color , HIT_COLOR);
-            //bufferEscritura[hay_que_escribir] = mensaje_a_escribir;
-            //hay_que_escribir++;
-            //sem_post(&mutex);
             imprimirHiloLogico("TOCADO!\n",HIT_COLOR);
             argc = 1;
             gamestate->myBoard[x][y]->hitsRemaining--;
@@ -721,18 +678,9 @@ int waiting_state(Gamestate* gamestate, int socket)
         }
         if(res == SUNK)
         {
-            //printf("HUNDIDO!\n\n");
-            //append_text("HUNDIDO!\n",DESTROYED_COLOR);
-            //sem_wait(&mutex);
-            //strcpy(mensaje_a_escribir.msg , "HUNDIDO!.\n");
-            //strcpy(mensaje_a_escribir.color , DESTROYED_COLOR);
-            //bufferEscritura[hay_que_escribir] = mensaje_a_escribir;
-            //hay_que_escribir++;
-            //sem_post(&mutex);
             imprimirHiloLogico("HUNDIDO!\n",DESTROYED_COLOR);
             //vemos si perdimos
             gamestate->myState = check_loss(gamestate);
-
             //guardamos en el buffer informacion de la nave hundida
             send_buffer[1] = intToChar(gamestate->myBoard[x][y]->x);
             send_buffer[2] = intToChar(gamestate->myBoard[x][y]->y);
@@ -760,7 +708,6 @@ void toggleButtons(int mode)
         }
     }
 }
-
 
 int play_game(int socket, Gamestate* gamestate)
 {
@@ -792,14 +739,10 @@ int play_game(int socket, Gamestate* gamestate)
                 append_text(bufferEscritura[i].msg,bufferEscritura[i].color);
             }
             hay_que_escribir = 0;
-            
         }
         sem_post(&mutex);
-        //El problema con esto es que se traba esperando...
-        
     }
     while((gamestate->myState != WON) && (gamestate->myState != LOST));
-
     return EXIT_SUCCESS;
 }
 
@@ -820,13 +763,11 @@ void seguirJugando()
     }
     if(gamestate.myState == WON)
     {
-        //printf("Ganaste!\n\n");
         pintarAttackButtons();
         append_text("GANASTE!\n",WATER_COLOR);
     }
     if(gamestate.myState == LOST)
     {
-        //printf("Perdiste!\n\n")
         pintarBarcos();
         pintarAttackButtons();
         append_text("PERDISTE!\n",WATER_COLOR);
@@ -864,9 +805,9 @@ void acceptGame()
                 portString = "14550";
             newSocket = join_game(hostname,atoi(portString));
             if(newSocket>=0){
-            gamestate.myState = WAITING;
-            startGameAux(1);
-        }
+                gamestate.myState = WAITING;
+                startGameAux(1);
+            }
             break;
         case UNDEFINED:   
             exit(-1);
