@@ -850,12 +850,13 @@ int resultado = 20;
 
 void* createGameThread(void* portString)
 {
-    printf("El puerto que recibo es: %s.\n",portString);
+    //printf("El puerto que recibo es: %s.\n",portString);
     int aux = create_game(atoi(portString));
     sem_wait(&mutex);
     resultado = aux;
     sem_post(&mutex);
-    return (void*)aux;
+    //return (void*)aux;
+    pthread_exit(EXIT_SUCCESS);
 }
 
 struct joinStructure
@@ -874,7 +875,8 @@ void* joinGameThread(void* arg)
     sem_wait(&mutex);
     resultadoJoin = toReturn;
     sem_post(&mutex);   
-    return (void*) toReturn;
+    //return (void*) toReturn;
+    pthread_exit(EXIT_SUCCESS);
 }
 
 
