@@ -787,6 +787,8 @@ int play_game(int socket, Gamestate* gamestate)
             hay_que_escribir = 0;
         }
         sem_post(&mutex);
+        //dormimos 16.6667 ms, para tener esos hermosos 60fps
+        usleep(16667);
     }
     while((gamestate->myState != WON) && (gamestate->myState != LOST));
     return EXIT_SUCCESS;
