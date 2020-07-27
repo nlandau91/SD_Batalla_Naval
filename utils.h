@@ -13,10 +13,21 @@ typedef enum color
     WHITE
 } color;
 
+/**
+    Establece el color del background
+    @param bgColor el color que se le seteara al background
+*/
 void set_bg_color(color bgColor);
 
+/**
+    Establece el color del foreground
+    @param fgColor el color que se le seteara al foreground
+*/
 void set_fg_color(color bgColor);
 
+/**
+    Establece el color del foreground y background a los default
+*/
 void color_reset();
 
 /**
