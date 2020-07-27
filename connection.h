@@ -1,15 +1,12 @@
 #ifndef CONNECTION_H_
 #define CONNECTION_H_
 
-//imprime las direcciones por pantalla
-//util para ver a que direcciones puede conectarse un oponente
 /**
     Imprime por pantalla las interfaces de red y sus direcciones
     Util para poder decirle a un posible oponente a que direccion conectarse
 */
 void print_addresses();
 
-//abre un socket y se queda esperando a que se conecte un oponente
 /**
     Abre un socket y se queda esperando a que se conecte un oponente
     @param port el puerto correspondiente al socket abierto
