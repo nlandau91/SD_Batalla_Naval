@@ -101,6 +101,15 @@ int manualaddships(Gamestate* gamestate)
     return EXIT_SUCCESS;
 }
 
+/**
+    Inserta una nave en el tablero en la posicion y orientacion indicada
+    @param gamestate el gamestate que aloja las naves y el tablero
+    @param ship nave a ubicar
+    @param x coordenada x
+    @param y coordenada y
+    @param orientacion orientacion del barco
+    @return un codigo indicando si tuvo exito la funcion
+*/
 int manualAddShipGUI(Gamestate* gamestate, int ship, int x, int y, int orientacion)
 {
     int valido = EXIT_FAILURE;
@@ -227,6 +236,11 @@ int init_gamestate(Gamestate* gamestate)
     return EXIT_SUCCESS;
 }
 
+/**
+    Inicia el estado del juego para la GUI
+    @param gamestate el gamestate que aloja las naves y el tablero
+    @return un codigo indicando si tuvo exito la funcion
+*/
 int init_gamestate2(Gamestate* gamestate)
 {
     //el tablero del oponente se inicializa con posiciones desconocidas

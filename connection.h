@@ -56,6 +56,17 @@ int receive_shot(int socket, char buf[2]);
 */
 int wait_shot_resp(int socket, char buf[5]);
 
+/**
+    Envia un mensaje de desconexion al oponente
+    @param socket el socket creado para la comunicacion
+    @return un codigo indicando si tuvo exito la funcion
+*/
 int send_disconnect(int socket);
+
+/**
+    Revisa si llego un mensaje de desconexion.
+    @param socket el socket creado para la comunicacion
+    @return un codigo indicando si llego el mensaje o no
+*/
 int check_disconnect(int socket);
 #endif //CONNECTION_H_

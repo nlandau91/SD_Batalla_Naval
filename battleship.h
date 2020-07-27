@@ -149,8 +149,18 @@ state check_win(Gamestate* gamestate);
 */
 int destroy_enemy_ship(Gamestate* gamestate, int x, int y, int size, orientation orientacion);
 
+/**
+    Obtiene todos los barcos aliados, sus ubicaciones y estados
+    @param gamestate estado del juego
+    @return una matriz con enteros indicando el estado de cada celda
+*/
 int** getGUIShips(Gamestate* gamestate);
 
+/**
+    Obtiene la tabla enemiga conocida, con sus estados
+    @param gamestate estado del juego
+    @return una matriz con enteros indicando el estado de cada celda
+*/
 int** getGUIAttacks(Gamestate* gamestate);
 
 #endif //BATTLESHIP_H_
