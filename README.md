@@ -3,13 +3,17 @@ Batalla Naval multijugador en C
 Proyecto para la materia Sistemas Distribuidos
 
 
-Para instalar todo alcanza con:
+Instalación
+Estos pasos están pensados para distribuciones basadas en Debian
+Primero, es necesario instalar glade:
+$ sudo apt-get update -y
+$ sudo apt-get install -y glade
 
+En caso de error:
+$ sudo apt-get update --fix-missing
 
-sudo apt-get install glade
-
-Puede que tire un error en la MV,
-
-sudo apt-get update --fix-missing
-
-Esto lo arregla, luego hay que volver a instalar glade
+Y volver a intentar los comandos anteriores
+Una vez instalado glade, utilizar el script de make provisto:
+$ make
+Y ahora solo queda ejecutar el programa
+$ ./ejecutable
