@@ -1,0 +1,202 @@
+\hypertarget{connection_8h}{}\doxysection{connection.\+h File Reference}
+\label{connection_8h}\index{connection.h@{connection.h}}
+This graph shows which files directly or indirectly include this file\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=284pt]{connection_8h__dep__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{connection_8h_a9875cd9dc212d74138116e6f7559ef3a}{print\+\_\+addresses}} ()
+\begin{DoxyCompactList}\small\item\em Imprime por pantalla las interfaces de red y sus direcciones Util para poder decirle a un posible oponente a que direccion conectarse. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{connection_8h_aa67f50757b34d3825917112ecb06b155}{create\+\_\+game}} (int port)
+\begin{DoxyCompactList}\small\item\em Abre un socket y se queda esperando a que se conecte un oponente. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{connection_8h_ad39126a565ccbd6507ff4711cb3991b2}{join\+\_\+game}} (char $\ast$\mbox{\hyperlink{gui_8c_a986bb179a4a3f4a71c515b934b002509}{hostname}}, int port)
+\begin{DoxyCompactList}\small\item\em Abre un socket e intenta conectarse a una partida ya creada. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{connection_8h_a698839e3714beb03133187ad7c0f73d5}{send\+\_\+shot}} (int socket, int \mbox{\hyperlink{gui_8c_a6150e0515f7202e2fb518f7206ed97dc}{x}}, int \mbox{\hyperlink{gui_8c_a0a2f84ed7838f07779ae24c5a9086d33}{y}})
+\begin{DoxyCompactList}\small\item\em Envia un mensaje correspondiente a un disparo. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{connection_8h_a37a1f591e02188b17fdb6ac55adfecfb}{respond\+\_\+shot}} (int socket, char argv\mbox{[}$\,$\mbox{]}, int argc)
+\begin{DoxyCompactList}\small\item\em Envia un mensaje correspondiente a la respuesta a un disparo. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{connection_8h_a7b1b165d5d41a9c292f7302b1b6a2523}{receive\+\_\+shot}} (int socket, char buf\mbox{[}2\mbox{]})
+\begin{DoxyCompactList}\small\item\em Espera por un mensaje de disparo. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{connection_8h_a555313c852d61afe14132789cc0a98a3}{wait\+\_\+shot\+\_\+resp}} (int socket, char buf\mbox{[}5\mbox{]})
+\begin{DoxyCompactList}\small\item\em Espera por un mensaje de respuesta de disparo. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{connection_8h_a7f053685acc96fb6b094ab88951d198e}{send\+\_\+disconnect}} (int socket)
+\begin{DoxyCompactList}\small\item\em Envia un mensaje de desconexion al oponente. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{connection_8h_a7e2e7c9895d53ccad650924ff6ab1ab7}{check\+\_\+disconnect}} (int socket)
+\begin{DoxyCompactList}\small\item\em Revisa si llego un mensaje de desconexion. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{connection_8h_a7e2e7c9895d53ccad650924ff6ab1ab7}\label{connection_8h_a7e2e7c9895d53ccad650924ff6ab1ab7}} 
+\index{connection.h@{connection.h}!check\_disconnect@{check\_disconnect}}
+\index{check\_disconnect@{check\_disconnect}!connection.h@{connection.h}}
+\doxysubsubsection{\texorpdfstring{check\_disconnect()}{check\_disconnect()}}
+{\footnotesize\ttfamily int check\+\_\+disconnect (\begin{DoxyParamCaption}\item[{int}]{socket }\end{DoxyParamCaption})}
+
+
+
+Revisa si llego un mensaje de desconexion. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em socket} & el socket creado para la comunicacion \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+un codigo indicando si llego el mensaje o no 
+\end{DoxyReturn}
+\mbox{\Hypertarget{connection_8h_aa67f50757b34d3825917112ecb06b155}\label{connection_8h_aa67f50757b34d3825917112ecb06b155}} 
+\index{connection.h@{connection.h}!create\_game@{create\_game}}
+\index{create\_game@{create\_game}!connection.h@{connection.h}}
+\doxysubsubsection{\texorpdfstring{create\_game()}{create\_game()}}
+{\footnotesize\ttfamily int create\+\_\+game (\begin{DoxyParamCaption}\item[{int}]{port }\end{DoxyParamCaption})}
+
+
+
+Abre un socket y se queda esperando a que se conecte un oponente. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em port} & el puerto correspondiente al socket abierto \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+el socket creado en caso de exito, -\/1 en caso de falla 
+\end{DoxyReturn}
+\mbox{\Hypertarget{connection_8h_ad39126a565ccbd6507ff4711cb3991b2}\label{connection_8h_ad39126a565ccbd6507ff4711cb3991b2}} 
+\index{connection.h@{connection.h}!join\_game@{join\_game}}
+\index{join\_game@{join\_game}!connection.h@{connection.h}}
+\doxysubsubsection{\texorpdfstring{join\_game()}{join\_game()}}
+{\footnotesize\ttfamily int join\+\_\+game (\begin{DoxyParamCaption}\item[{char $\ast$}]{hostname,  }\item[{int}]{port }\end{DoxyParamCaption})}
+
+
+
+Abre un socket e intenta conectarse a una partida ya creada. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em hostname} & el ip donde esta creada la partida \\
+\hline
+{\em el} & puerto por donde se estara escuchando \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+un codigo indicando si tuvo exito la funcion 
+\end{DoxyReturn}
+\mbox{\Hypertarget{connection_8h_a9875cd9dc212d74138116e6f7559ef3a}\label{connection_8h_a9875cd9dc212d74138116e6f7559ef3a}} 
+\index{connection.h@{connection.h}!print\_addresses@{print\_addresses}}
+\index{print\_addresses@{print\_addresses}!connection.h@{connection.h}}
+\doxysubsubsection{\texorpdfstring{print\_addresses()}{print\_addresses()}}
+{\footnotesize\ttfamily void print\+\_\+addresses (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Imprime por pantalla las interfaces de red y sus direcciones Util para poder decirle a un posible oponente a que direccion conectarse. 
+
+\mbox{\Hypertarget{connection_8h_a7b1b165d5d41a9c292f7302b1b6a2523}\label{connection_8h_a7b1b165d5d41a9c292f7302b1b6a2523}} 
+\index{connection.h@{connection.h}!receive\_shot@{receive\_shot}}
+\index{receive\_shot@{receive\_shot}!connection.h@{connection.h}}
+\doxysubsubsection{\texorpdfstring{receive\_shot()}{receive\_shot()}}
+{\footnotesize\ttfamily int receive\+\_\+shot (\begin{DoxyParamCaption}\item[{int}]{socket,  }\item[{char}]{buf\mbox{[}2\mbox{]} }\end{DoxyParamCaption})}
+
+
+
+Espera por un mensaje de disparo. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em socket} & en el cual se espera el mensaje \\
+\hline
+{\em buf} & arreglo donde se guardara el mensaje recibido \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+un codigo indicando si tuvo exito la funcion 
+\end{DoxyReturn}
+\mbox{\Hypertarget{connection_8h_a37a1f591e02188b17fdb6ac55adfecfb}\label{connection_8h_a37a1f591e02188b17fdb6ac55adfecfb}} 
+\index{connection.h@{connection.h}!respond\_shot@{respond\_shot}}
+\index{respond\_shot@{respond\_shot}!connection.h@{connection.h}}
+\doxysubsubsection{\texorpdfstring{respond\_shot()}{respond\_shot()}}
+{\footnotesize\ttfamily int respond\+\_\+shot (\begin{DoxyParamCaption}\item[{int}]{socket,  }\item[{char}]{argv\mbox{[}$\,$\mbox{]},  }\item[{int}]{argc }\end{DoxyParamCaption})}
+
+
+
+Envia un mensaje correspondiente a la respuesta a un disparo. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em socket} & por el cual se enviara el mensaje \\
+\hline
+{\em argv} & contiene los argumentos de la respuesta \\
+\hline
+{\em argc} & indica la cantidad de argumentos de la respuesta \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+un codigo indicando si tuvo exito la funcion 
+\end{DoxyReturn}
+\mbox{\Hypertarget{connection_8h_a7f053685acc96fb6b094ab88951d198e}\label{connection_8h_a7f053685acc96fb6b094ab88951d198e}} 
+\index{connection.h@{connection.h}!send\_disconnect@{send\_disconnect}}
+\index{send\_disconnect@{send\_disconnect}!connection.h@{connection.h}}
+\doxysubsubsection{\texorpdfstring{send\_disconnect()}{send\_disconnect()}}
+{\footnotesize\ttfamily int send\+\_\+disconnect (\begin{DoxyParamCaption}\item[{int}]{socket }\end{DoxyParamCaption})}
+
+
+
+Envia un mensaje de desconexion al oponente. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em socket} & el socket creado para la comunicacion \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+un codigo indicando si tuvo exito la funcion 
+\end{DoxyReturn}
+\mbox{\Hypertarget{connection_8h_a698839e3714beb03133187ad7c0f73d5}\label{connection_8h_a698839e3714beb03133187ad7c0f73d5}} 
+\index{connection.h@{connection.h}!send\_shot@{send\_shot}}
+\index{send\_shot@{send\_shot}!connection.h@{connection.h}}
+\doxysubsubsection{\texorpdfstring{send\_shot()}{send\_shot()}}
+{\footnotesize\ttfamily int send\+\_\+shot (\begin{DoxyParamCaption}\item[{int}]{socket,  }\item[{int}]{x,  }\item[{int}]{y }\end{DoxyParamCaption})}
+
+
+
+Envia un mensaje correspondiente a un disparo. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em socket} & por el cual se enviara el mensaje \\
+\hline
+{\em x} & coordenada x del disparo \\
+\hline
+{\em y} & coordenada y del disparo \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+un codigo indicando si tuvo exito la funcion 
+\end{DoxyReturn}
+\mbox{\Hypertarget{connection_8h_a555313c852d61afe14132789cc0a98a3}\label{connection_8h_a555313c852d61afe14132789cc0a98a3}} 
+\index{connection.h@{connection.h}!wait\_shot\_resp@{wait\_shot\_resp}}
+\index{wait\_shot\_resp@{wait\_shot\_resp}!connection.h@{connection.h}}
+\doxysubsubsection{\texorpdfstring{wait\_shot\_resp()}{wait\_shot\_resp()}}
+{\footnotesize\ttfamily int wait\+\_\+shot\+\_\+resp (\begin{DoxyParamCaption}\item[{int}]{socket,  }\item[{char}]{buf\mbox{[}5\mbox{]} }\end{DoxyParamCaption})}
+
+
+
+Espera por un mensaje de respuesta de disparo. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em socket} & en el cual se espera el mensaje \\
+\hline
+{\em buf} & arreglo donde se guardara el mensaje recibido \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+un codigo indicando si tuvo exito la funcion 
+\end{DoxyReturn}

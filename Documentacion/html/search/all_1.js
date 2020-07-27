@@ -1,0 +1,24 @@
+var searchData=
+[
+  ['barcoactual_11',['barcoActual',['../gui_8c.html#a10f799fdbcfc7f68db77177a1d6daaf1',1,'gui.c']]],
+  ['battleship_12',['BATTLESHIP',['../battleship_8h.html#ade6b378b8f034b783aa2f8d948819e5ba5bbb3abcaa2b907922eb8144a930e12f',1,'battleship.h']]],
+  ['battleship_2ec_13',['battleship.c',['../battleship_8c.html',1,'']]],
+  ['battleship_2eh_14',['battleship.h',['../battleship_8h.html',1,'']]],
+  ['battleshipcallback_15',['battleshipCallback',['../gui_8c.html#a036421c91518a3956c12b9a4272dd017',1,'gui.c']]],
+  ['battleshiprestantes_16',['battleshipRestantes',['../gui_8c.html#afb884e21a4b1da6cea665cfa1aa86da4',1,'gui.c']]],
+  ['black_17',['BLACK',['../utils_8h.html#a37dbdc30935031c05304482e1be89d8faf77fb67151d0c18d397069ad8c271ba3',1,'utils.h']]],
+  ['blue_18',['BLUE',['../utils_8h.html#a37dbdc30935031c05304482e1be89d8fa35d6719cb4d7577c031b3d79057a1b79',1,'utils.h']]],
+  ['boardupdate_19',['boardUpdate',['../gui_8c.html#a101752efe4a18deb98344072c3ae10d3',1,'gui.c']]],
+  ['box_5finsercion_20',['box_insercion',['../gui_8c.html#a09fefe5ab2937e230734f8ceb726f8f0',1,'gui.c']]],
+  ['btn_5fautomatico_21',['btn_automatico',['../gui_8c.html#a1dc7777f15c300a152361da915456407',1,'gui.c']]],
+  ['btn_5fmanual_22',['btn_manual',['../gui_8c.html#a2d1a52c18aee0c3e1c06af9b5ee9de65',1,'gui.c']]],
+  ['btnaccept_23',['btnAccept',['../gui_8c.html#af28d7179dcf21836b43911e52feac814',1,'gui.c']]],
+  ['btnbattleship_24',['btnBattleship',['../gui_8c.html#af9c11662e5a9983133e5cccc8c9bf749',1,'gui.c']]],
+  ['btncarrier_25',['btnCarrier',['../gui_8c.html#aa10cb008287eb9c9892ed99bcb400544',1,'gui.c']]],
+  ['btndestroyer_26',['btnDestroyer',['../gui_8c.html#a01cecfff3b66f8e02c2ea3b4f25bb2bd',1,'gui.c']]],
+  ['btnfrigate_27',['btnFrigate',['../gui_8c.html#a0eeb32a1be5a459c65d0fd71725d0cec',1,'gui.c']]],
+  ['btnorientation_28',['btnOrientation',['../gui_8c.html#a1fcea660a48ecb8e1e40555797f66376',1,'gui.c']]],
+  ['buffer_29',['buffer',['../gui_8c.html#a9860d266405c74e89a2023a30fc83aba',1,'gui.c']]],
+  ['bufferescritura_30',['bufferEscritura',['../gui_8c.html#a7bb28c8bfc78daa2df644fed296b8bc5',1,'gui.c']]],
+  ['builder_31',['builder',['../gui_8c.html#afa501dbb63ae6077ac8db76b560de42b',1,'gui.c']]]
+];

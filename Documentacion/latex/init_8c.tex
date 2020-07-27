@@ -1,0 +1,190 @@
+\hypertarget{init_8c}{}\doxysection{init.\+c File Reference}
+\label{init_8c}\index{init.c@{init.c}}
+{\ttfamily \#include \char`\"{}init.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}battleship.\+h\char`\"{}}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}utils.\+h\char`\"{}}\newline
+{\ttfamily \#include $<$sys/time.\+h$>$}\newline
+Include dependency graph for init.\+c\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{init_8c__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{init_8c_aed798972af0bb8cd4325fd20b27c1675}{autoaddships}} (\mbox{\hyperlink{structGamestate}{Gamestate}} $\ast$\mbox{\hyperlink{gui_8c_aa1aa59eb3e09d22827f20650740498b2}{gamestate}})
+\begin{DoxyCompactList}\small\item\em Inserta las naves automaticamente en el tablero. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{init_8c_a82cb6cd0defda26431010fbb4b0ce5d7}{manualaddships}} (\mbox{\hyperlink{structGamestate}{Gamestate}} $\ast$\mbox{\hyperlink{gui_8c_aa1aa59eb3e09d22827f20650740498b2}{gamestate}})
+\begin{DoxyCompactList}\small\item\em Inserta las naves de forma manual en el tablero Le pide input al usuario para ubicarlas. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{init_8c_a6eebe97fee04f35869960454657c492f}{manual\+Add\+Ship\+G\+UI}} (\mbox{\hyperlink{structGamestate}{Gamestate}} $\ast$\mbox{\hyperlink{gui_8c_aa1aa59eb3e09d22827f20650740498b2}{gamestate}}, int ship, int \mbox{\hyperlink{gui_8c_a6150e0515f7202e2fb518f7206ed97dc}{x}}, int \mbox{\hyperlink{gui_8c_a0a2f84ed7838f07779ae24c5a9086d33}{y}}, int \mbox{\hyperlink{gui_8c_ad638b8e07af0ac67cbf7a08b6c63d504}{orientacion}})
+\begin{DoxyCompactList}\small\item\em Inserta una nave en el tablero en la posicion y orientacion indicada. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{init_8c_a5dc92863538dad9b4fd353aa6e075e25}{init\+\_\+shiparray}} (\mbox{\hyperlink{structShip}{Ship}}($\ast$shiparray)\mbox{[}9\mbox{]})
+\begin{DoxyCompactList}\small\item\em Inicializa el arreglo de naves pasado por parametro. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{init_8c_af82c0a5d647d54ab9a6d9cdde8a16b14}{init\+\_\+tileboard}} (\mbox{\hyperlink{battleship_8h_a9739dc8e2f05bf198c3af9aa272593fa}{tile}}($\ast$tileboard)\mbox{[}$\,$\mbox{]}\mbox{[}10\mbox{]})
+\begin{DoxyCompactList}\small\item\em Inicializa tablero de tiles pasado por parametro. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{init_8c_a1f4d6d6fe2ae1a5961cd9e6fee864468}{init\+\_\+shipboard}} (\mbox{\hyperlink{structShip}{Ship}} $\ast$($\ast$shipboard)\mbox{[}$\,$\mbox{]}\mbox{[}10\mbox{]})
+\begin{DoxyCompactList}\small\item\em Inicializa el tablero de naves pasado por parametro. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{init_8c_a529484417a4384c17708e416a8ad9341}{init\+\_\+gamestate}} (\mbox{\hyperlink{structGamestate}{Gamestate}} $\ast$\mbox{\hyperlink{gui_8c_aa1aa59eb3e09d22827f20650740498b2}{gamestate}})
+\begin{DoxyCompactList}\small\item\em Inicializa el gamestate. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{init_8c_a4d3420475bac62c670393241feb642d8}{init\+\_\+gamestate2}} (\mbox{\hyperlink{structGamestate}{Gamestate}} $\ast$\mbox{\hyperlink{gui_8c_aa1aa59eb3e09d22827f20650740498b2}{gamestate}})
+\begin{DoxyCompactList}\small\item\em Inicia el estado del juego para la G\+UI. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{init_8c_aed798972af0bb8cd4325fd20b27c1675}\label{init_8c_aed798972af0bb8cd4325fd20b27c1675}} 
+\index{init.c@{init.c}!autoaddships@{autoaddships}}
+\index{autoaddships@{autoaddships}!init.c@{init.c}}
+\doxysubsubsection{\texorpdfstring{autoaddships()}{autoaddships()}}
+{\footnotesize\ttfamily int autoaddships (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structGamestate}{Gamestate}} $\ast$}]{gamestate }\end{DoxyParamCaption})}
+
+
+
+Inserta las naves automaticamente en el tablero. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em gamestate} & el gamestate que aloja las naves y el tablero \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+un codigo indicando si tuvo exito la funcion 
+\end{DoxyReturn}
+\mbox{\Hypertarget{init_8c_a529484417a4384c17708e416a8ad9341}\label{init_8c_a529484417a4384c17708e416a8ad9341}} 
+\index{init.c@{init.c}!init\_gamestate@{init\_gamestate}}
+\index{init\_gamestate@{init\_gamestate}!init.c@{init.c}}
+\doxysubsubsection{\texorpdfstring{init\_gamestate()}{init\_gamestate()}}
+{\footnotesize\ttfamily int init\+\_\+gamestate (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structGamestate}{Gamestate}} $\ast$}]{gamestate }\end{DoxyParamCaption})}
+
+
+
+Inicializa el gamestate. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em gamestate} & puntero al gamestate que sera inicializado \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+un codigo indicando si tuvo exito la funcion 
+\end{DoxyReturn}
+\mbox{\Hypertarget{init_8c_a4d3420475bac62c670393241feb642d8}\label{init_8c_a4d3420475bac62c670393241feb642d8}} 
+\index{init.c@{init.c}!init\_gamestate2@{init\_gamestate2}}
+\index{init\_gamestate2@{init\_gamestate2}!init.c@{init.c}}
+\doxysubsubsection{\texorpdfstring{init\_gamestate2()}{init\_gamestate2()}}
+{\footnotesize\ttfamily int init\+\_\+gamestate2 (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structGamestate}{Gamestate}} $\ast$}]{gamestate }\end{DoxyParamCaption})}
+
+
+
+Inicia el estado del juego para la G\+UI. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em gamestate} & el gamestate que aloja las naves y el tablero \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+un codigo indicando si tuvo exito la funcion 
+\end{DoxyReturn}
+\mbox{\Hypertarget{init_8c_a5dc92863538dad9b4fd353aa6e075e25}\label{init_8c_a5dc92863538dad9b4fd353aa6e075e25}} 
+\index{init.c@{init.c}!init\_shiparray@{init\_shiparray}}
+\index{init\_shiparray@{init\_shiparray}!init.c@{init.c}}
+\doxysubsubsection{\texorpdfstring{init\_shiparray()}{init\_shiparray()}}
+{\footnotesize\ttfamily int init\+\_\+shiparray (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structShip}{Ship}}($\ast$)}]{shiparray\mbox{[}9\mbox{]} }\end{DoxyParamCaption})}
+
+
+
+Inicializa el arreglo de naves pasado por parametro. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em shiparray} & puntero al arreglo de naves que sera inicializado \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+un codigo indicando si tuvo exito la funcion 
+\end{DoxyReturn}
+\mbox{\Hypertarget{init_8c_a1f4d6d6fe2ae1a5961cd9e6fee864468}\label{init_8c_a1f4d6d6fe2ae1a5961cd9e6fee864468}} 
+\index{init.c@{init.c}!init\_shipboard@{init\_shipboard}}
+\index{init\_shipboard@{init\_shipboard}!init.c@{init.c}}
+\doxysubsubsection{\texorpdfstring{init\_shipboard()}{init\_shipboard()}}
+{\footnotesize\ttfamily int init\+\_\+shipboard (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structShip}{Ship}} $\ast$($\ast$)}]{shipboard\mbox{[}$\,$\mbox{]}\mbox{[}10\mbox{]} }\end{DoxyParamCaption})}
+
+
+
+Inicializa el tablero de naves pasado por parametro. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em shipboard} & puntero al tablero de naves que sera inicializado \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+un codigo indicando si tuvo exito la funcion 
+\end{DoxyReturn}
+\mbox{\Hypertarget{init_8c_af82c0a5d647d54ab9a6d9cdde8a16b14}\label{init_8c_af82c0a5d647d54ab9a6d9cdde8a16b14}} 
+\index{init.c@{init.c}!init\_tileboard@{init\_tileboard}}
+\index{init\_tileboard@{init\_tileboard}!init.c@{init.c}}
+\doxysubsubsection{\texorpdfstring{init\_tileboard()}{init\_tileboard()}}
+{\footnotesize\ttfamily int init\+\_\+tileboard (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{battleship_8h_a9739dc8e2f05bf198c3af9aa272593fa}{tile}}($\ast$)}]{tileboard\mbox{[}$\,$\mbox{]}\mbox{[}10\mbox{]} }\end{DoxyParamCaption})}
+
+
+
+Inicializa tablero de tiles pasado por parametro. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em tileboard} & puntero al tablero de tiles que sera inicializado \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+un codigo indicando si tuvo exito la funcion 
+\end{DoxyReturn}
+\mbox{\Hypertarget{init_8c_a6eebe97fee04f35869960454657c492f}\label{init_8c_a6eebe97fee04f35869960454657c492f}} 
+\index{init.c@{init.c}!manualAddShipGUI@{manualAddShipGUI}}
+\index{manualAddShipGUI@{manualAddShipGUI}!init.c@{init.c}}
+\doxysubsubsection{\texorpdfstring{manualAddShipGUI()}{manualAddShipGUI()}}
+{\footnotesize\ttfamily int manual\+Add\+Ship\+G\+UI (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structGamestate}{Gamestate}} $\ast$}]{gamestate,  }\item[{int}]{ship,  }\item[{int}]{x,  }\item[{int}]{y,  }\item[{int}]{orientacion }\end{DoxyParamCaption})}
+
+
+
+Inserta una nave en el tablero en la posicion y orientacion indicada. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em gamestate} & el gamestate que aloja las naves y el tablero \\
+\hline
+{\em ship} & nave a ubicar \\
+\hline
+{\em x} & coordenada x \\
+\hline
+{\em y} & coordenada y \\
+\hline
+{\em orientacion} & orientacion del barco \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+un codigo indicando si tuvo exito la funcion 
+\end{DoxyReturn}
+\mbox{\Hypertarget{init_8c_a82cb6cd0defda26431010fbb4b0ce5d7}\label{init_8c_a82cb6cd0defda26431010fbb4b0ce5d7}} 
+\index{init.c@{init.c}!manualaddships@{manualaddships}}
+\index{manualaddships@{manualaddships}!init.c@{init.c}}
+\doxysubsubsection{\texorpdfstring{manualaddships()}{manualaddships()}}
+{\footnotesize\ttfamily int manualaddships (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structGamestate}{Gamestate}} $\ast$}]{gamestate }\end{DoxyParamCaption})}
+
+
+
+Inserta las naves de forma manual en el tablero Le pide input al usuario para ubicarlas. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em gamestate} & el gamestate que aloja las naves y el tablero \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+un codigo indicando si tuvo exito la funcion 
+\end{DoxyReturn}

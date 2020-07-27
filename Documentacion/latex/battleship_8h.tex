@@ -1,0 +1,512 @@
+\hypertarget{battleship_8h}{}\doxysection{battleship.\+h File Reference}
+\label{battleship_8h}\index{battleship.h@{battleship.h}}
+This graph shows which files directly or indirectly include this file\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=341pt]{battleship_8h__dep__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structShip}{Ship}}
+\begin{DoxyCompactList}\small\item\em Estructura de una nave. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structGamestate}{Gamestate}}
+\begin{DoxyCompactList}\small\item\em Estructura del gamestate. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef enum \mbox{\hyperlink{battleship_8h_ac5fc6e200c34376449ba20a234061eb4}{orientation}} \mbox{\hyperlink{battleship_8h_a3c61eb1e4f8b904d8f9da248f112ee5a}{orientation}}
+\begin{DoxyCompactList}\small\item\em Enum para representar la orientacion de una nave en el tablero. \end{DoxyCompactList}\item 
+typedef enum \mbox{\hyperlink{battleship_8h_ade6b378b8f034b783aa2f8d948819e5b}{ship\+\_\+type}} \mbox{\hyperlink{battleship_8h_adf0472405305b61a7a579189da0ea0d2}{ship\+\_\+type}}
+\begin{DoxyCompactList}\small\item\em Enum para representar los tipos de nave. \end{DoxyCompactList}\item 
+typedef enum \mbox{\hyperlink{battleship_8h_a9739dc8e2f05bf198c3af9aa272593fa}{tile}} \mbox{\hyperlink{battleship_8h_a0e5e6c00057447e8a5d6cfb22dd04c6d}{tile}}
+\begin{DoxyCompactList}\small\item\em Enum para representar los tiles que formaran el tablero del oponente. \end{DoxyCompactList}\item 
+typedef enum \mbox{\hyperlink{battleship_8h_adc6e5733fc3c22f0a7b2914188c49c90}{state}} \mbox{\hyperlink{battleship_8h_a3746a84324bab30a3688f1390fced05e}{state}}
+\begin{DoxyCompactList}\small\item\em Enum para representar los posibles estados de un jugador. \end{DoxyCompactList}\item 
+typedef enum \mbox{\hyperlink{battleship_8h_a937d4dd628a8858b443a399410d2600b}{result}} \mbox{\hyperlink{battleship_8h_a13da4de51c2a21fa288ef095fb5a1108}{result}}
+\begin{DoxyCompactList}\small\item\em Enum para representar el resultado de un disparo. \end{DoxyCompactList}\item 
+typedef struct \mbox{\hyperlink{structShip}{Ship}} \mbox{\hyperlink{battleship_8h_a6f28cfabd3462dd926cab372ce83d2b7}{Ship}}
+\begin{DoxyCompactList}\small\item\em Estructura de una nave. \end{DoxyCompactList}\item 
+typedef struct \mbox{\hyperlink{structGamestate}{Gamestate}} \mbox{\hyperlink{battleship_8h_a84a411e7a8368ccca2d9e147f0c8de2d}{Gamestate}}
+\begin{DoxyCompactList}\small\item\em Estructura del gamestate. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \mbox{\hyperlink{battleship_8h_ac5fc6e200c34376449ba20a234061eb4}{orientation}} \{ \mbox{\hyperlink{battleship_8h_ac5fc6e200c34376449ba20a234061eb4a4dd51ad73508d6fc83a502966779e48e}{H\+O\+R\+I\+Z\+O\+N\+T\+AL}}, 
+\mbox{\hyperlink{battleship_8h_ac5fc6e200c34376449ba20a234061eb4a1a88641fcd39f2ed3e58a18526e97138}{V\+E\+R\+T\+I\+C\+AL}}
+ \}
+\begin{DoxyCompactList}\small\item\em Enum para representar la orientacion de una nave en el tablero. \end{DoxyCompactList}\item 
+enum \mbox{\hyperlink{battleship_8h_ade6b378b8f034b783aa2f8d948819e5b}{ship\+\_\+type}} \{ \mbox{\hyperlink{battleship_8h_ade6b378b8f034b783aa2f8d948819e5ba55c4c1f89c0f5e601a12d16e6ee49661}{F\+R\+I\+G\+A\+TE}}, 
+\mbox{\hyperlink{battleship_8h_ade6b378b8f034b783aa2f8d948819e5ba78871555d7b4e80733bd639fc08bac47}{D\+E\+S\+T\+R\+O\+Y\+ER}}, 
+\mbox{\hyperlink{battleship_8h_ade6b378b8f034b783aa2f8d948819e5ba5bbb3abcaa2b907922eb8144a930e12f}{B\+A\+T\+T\+L\+E\+S\+H\+IP}}, 
+\mbox{\hyperlink{battleship_8h_ade6b378b8f034b783aa2f8d948819e5ba5293c17ce37d780628be9846ea6d1a31}{C\+A\+R\+R\+I\+ER}}
+ \}
+\begin{DoxyCompactList}\small\item\em Enum para representar los tipos de nave. \end{DoxyCompactList}\item 
+enum \mbox{\hyperlink{battleship_8h_a9739dc8e2f05bf198c3af9aa272593fa}{tile}} \{ \mbox{\hyperlink{battleship_8h_a9739dc8e2f05bf198c3af9aa272593faa6ce26a62afab55d7606ad4e92428b30c}{U\+N\+K\+N\+O\+WN}}, 
+\mbox{\hyperlink{battleship_8h_a9739dc8e2f05bf198c3af9aa272593faa9ac7d5e5851d7a2bc186a1c3341589f6}{W\+A\+T\+ER}}, 
+\mbox{\hyperlink{battleship_8h_a9739dc8e2f05bf198c3af9aa272593faa5e69962f7be201703b58f4fdb5b326fa}{S\+H\+IP}}, 
+\mbox{\hyperlink{battleship_8h_a9739dc8e2f05bf198c3af9aa272593faa4ff8bebc049a0e8fa161e18027e989ff}{D\+E\+S\+T\+R\+O\+Y\+ED}}
+ \}
+\begin{DoxyCompactList}\small\item\em Enum para representar los tiles que formaran el tablero del oponente. \end{DoxyCompactList}\item 
+enum \mbox{\hyperlink{battleship_8h_adc6e5733fc3c22f0a7b2914188c49c90}{state}} \{ \mbox{\hyperlink{battleship_8h_adc6e5733fc3c22f0a7b2914188c49c90a7b771453d1a8c8cc2efab221859139d8}{S\+H\+O\+O\+T\+I\+NG}}, 
+\mbox{\hyperlink{battleship_8h_adc6e5733fc3c22f0a7b2914188c49c90a757971c0bc5a1972d5f1b1be2c0e2087}{W\+A\+I\+T\+I\+NG}}, 
+\mbox{\hyperlink{battleship_8h_adc6e5733fc3c22f0a7b2914188c49c90a5a0f1e556554ad597318089b65502872}{W\+ON}}, 
+\mbox{\hyperlink{battleship_8h_adc6e5733fc3c22f0a7b2914188c49c90a339435bd0d4a842c6107333c908a5317}{L\+O\+ST}}
+ \}
+\begin{DoxyCompactList}\small\item\em Enum para representar los posibles estados de un jugador. \end{DoxyCompactList}\item 
+enum \mbox{\hyperlink{battleship_8h_a937d4dd628a8858b443a399410d2600b}{result}} \{ \mbox{\hyperlink{battleship_8h_a937d4dd628a8858b443a399410d2600baf15e118f26fd4e7acd598ef7e4291b2a}{M\+I\+SS}} =48, 
+\mbox{\hyperlink{battleship_8h_a937d4dd628a8858b443a399410d2600bad4cf8619fedf804702c72835be555da0}{H\+IT}} =49, 
+\mbox{\hyperlink{battleship_8h_a937d4dd628a8858b443a399410d2600ba62e3db9035966f0253975cb482c1969d}{S\+U\+NK}} =50, 
+\mbox{\hyperlink{battleship_8h_a937d4dd628a8858b443a399410d2600bacdaad1112073e3e2ea032424c38c34e1}{D\+I\+S\+C\+O\+N\+N\+E\+C\+T\+ED}} =51
+ \}
+\begin{DoxyCompactList}\small\item\em Enum para representar el resultado de un disparo. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{battleship_8h_a62830b5c75e98d6293008102a64b9f2c}{put\+\_\+ship}} (\mbox{\hyperlink{structShip}{Ship}} $\ast$($\ast$board)\mbox{[}$\,$\mbox{]}\mbox{[}10\mbox{]}, \mbox{\hyperlink{structShip}{Ship}} $\ast$ship)
+\begin{DoxyCompactList}\small\item\em Intenta colocar una nave en el tablero de naves La posicion de la nave ya esta ingresada en la nave. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{battleship_8h_a10643a9ac180b7b77bcb74ba6e5fbacb}{check\+\_\+hit}} (\mbox{\hyperlink{structShip}{Ship}} $\ast$($\ast$board)\mbox{[}$\,$\mbox{]}\mbox{[}10\mbox{]}, int \mbox{\hyperlink{gui_8c_a6150e0515f7202e2fb518f7206ed97dc}{x}}, int \mbox{\hyperlink{gui_8c_a0a2f84ed7838f07779ae24c5a9086d33}{y}})
+\begin{DoxyCompactList}\small\item\em Decide si un disparo es hit o miss. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{battleship_8h_ab2f8f46ed2db794dabf0bd410526a6b7}{print\+\_\+gamestate}} (\mbox{\hyperlink{structGamestate}{Gamestate}} $\ast$\mbox{\hyperlink{gui_8c_aa1aa59eb3e09d22827f20650740498b2}{gamestate}})
+\begin{DoxyCompactList}\small\item\em Imprime una representacion del gamestate por pantalla. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{battleship_8h_acb20b0fcf9cb1794dc14388b0fd5d3a7}{create\+\_\+ship}} (\mbox{\hyperlink{structShip}{Ship}} $\ast$ship, \mbox{\hyperlink{battleship_8h_ade6b378b8f034b783aa2f8d948819e5b}{ship\+\_\+type}} type)
+\begin{DoxyCompactList}\small\item\em Crear una nave de tipo type. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{battleship_8h_a052e8ff38905540f6beea58ed86c08e5}{print\+\_\+tileboard}} (\mbox{\hyperlink{battleship_8h_a9739dc8e2f05bf198c3af9aa272593fa}{tile}}($\ast$tileboard)\mbox{[}$\,$\mbox{]}\mbox{[}10\mbox{]})
+\begin{DoxyCompactList}\small\item\em Imprime un tablero de tiles por pantalla. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{battleship_8h_ac085b5583128c764edc86ecda597ad00}{print\+\_\+shipboard}} (\mbox{\hyperlink{structShip}{Ship}} $\ast$($\ast$shipboard)\mbox{[}$\,$\mbox{]}\mbox{[}10\mbox{]})
+\begin{DoxyCompactList}\small\item\em Imprime un tablero de naves por pantalla. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{battleship_8h_adc6e5733fc3c22f0a7b2914188c49c90}{state}} \mbox{\hyperlink{battleship_8h_acc1bc181acd9712a6474d839ed13c887}{check\+\_\+loss}} (\mbox{\hyperlink{structGamestate}{Gamestate}} $\ast$\mbox{\hyperlink{gui_8c_aa1aa59eb3e09d22827f20650740498b2}{gamestate}})
+\begin{DoxyCompactList}\small\item\em Checkea si se perdio la partida. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{battleship_8h_adc6e5733fc3c22f0a7b2914188c49c90}{state}} \mbox{\hyperlink{battleship_8h_a701ef82df1852167de20c262fc0a9ff8}{check\+\_\+win}} (\mbox{\hyperlink{structGamestate}{Gamestate}} $\ast$\mbox{\hyperlink{gui_8c_aa1aa59eb3e09d22827f20650740498b2}{gamestate}})
+\begin{DoxyCompactList}\small\item\em Checkea si se gano la partida. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{battleship_8h_ab90b40978849b9e37045e1dedfdd6d71}{destroy\+\_\+enemy\+\_\+ship}} (\mbox{\hyperlink{structGamestate}{Gamestate}} $\ast$\mbox{\hyperlink{gui_8c_aa1aa59eb3e09d22827f20650740498b2}{gamestate}}, int \mbox{\hyperlink{gui_8c_a6150e0515f7202e2fb518f7206ed97dc}{x}}, int \mbox{\hyperlink{gui_8c_a0a2f84ed7838f07779ae24c5a9086d33}{y}}, int size, \mbox{\hyperlink{battleship_8h_ac5fc6e200c34376449ba20a234061eb4}{orientation}} \mbox{\hyperlink{gui_8c_ad638b8e07af0ac67cbf7a08b6c63d504}{orientacion}})
+\begin{DoxyCompactList}\small\item\em Destruye la nave de un oponente. \end{DoxyCompactList}\item 
+int $\ast$$\ast$ \mbox{\hyperlink{battleship_8h_a4d4c2ba3cc7735629047bc52653afd46}{get\+G\+U\+I\+Ships}} (\mbox{\hyperlink{structGamestate}{Gamestate}} $\ast$\mbox{\hyperlink{gui_8c_aa1aa59eb3e09d22827f20650740498b2}{gamestate}})
+\begin{DoxyCompactList}\small\item\em Obtiene todos los barcos aliados, sus ubicaciones y estados. \end{DoxyCompactList}\item 
+int $\ast$$\ast$ \mbox{\hyperlink{battleship_8h_aa85402e1c9913e47d7fedcffff55325a}{get\+G\+U\+I\+Attacks}} (\mbox{\hyperlink{structGamestate}{Gamestate}} $\ast$\mbox{\hyperlink{gui_8c_aa1aa59eb3e09d22827f20650740498b2}{gamestate}})
+\begin{DoxyCompactList}\small\item\em Obtiene la tabla enemiga conocida, con sus estados. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Typedef Documentation}
+\mbox{\Hypertarget{battleship_8h_a84a411e7a8368ccca2d9e147f0c8de2d}\label{battleship_8h_a84a411e7a8368ccca2d9e147f0c8de2d}} 
+\index{battleship.h@{battleship.h}!Gamestate@{Gamestate}}
+\index{Gamestate@{Gamestate}!battleship.h@{battleship.h}}
+\doxysubsubsection{\texorpdfstring{Gamestate}{Gamestate}}
+{\footnotesize\ttfamily typedef struct \mbox{\hyperlink{structGamestate}{Gamestate}} \mbox{\hyperlink{structGamestate}{Gamestate}}}
+
+
+
+Estructura del gamestate. 
+
+\mbox{\Hypertarget{battleship_8h_a3c61eb1e4f8b904d8f9da248f112ee5a}\label{battleship_8h_a3c61eb1e4f8b904d8f9da248f112ee5a}} 
+\index{battleship.h@{battleship.h}!orientation@{orientation}}
+\index{orientation@{orientation}!battleship.h@{battleship.h}}
+\doxysubsubsection{\texorpdfstring{orientation}{orientation}}
+{\footnotesize\ttfamily typedef enum \mbox{\hyperlink{battleship_8h_ac5fc6e200c34376449ba20a234061eb4}{orientation}} \mbox{\hyperlink{battleship_8h_ac5fc6e200c34376449ba20a234061eb4}{orientation}}}
+
+
+
+Enum para representar la orientacion de una nave en el tablero. 
+
+\mbox{\Hypertarget{battleship_8h_a13da4de51c2a21fa288ef095fb5a1108}\label{battleship_8h_a13da4de51c2a21fa288ef095fb5a1108}} 
+\index{battleship.h@{battleship.h}!result@{result}}
+\index{result@{result}!battleship.h@{battleship.h}}
+\doxysubsubsection{\texorpdfstring{result}{result}}
+{\footnotesize\ttfamily typedef enum \mbox{\hyperlink{battleship_8h_a937d4dd628a8858b443a399410d2600b}{result}} \mbox{\hyperlink{battleship_8h_a937d4dd628a8858b443a399410d2600b}{result}}}
+
+
+
+Enum para representar el resultado de un disparo. 
+
+\mbox{\Hypertarget{battleship_8h_a6f28cfabd3462dd926cab372ce83d2b7}\label{battleship_8h_a6f28cfabd3462dd926cab372ce83d2b7}} 
+\index{battleship.h@{battleship.h}!Ship@{Ship}}
+\index{Ship@{Ship}!battleship.h@{battleship.h}}
+\doxysubsubsection{\texorpdfstring{Ship}{Ship}}
+{\footnotesize\ttfamily typedef struct \mbox{\hyperlink{structShip}{Ship}} \mbox{\hyperlink{structShip}{Ship}}}
+
+
+
+Estructura de una nave. 
+
+\mbox{\Hypertarget{battleship_8h_adf0472405305b61a7a579189da0ea0d2}\label{battleship_8h_adf0472405305b61a7a579189da0ea0d2}} 
+\index{battleship.h@{battleship.h}!ship\_type@{ship\_type}}
+\index{ship\_type@{ship\_type}!battleship.h@{battleship.h}}
+\doxysubsubsection{\texorpdfstring{ship\_type}{ship\_type}}
+{\footnotesize\ttfamily typedef enum \mbox{\hyperlink{battleship_8h_ade6b378b8f034b783aa2f8d948819e5b}{ship\+\_\+type}} \mbox{\hyperlink{battleship_8h_ade6b378b8f034b783aa2f8d948819e5b}{ship\+\_\+type}}}
+
+
+
+Enum para representar los tipos de nave. 
+
+\mbox{\Hypertarget{battleship_8h_a3746a84324bab30a3688f1390fced05e}\label{battleship_8h_a3746a84324bab30a3688f1390fced05e}} 
+\index{battleship.h@{battleship.h}!state@{state}}
+\index{state@{state}!battleship.h@{battleship.h}}
+\doxysubsubsection{\texorpdfstring{state}{state}}
+{\footnotesize\ttfamily typedef enum \mbox{\hyperlink{battleship_8h_adc6e5733fc3c22f0a7b2914188c49c90}{state}} \mbox{\hyperlink{battleship_8h_adc6e5733fc3c22f0a7b2914188c49c90}{state}}}
+
+
+
+Enum para representar los posibles estados de un jugador. 
+
+\mbox{\Hypertarget{battleship_8h_a0e5e6c00057447e8a5d6cfb22dd04c6d}\label{battleship_8h_a0e5e6c00057447e8a5d6cfb22dd04c6d}} 
+\index{battleship.h@{battleship.h}!tile@{tile}}
+\index{tile@{tile}!battleship.h@{battleship.h}}
+\doxysubsubsection{\texorpdfstring{tile}{tile}}
+{\footnotesize\ttfamily typedef enum \mbox{\hyperlink{battleship_8h_a9739dc8e2f05bf198c3af9aa272593fa}{tile}} \mbox{\hyperlink{battleship_8h_a9739dc8e2f05bf198c3af9aa272593fa}{tile}}}
+
+
+
+Enum para representar los tiles que formaran el tablero del oponente. 
+
+
+
+\doxysubsection{Enumeration Type Documentation}
+\mbox{\Hypertarget{battleship_8h_ac5fc6e200c34376449ba20a234061eb4}\label{battleship_8h_ac5fc6e200c34376449ba20a234061eb4}} 
+\index{battleship.h@{battleship.h}!orientation@{orientation}}
+\index{orientation@{orientation}!battleship.h@{battleship.h}}
+\doxysubsubsection{\texorpdfstring{orientation}{orientation}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{battleship_8h_ac5fc6e200c34376449ba20a234061eb4}{orientation}}}
+
+
+
+Enum para representar la orientacion de una nave en el tablero. 
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HORIZONTAL@{HORIZONTAL}!battleship.h@{battleship.h}}\index{battleship.h@{battleship.h}!HORIZONTAL@{HORIZONTAL}}}\mbox{\Hypertarget{battleship_8h_ac5fc6e200c34376449ba20a234061eb4a4dd51ad73508d6fc83a502966779e48e}\label{battleship_8h_ac5fc6e200c34376449ba20a234061eb4a4dd51ad73508d6fc83a502966779e48e}} 
+H\+O\+R\+I\+Z\+O\+N\+T\+AL&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{VERTICAL@{VERTICAL}!battleship.h@{battleship.h}}\index{battleship.h@{battleship.h}!VERTICAL@{VERTICAL}}}\mbox{\Hypertarget{battleship_8h_ac5fc6e200c34376449ba20a234061eb4a1a88641fcd39f2ed3e58a18526e97138}\label{battleship_8h_ac5fc6e200c34376449ba20a234061eb4a1a88641fcd39f2ed3e58a18526e97138}} 
+V\+E\+R\+T\+I\+C\+AL&\\
+\hline
+
+\end{DoxyEnumFields}
+\mbox{\Hypertarget{battleship_8h_a937d4dd628a8858b443a399410d2600b}\label{battleship_8h_a937d4dd628a8858b443a399410d2600b}} 
+\index{battleship.h@{battleship.h}!result@{result}}
+\index{result@{result}!battleship.h@{battleship.h}}
+\doxysubsubsection{\texorpdfstring{result}{result}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{battleship_8h_a937d4dd628a8858b443a399410d2600b}{result}}}
+
+
+
+Enum para representar el resultado de un disparo. 
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{MISS@{MISS}!battleship.h@{battleship.h}}\index{battleship.h@{battleship.h}!MISS@{MISS}}}\mbox{\Hypertarget{battleship_8h_a937d4dd628a8858b443a399410d2600baf15e118f26fd4e7acd598ef7e4291b2a}\label{battleship_8h_a937d4dd628a8858b443a399410d2600baf15e118f26fd4e7acd598ef7e4291b2a}} 
+M\+I\+SS&\textquotesingle{}0\textquotesingle{} \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HIT@{HIT}!battleship.h@{battleship.h}}\index{battleship.h@{battleship.h}!HIT@{HIT}}}\mbox{\Hypertarget{battleship_8h_a937d4dd628a8858b443a399410d2600bad4cf8619fedf804702c72835be555da0}\label{battleship_8h_a937d4dd628a8858b443a399410d2600bad4cf8619fedf804702c72835be555da0}} 
+H\+IT&\textquotesingle{}1\textquotesingle{} \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{SUNK@{SUNK}!battleship.h@{battleship.h}}\index{battleship.h@{battleship.h}!SUNK@{SUNK}}}\mbox{\Hypertarget{battleship_8h_a937d4dd628a8858b443a399410d2600ba62e3db9035966f0253975cb482c1969d}\label{battleship_8h_a937d4dd628a8858b443a399410d2600ba62e3db9035966f0253975cb482c1969d}} 
+S\+U\+NK&\textquotesingle{}2\textquotesingle{} \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{DISCONNECTED@{DISCONNECTED}!battleship.h@{battleship.h}}\index{battleship.h@{battleship.h}!DISCONNECTED@{DISCONNECTED}}}\mbox{\Hypertarget{battleship_8h_a937d4dd628a8858b443a399410d2600bacdaad1112073e3e2ea032424c38c34e1}\label{battleship_8h_a937d4dd628a8858b443a399410d2600bacdaad1112073e3e2ea032424c38c34e1}} 
+D\+I\+S\+C\+O\+N\+N\+E\+C\+T\+ED&\\
+\hline
+
+\end{DoxyEnumFields}
+\mbox{\Hypertarget{battleship_8h_ade6b378b8f034b783aa2f8d948819e5b}\label{battleship_8h_ade6b378b8f034b783aa2f8d948819e5b}} 
+\index{battleship.h@{battleship.h}!ship\_type@{ship\_type}}
+\index{ship\_type@{ship\_type}!battleship.h@{battleship.h}}
+\doxysubsubsection{\texorpdfstring{ship\_type}{ship\_type}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{battleship_8h_ade6b378b8f034b783aa2f8d948819e5b}{ship\+\_\+type}}}
+
+
+
+Enum para representar los tipos de nave. 
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{FRIGATE@{FRIGATE}!battleship.h@{battleship.h}}\index{battleship.h@{battleship.h}!FRIGATE@{FRIGATE}}}\mbox{\Hypertarget{battleship_8h_ade6b378b8f034b783aa2f8d948819e5ba55c4c1f89c0f5e601a12d16e6ee49661}\label{battleship_8h_ade6b378b8f034b783aa2f8d948819e5ba55c4c1f89c0f5e601a12d16e6ee49661}} 
+F\+R\+I\+G\+A\+TE&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{DESTROYER@{DESTROYER}!battleship.h@{battleship.h}}\index{battleship.h@{battleship.h}!DESTROYER@{DESTROYER}}}\mbox{\Hypertarget{battleship_8h_ade6b378b8f034b783aa2f8d948819e5ba78871555d7b4e80733bd639fc08bac47}\label{battleship_8h_ade6b378b8f034b783aa2f8d948819e5ba78871555d7b4e80733bd639fc08bac47}} 
+D\+E\+S\+T\+R\+O\+Y\+ER&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{BATTLESHIP@{BATTLESHIP}!battleship.h@{battleship.h}}\index{battleship.h@{battleship.h}!BATTLESHIP@{BATTLESHIP}}}\mbox{\Hypertarget{battleship_8h_ade6b378b8f034b783aa2f8d948819e5ba5bbb3abcaa2b907922eb8144a930e12f}\label{battleship_8h_ade6b378b8f034b783aa2f8d948819e5ba5bbb3abcaa2b907922eb8144a930e12f}} 
+B\+A\+T\+T\+L\+E\+S\+H\+IP&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{CARRIER@{CARRIER}!battleship.h@{battleship.h}}\index{battleship.h@{battleship.h}!CARRIER@{CARRIER}}}\mbox{\Hypertarget{battleship_8h_ade6b378b8f034b783aa2f8d948819e5ba5293c17ce37d780628be9846ea6d1a31}\label{battleship_8h_ade6b378b8f034b783aa2f8d948819e5ba5293c17ce37d780628be9846ea6d1a31}} 
+C\+A\+R\+R\+I\+ER&\\
+\hline
+
+\end{DoxyEnumFields}
+\mbox{\Hypertarget{battleship_8h_adc6e5733fc3c22f0a7b2914188c49c90}\label{battleship_8h_adc6e5733fc3c22f0a7b2914188c49c90}} 
+\index{battleship.h@{battleship.h}!state@{state}}
+\index{state@{state}!battleship.h@{battleship.h}}
+\doxysubsubsection{\texorpdfstring{state}{state}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{battleship_8h_adc6e5733fc3c22f0a7b2914188c49c90}{state}}}
+
+
+
+Enum para representar los posibles estados de un jugador. 
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{SHOOTING@{SHOOTING}!battleship.h@{battleship.h}}\index{battleship.h@{battleship.h}!SHOOTING@{SHOOTING}}}\mbox{\Hypertarget{battleship_8h_adc6e5733fc3c22f0a7b2914188c49c90a7b771453d1a8c8cc2efab221859139d8}\label{battleship_8h_adc6e5733fc3c22f0a7b2914188c49c90a7b771453d1a8c8cc2efab221859139d8}} 
+S\+H\+O\+O\+T\+I\+NG&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{WAITING@{WAITING}!battleship.h@{battleship.h}}\index{battleship.h@{battleship.h}!WAITING@{WAITING}}}\mbox{\Hypertarget{battleship_8h_adc6e5733fc3c22f0a7b2914188c49c90a757971c0bc5a1972d5f1b1be2c0e2087}\label{battleship_8h_adc6e5733fc3c22f0a7b2914188c49c90a757971c0bc5a1972d5f1b1be2c0e2087}} 
+W\+A\+I\+T\+I\+NG&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{WON@{WON}!battleship.h@{battleship.h}}\index{battleship.h@{battleship.h}!WON@{WON}}}\mbox{\Hypertarget{battleship_8h_adc6e5733fc3c22f0a7b2914188c49c90a5a0f1e556554ad597318089b65502872}\label{battleship_8h_adc6e5733fc3c22f0a7b2914188c49c90a5a0f1e556554ad597318089b65502872}} 
+W\+ON&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{LOST@{LOST}!battleship.h@{battleship.h}}\index{battleship.h@{battleship.h}!LOST@{LOST}}}\mbox{\Hypertarget{battleship_8h_adc6e5733fc3c22f0a7b2914188c49c90a339435bd0d4a842c6107333c908a5317}\label{battleship_8h_adc6e5733fc3c22f0a7b2914188c49c90a339435bd0d4a842c6107333c908a5317}} 
+L\+O\+ST&\\
+\hline
+
+\end{DoxyEnumFields}
+\mbox{\Hypertarget{battleship_8h_a9739dc8e2f05bf198c3af9aa272593fa}\label{battleship_8h_a9739dc8e2f05bf198c3af9aa272593fa}} 
+\index{battleship.h@{battleship.h}!tile@{tile}}
+\index{tile@{tile}!battleship.h@{battleship.h}}
+\doxysubsubsection{\texorpdfstring{tile}{tile}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{battleship_8h_a9739dc8e2f05bf198c3af9aa272593fa}{tile}}}
+
+
+
+Enum para representar los tiles que formaran el tablero del oponente. 
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UNKNOWN@{UNKNOWN}!battleship.h@{battleship.h}}\index{battleship.h@{battleship.h}!UNKNOWN@{UNKNOWN}}}\mbox{\Hypertarget{battleship_8h_a9739dc8e2f05bf198c3af9aa272593faa6ce26a62afab55d7606ad4e92428b30c}\label{battleship_8h_a9739dc8e2f05bf198c3af9aa272593faa6ce26a62afab55d7606ad4e92428b30c}} 
+U\+N\+K\+N\+O\+WN&representa una posicion desconocida del tablero \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{WATER@{WATER}!battleship.h@{battleship.h}}\index{battleship.h@{battleship.h}!WATER@{WATER}}}\mbox{\Hypertarget{battleship_8h_a9739dc8e2f05bf198c3af9aa272593faa9ac7d5e5851d7a2bc186a1c3341589f6}\label{battleship_8h_a9739dc8e2f05bf198c3af9aa272593faa9ac7d5e5851d7a2bc186a1c3341589f6}} 
+W\+A\+T\+ER&representa una posicion donde se sabe que hay agua \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{SHIP@{SHIP}!battleship.h@{battleship.h}}\index{battleship.h@{battleship.h}!SHIP@{SHIP}}}\mbox{\Hypertarget{battleship_8h_a9739dc8e2f05bf198c3af9aa272593faa5e69962f7be201703b58f4fdb5b326fa}\label{battleship_8h_a9739dc8e2f05bf198c3af9aa272593faa5e69962f7be201703b58f4fdb5b326fa}} 
+S\+H\+IP&representa una posicion donde se sabe que hay un barco sin hundirse \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{DESTROYED@{DESTROYED}!battleship.h@{battleship.h}}\index{battleship.h@{battleship.h}!DESTROYED@{DESTROYED}}}\mbox{\Hypertarget{battleship_8h_a9739dc8e2f05bf198c3af9aa272593faa4ff8bebc049a0e8fa161e18027e989ff}\label{battleship_8h_a9739dc8e2f05bf198c3af9aa272593faa4ff8bebc049a0e8fa161e18027e989ff}} 
+D\+E\+S\+T\+R\+O\+Y\+ED&para representar una posicion donde hay una barco hundido \\
+\hline
+
+\end{DoxyEnumFields}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{battleship_8h_a10643a9ac180b7b77bcb74ba6e5fbacb}\label{battleship_8h_a10643a9ac180b7b77bcb74ba6e5fbacb}} 
+\index{battleship.h@{battleship.h}!check\_hit@{check\_hit}}
+\index{check\_hit@{check\_hit}!battleship.h@{battleship.h}}
+\doxysubsubsection{\texorpdfstring{check\_hit()}{check\_hit()}}
+{\footnotesize\ttfamily int check\+\_\+hit (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structShip}{Ship}} $\ast$($\ast$)}]{board\mbox{[}$\,$\mbox{]}\mbox{[}10\mbox{]},  }\item[{int}]{x,  }\item[{int}]{y }\end{DoxyParamCaption})}
+
+
+
+Decide si un disparo es hit o miss. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em board} & puntero al tablero de naves donde se hara el checkeo \\
+\hline
+{\em x} & coordenada x del disparo \\
+\hline
+{\em y} & coordenada y del disparo \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+un codigo indicando si tuvo exito la funcion 
+\end{DoxyReturn}
+\mbox{\Hypertarget{battleship_8h_acc1bc181acd9712a6474d839ed13c887}\label{battleship_8h_acc1bc181acd9712a6474d839ed13c887}} 
+\index{battleship.h@{battleship.h}!check\_loss@{check\_loss}}
+\index{check\_loss@{check\_loss}!battleship.h@{battleship.h}}
+\doxysubsubsection{\texorpdfstring{check\_loss()}{check\_loss()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{battleship_8h_adc6e5733fc3c22f0a7b2914188c49c90}{state}} check\+\_\+loss (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structGamestate}{Gamestate}} $\ast$}]{gamestate }\end{DoxyParamCaption})}
+
+
+
+Checkea si se perdio la partida. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em gamestate} & el gamestate correspondiente a esta partida \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+L\+O\+ST si se perdio la partida, el estado anterior en caso contrario 
+\end{DoxyReturn}
+\mbox{\Hypertarget{battleship_8h_a701ef82df1852167de20c262fc0a9ff8}\label{battleship_8h_a701ef82df1852167de20c262fc0a9ff8}} 
+\index{battleship.h@{battleship.h}!check\_win@{check\_win}}
+\index{check\_win@{check\_win}!battleship.h@{battleship.h}}
+\doxysubsubsection{\texorpdfstring{check\_win()}{check\_win()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{battleship_8h_adc6e5733fc3c22f0a7b2914188c49c90}{state}} check\+\_\+win (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structGamestate}{Gamestate}} $\ast$}]{gamestate }\end{DoxyParamCaption})}
+
+
+
+Checkea si se gano la partida. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em gamestate} & el gamestate correspondiente a esta partida \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+W\+ON si se gano la partida, el estado anterior en caso contrario 
+\end{DoxyReturn}
+\mbox{\Hypertarget{battleship_8h_acb20b0fcf9cb1794dc14388b0fd5d3a7}\label{battleship_8h_acb20b0fcf9cb1794dc14388b0fd5d3a7}} 
+\index{battleship.h@{battleship.h}!create\_ship@{create\_ship}}
+\index{create\_ship@{create\_ship}!battleship.h@{battleship.h}}
+\doxysubsubsection{\texorpdfstring{create\_ship()}{create\_ship()}}
+{\footnotesize\ttfamily int create\+\_\+ship (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structShip}{Ship}} $\ast$}]{ship,  }\item[{\mbox{\hyperlink{battleship_8h_ade6b378b8f034b783aa2f8d948819e5b}{ship\+\_\+type}}}]{type }\end{DoxyParamCaption})}
+
+
+
+Crear una nave de tipo type. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ship} & puntero a la nave que se creara \\
+\hline
+{\em type} & tipo de nave que se creara \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+un codigo indicando si tuvo exito la funcion 
+\end{DoxyReturn}
+\mbox{\Hypertarget{battleship_8h_ab90b40978849b9e37045e1dedfdd6d71}\label{battleship_8h_ab90b40978849b9e37045e1dedfdd6d71}} 
+\index{battleship.h@{battleship.h}!destroy\_enemy\_ship@{destroy\_enemy\_ship}}
+\index{destroy\_enemy\_ship@{destroy\_enemy\_ship}!battleship.h@{battleship.h}}
+\doxysubsubsection{\texorpdfstring{destroy\_enemy\_ship()}{destroy\_enemy\_ship()}}
+{\footnotesize\ttfamily int destroy\+\_\+enemy\+\_\+ship (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structGamestate}{Gamestate}} $\ast$}]{gamestate,  }\item[{int}]{x,  }\item[{int}]{y,  }\item[{int}]{size,  }\item[{\mbox{\hyperlink{battleship_8h_ac5fc6e200c34376449ba20a234061eb4}{orientation}}}]{orientacion }\end{DoxyParamCaption})}
+
+
+
+Destruye la nave de un oponente. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em gamestate} & gamestate de esta partida \\
+\hline
+{\em x} & coordenada x de la nave destruida \\
+\hline
+{\em y} & coordenada y de la nave destruida \\
+\hline
+{\em size} & tamaño de la nave destruida \\
+\hline
+{\em orientacion} & orientacion de la nave destruida \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{battleship_8h_aa85402e1c9913e47d7fedcffff55325a}\label{battleship_8h_aa85402e1c9913e47d7fedcffff55325a}} 
+\index{battleship.h@{battleship.h}!getGUIAttacks@{getGUIAttacks}}
+\index{getGUIAttacks@{getGUIAttacks}!battleship.h@{battleship.h}}
+\doxysubsubsection{\texorpdfstring{getGUIAttacks()}{getGUIAttacks()}}
+{\footnotesize\ttfamily int$\ast$$\ast$ get\+G\+U\+I\+Attacks (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structGamestate}{Gamestate}} $\ast$}]{gamestate }\end{DoxyParamCaption})}
+
+
+
+Obtiene la tabla enemiga conocida, con sus estados. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em gamestate} & estado del juego \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+una matriz con enteros indicando el estado de cada celda 
+\end{DoxyReturn}
+\mbox{\Hypertarget{battleship_8h_a4d4c2ba3cc7735629047bc52653afd46}\label{battleship_8h_a4d4c2ba3cc7735629047bc52653afd46}} 
+\index{battleship.h@{battleship.h}!getGUIShips@{getGUIShips}}
+\index{getGUIShips@{getGUIShips}!battleship.h@{battleship.h}}
+\doxysubsubsection{\texorpdfstring{getGUIShips()}{getGUIShips()}}
+{\footnotesize\ttfamily int$\ast$$\ast$ get\+G\+U\+I\+Ships (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structGamestate}{Gamestate}} $\ast$}]{gamestate }\end{DoxyParamCaption})}
+
+
+
+Obtiene todos los barcos aliados, sus ubicaciones y estados. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em gamestate} & estado del juego \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+una matriz con enteros indicando el estado de cada celda 
+\end{DoxyReturn}
+\mbox{\Hypertarget{battleship_8h_ab2f8f46ed2db794dabf0bd410526a6b7}\label{battleship_8h_ab2f8f46ed2db794dabf0bd410526a6b7}} 
+\index{battleship.h@{battleship.h}!print\_gamestate@{print\_gamestate}}
+\index{print\_gamestate@{print\_gamestate}!battleship.h@{battleship.h}}
+\doxysubsubsection{\texorpdfstring{print\_gamestate()}{print\_gamestate()}}
+{\footnotesize\ttfamily int print\+\_\+gamestate (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structGamestate}{Gamestate}} $\ast$}]{gamestate }\end{DoxyParamCaption})}
+
+
+
+Imprime una representacion del gamestate por pantalla. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em gamestate} & es el gamestate que se representara por pantalla \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+un codigo indicando si tuvo exito la funcion 
+\end{DoxyReturn}
+\mbox{\Hypertarget{battleship_8h_ac085b5583128c764edc86ecda597ad00}\label{battleship_8h_ac085b5583128c764edc86ecda597ad00}} 
+\index{battleship.h@{battleship.h}!print\_shipboard@{print\_shipboard}}
+\index{print\_shipboard@{print\_shipboard}!battleship.h@{battleship.h}}
+\doxysubsubsection{\texorpdfstring{print\_shipboard()}{print\_shipboard()}}
+{\footnotesize\ttfamily int print\+\_\+shipboard (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structShip}{Ship}} $\ast$($\ast$)}]{shipboard\mbox{[}$\,$\mbox{]}\mbox{[}10\mbox{]} }\end{DoxyParamCaption})}
+
+
+
+Imprime un tablero de naves por pantalla. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em shipboard} & es el puntero al tablero de nave que se imprimira \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+un codigo indicando si tuvo exito la funcion 
+\end{DoxyReturn}
+\mbox{\Hypertarget{battleship_8h_a052e8ff38905540f6beea58ed86c08e5}\label{battleship_8h_a052e8ff38905540f6beea58ed86c08e5}} 
+\index{battleship.h@{battleship.h}!print\_tileboard@{print\_tileboard}}
+\index{print\_tileboard@{print\_tileboard}!battleship.h@{battleship.h}}
+\doxysubsubsection{\texorpdfstring{print\_tileboard()}{print\_tileboard()}}
+{\footnotesize\ttfamily int print\+\_\+tileboard (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{battleship_8h_a9739dc8e2f05bf198c3af9aa272593fa}{tile}}($\ast$)}]{tileboard\mbox{[}$\,$\mbox{]}\mbox{[}10\mbox{]} }\end{DoxyParamCaption})}
+
+
+
+Imprime un tablero de tiles por pantalla. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em tileboard} & es el puntero al tablero de tiles que se imprimira \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+un codigo indicando si tuvo exito la funcion 
+\end{DoxyReturn}
+\mbox{\Hypertarget{battleship_8h_a62830b5c75e98d6293008102a64b9f2c}\label{battleship_8h_a62830b5c75e98d6293008102a64b9f2c}} 
+\index{battleship.h@{battleship.h}!put\_ship@{put\_ship}}
+\index{put\_ship@{put\_ship}!battleship.h@{battleship.h}}
+\doxysubsubsection{\texorpdfstring{put\_ship()}{put\_ship()}}
+{\footnotesize\ttfamily int put\+\_\+ship (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structShip}{Ship}} $\ast$($\ast$)}]{board\mbox{[}$\,$\mbox{]}\mbox{[}10\mbox{]},  }\item[{\mbox{\hyperlink{structShip}{Ship}} $\ast$}]{ship }\end{DoxyParamCaption})}
+
+
+
+Intenta colocar una nave en el tablero de naves La posicion de la nave ya esta ingresada en la nave. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em board} & puntero al tablero de naves donde se intentara colocar la nave \\
+\hline
+{\em ship} & puntero a nave que se intentara colocar \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+un codigo indicando si tuvo exito la funcion 
+\end{DoxyReturn}

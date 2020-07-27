@@ -1,0 +1,235 @@
+\hypertarget{utils_8h}{}\doxysection{utils.\+h File Reference}
+\label{utils_8h}\index{utils.h@{utils.h}}
+This graph shows which files directly or indirectly include this file\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{utils_8h__dep__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{utils_8h_a4f4a6641716bd0f4b9fe38c4f18e6550}{U\+T\+I\+L\+S\+\_\+H}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef enum \mbox{\hyperlink{utils_8h_a37dbdc30935031c05304482e1be89d8f}{color}} \mbox{\hyperlink{utils_8h_aed8d7a52ad6cde3224e155bdc4fe88d3}{color}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \mbox{\hyperlink{utils_8h_a37dbdc30935031c05304482e1be89d8f}{color}} \{ \newline
+\mbox{\hyperlink{utils_8h_a37dbdc30935031c05304482e1be89d8faf77fb67151d0c18d397069ad8c271ba3}{B\+L\+A\+CK}}, 
+\mbox{\hyperlink{utils_8h_a37dbdc30935031c05304482e1be89d8faf80f9a890089d211842d59625e561f88}{R\+ED}}, 
+\mbox{\hyperlink{utils_8h_a37dbdc30935031c05304482e1be89d8faa60bd322f93178d68184e30e162571ca}{G\+R\+E\+EN}}, 
+\mbox{\hyperlink{utils_8h_a37dbdc30935031c05304482e1be89d8fae735a848bf82163a19236ead1c3ef2d2}{Y\+E\+L\+L\+OW}}, 
+\newline
+\mbox{\hyperlink{utils_8h_a37dbdc30935031c05304482e1be89d8fa35d6719cb4d7577c031b3d79057a1b79}{B\+L\+UE}}, 
+\mbox{\hyperlink{utils_8h_a37dbdc30935031c05304482e1be89d8fa56926c820ad72d0977e7ee44d9916e62}{M\+A\+G\+E\+N\+TA}}, 
+\mbox{\hyperlink{utils_8h_a37dbdc30935031c05304482e1be89d8faafe71cad474c15ce63b300c470eef8cc}{C\+Y\+AN}}, 
+\mbox{\hyperlink{utils_8h_a37dbdc30935031c05304482e1be89d8fa283fc479650da98250635b9c3c0e7e50}{W\+H\+I\+TE}}
+ \}
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{utils_8h_a0a2604fcd87d5f830471cda6480b408e}{set\+\_\+bg\+\_\+color}} (\mbox{\hyperlink{utils_8h_a37dbdc30935031c05304482e1be89d8f}{color}} bg\+Color)
+\begin{DoxyCompactList}\small\item\em Establece el color del background. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{utils_8h_a72b317f6bdec9df084c7b186cacc93eb}{set\+\_\+fg\+\_\+color}} (\mbox{\hyperlink{utils_8h_a37dbdc30935031c05304482e1be89d8f}{color}} bg\+Color)
+\begin{DoxyCompactList}\small\item\em Establece el color del foreground. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{utils_8h_acc5e263bd0437827b0fe084b2afdb420}{color\+\_\+reset}} ()
+\begin{DoxyCompactList}\small\item\em Establece el color del foreground y background a los default. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{utils_8h_a8b5632b1283be8d3206c06f00cab25cd}{clearstdin}} ()
+\begin{DoxyCompactList}\small\item\em Limpia stdin de los caracteres que pueden quedar restantes luego de un funcion como scanf. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{utils_8h_afef387dde30aea5b3860ecb85ac87879}{char\+To\+Int}} (char c)
+\begin{DoxyCompactList}\small\item\em Convierte un char a un int. \end{DoxyCompactList}\item 
+char \mbox{\hyperlink{utils_8h_a69809ecf792cfb8bde533de84831423b}{int\+To\+Char}} (int n)
+\begin{DoxyCompactList}\small\item\em Convierte un int a un char. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{utils_8h_a722aa46210dea7989fa61335d5ee02e9}{read\+\_\+coords}} (int coords\mbox{[}2\mbox{]})
+\begin{DoxyCompactList}\small\item\em Lee un par de enteros y los devuelve. \end{DoxyCompactList}\item 
+char \mbox{\hyperlink{utils_8h_a8f1d89f3ee205452ccb6b63c2e4b24c3}{get\+\_\+input}} ()
+\begin{DoxyCompactList}\small\item\em Lee un char de stdin y lo devuelve Borra el resto de la line. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Macro Definition Documentation}
+\mbox{\Hypertarget{utils_8h_a4f4a6641716bd0f4b9fe38c4f18e6550}\label{utils_8h_a4f4a6641716bd0f4b9fe38c4f18e6550}} 
+\index{utils.h@{utils.h}!UTILS\_H@{UTILS\_H}}
+\index{UTILS\_H@{UTILS\_H}!utils.h@{utils.h}}
+\doxysubsubsection{\texorpdfstring{UTILS\_H}{UTILS\_H}}
+{\footnotesize\ttfamily \#define U\+T\+I\+L\+S\+\_\+H}
+
+
+
+\doxysubsection{Typedef Documentation}
+\mbox{\Hypertarget{utils_8h_aed8d7a52ad6cde3224e155bdc4fe88d3}\label{utils_8h_aed8d7a52ad6cde3224e155bdc4fe88d3}} 
+\index{utils.h@{utils.h}!color@{color}}
+\index{color@{color}!utils.h@{utils.h}}
+\doxysubsubsection{\texorpdfstring{color}{color}}
+{\footnotesize\ttfamily typedef enum \mbox{\hyperlink{utils_8h_a37dbdc30935031c05304482e1be89d8f}{color}} \mbox{\hyperlink{utils_8h_a37dbdc30935031c05304482e1be89d8f}{color}}}
+
+
+
+\doxysubsection{Enumeration Type Documentation}
+\mbox{\Hypertarget{utils_8h_a37dbdc30935031c05304482e1be89d8f}\label{utils_8h_a37dbdc30935031c05304482e1be89d8f}} 
+\index{utils.h@{utils.h}!color@{color}}
+\index{color@{color}!utils.h@{utils.h}}
+\doxysubsubsection{\texorpdfstring{color}{color}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{utils_8h_a37dbdc30935031c05304482e1be89d8f}{color}}}
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{BLACK@{BLACK}!utils.h@{utils.h}}\index{utils.h@{utils.h}!BLACK@{BLACK}}}\mbox{\Hypertarget{utils_8h_a37dbdc30935031c05304482e1be89d8faf77fb67151d0c18d397069ad8c271ba3}\label{utils_8h_a37dbdc30935031c05304482e1be89d8faf77fb67151d0c18d397069ad8c271ba3}} 
+B\+L\+A\+CK&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{RED@{RED}!utils.h@{utils.h}}\index{utils.h@{utils.h}!RED@{RED}}}\mbox{\Hypertarget{utils_8h_a37dbdc30935031c05304482e1be89d8faf80f9a890089d211842d59625e561f88}\label{utils_8h_a37dbdc30935031c05304482e1be89d8faf80f9a890089d211842d59625e561f88}} 
+R\+ED&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{GREEN@{GREEN}!utils.h@{utils.h}}\index{utils.h@{utils.h}!GREEN@{GREEN}}}\mbox{\Hypertarget{utils_8h_a37dbdc30935031c05304482e1be89d8faa60bd322f93178d68184e30e162571ca}\label{utils_8h_a37dbdc30935031c05304482e1be89d8faa60bd322f93178d68184e30e162571ca}} 
+G\+R\+E\+EN&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{YELLOW@{YELLOW}!utils.h@{utils.h}}\index{utils.h@{utils.h}!YELLOW@{YELLOW}}}\mbox{\Hypertarget{utils_8h_a37dbdc30935031c05304482e1be89d8fae735a848bf82163a19236ead1c3ef2d2}\label{utils_8h_a37dbdc30935031c05304482e1be89d8fae735a848bf82163a19236ead1c3ef2d2}} 
+Y\+E\+L\+L\+OW&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{BLUE@{BLUE}!utils.h@{utils.h}}\index{utils.h@{utils.h}!BLUE@{BLUE}}}\mbox{\Hypertarget{utils_8h_a37dbdc30935031c05304482e1be89d8fa35d6719cb4d7577c031b3d79057a1b79}\label{utils_8h_a37dbdc30935031c05304482e1be89d8fa35d6719cb4d7577c031b3d79057a1b79}} 
+B\+L\+UE&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{MAGENTA@{MAGENTA}!utils.h@{utils.h}}\index{utils.h@{utils.h}!MAGENTA@{MAGENTA}}}\mbox{\Hypertarget{utils_8h_a37dbdc30935031c05304482e1be89d8fa56926c820ad72d0977e7ee44d9916e62}\label{utils_8h_a37dbdc30935031c05304482e1be89d8fa56926c820ad72d0977e7ee44d9916e62}} 
+M\+A\+G\+E\+N\+TA&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{CYAN@{CYAN}!utils.h@{utils.h}}\index{utils.h@{utils.h}!CYAN@{CYAN}}}\mbox{\Hypertarget{utils_8h_a37dbdc30935031c05304482e1be89d8faafe71cad474c15ce63b300c470eef8cc}\label{utils_8h_a37dbdc30935031c05304482e1be89d8faafe71cad474c15ce63b300c470eef8cc}} 
+C\+Y\+AN&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{WHITE@{WHITE}!utils.h@{utils.h}}\index{utils.h@{utils.h}!WHITE@{WHITE}}}\mbox{\Hypertarget{utils_8h_a37dbdc30935031c05304482e1be89d8fa283fc479650da98250635b9c3c0e7e50}\label{utils_8h_a37dbdc30935031c05304482e1be89d8fa283fc479650da98250635b9c3c0e7e50}} 
+W\+H\+I\+TE&\\
+\hline
+
+\end{DoxyEnumFields}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{utils_8h_afef387dde30aea5b3860ecb85ac87879}\label{utils_8h_afef387dde30aea5b3860ecb85ac87879}} 
+\index{utils.h@{utils.h}!charToInt@{charToInt}}
+\index{charToInt@{charToInt}!utils.h@{utils.h}}
+\doxysubsubsection{\texorpdfstring{charToInt()}{charToInt()}}
+{\footnotesize\ttfamily int char\+To\+Int (\begin{DoxyParamCaption}\item[{char}]{c }\end{DoxyParamCaption})}
+
+
+
+Convierte un char a un int. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em c} & el char que sera convertido, debe estar entre \textquotesingle{}0\textquotesingle{} y \textquotesingle{}9\textquotesingle{} \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+el entero correspondiente 
+\end{DoxyReturn}
+\mbox{\Hypertarget{utils_8h_a8b5632b1283be8d3206c06f00cab25cd}\label{utils_8h_a8b5632b1283be8d3206c06f00cab25cd}} 
+\index{utils.h@{utils.h}!clearstdin@{clearstdin}}
+\index{clearstdin@{clearstdin}!utils.h@{utils.h}}
+\doxysubsubsection{\texorpdfstring{clearstdin()}{clearstdin()}}
+{\footnotesize\ttfamily int clearstdin (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Limpia stdin de los caracteres que pueden quedar restantes luego de un funcion como scanf. 
+
+\mbox{\Hypertarget{utils_8h_acc5e263bd0437827b0fe084b2afdb420}\label{utils_8h_acc5e263bd0437827b0fe084b2afdb420}} 
+\index{utils.h@{utils.h}!color\_reset@{color\_reset}}
+\index{color\_reset@{color\_reset}!utils.h@{utils.h}}
+\doxysubsubsection{\texorpdfstring{color\_reset()}{color\_reset()}}
+{\footnotesize\ttfamily void color\+\_\+reset (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Establece el color del foreground y background a los default. 
+
+\mbox{\Hypertarget{utils_8h_a8f1d89f3ee205452ccb6b63c2e4b24c3}\label{utils_8h_a8f1d89f3ee205452ccb6b63c2e4b24c3}} 
+\index{utils.h@{utils.h}!get\_input@{get\_input}}
+\index{get\_input@{get\_input}!utils.h@{utils.h}}
+\doxysubsubsection{\texorpdfstring{get\_input()}{get\_input()}}
+{\footnotesize\ttfamily char get\+\_\+input (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Lee un char de stdin y lo devuelve Borra el resto de la line. 
+
+\begin{DoxyReturn}{Returns}
+el char leido, o -\/1 si el char no era imprimible 
+\end{DoxyReturn}
+\mbox{\Hypertarget{utils_8h_a69809ecf792cfb8bde533de84831423b}\label{utils_8h_a69809ecf792cfb8bde533de84831423b}} 
+\index{utils.h@{utils.h}!intToChar@{intToChar}}
+\index{intToChar@{intToChar}!utils.h@{utils.h}}
+\doxysubsubsection{\texorpdfstring{intToChar()}{intToChar()}}
+{\footnotesize\ttfamily char int\+To\+Char (\begin{DoxyParamCaption}\item[{int}]{n }\end{DoxyParamCaption})}
+
+
+
+Convierte un int a un char. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em n} & el int que sera convertido, debe estar entre 0 y 9 \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+el char correspondiente 
+\end{DoxyReturn}
+\mbox{\Hypertarget{utils_8h_a722aa46210dea7989fa61335d5ee02e9}\label{utils_8h_a722aa46210dea7989fa61335d5ee02e9}} 
+\index{utils.h@{utils.h}!read\_coords@{read\_coords}}
+\index{read\_coords@{read\_coords}!utils.h@{utils.h}}
+\doxysubsubsection{\texorpdfstring{read\_coords()}{read\_coords()}}
+{\footnotesize\ttfamily int read\+\_\+coords (\begin{DoxyParamCaption}\item[{int}]{coords\mbox{[}2\mbox{]} }\end{DoxyParamCaption})}
+
+
+
+Lee un par de enteros y los devuelve. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em coords} & un arreglo donde se devolveran las coordenadas leidas \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+un arreglo de dos enteros 
+\end{DoxyReturn}
+\mbox{\Hypertarget{utils_8h_a0a2604fcd87d5f830471cda6480b408e}\label{utils_8h_a0a2604fcd87d5f830471cda6480b408e}} 
+\index{utils.h@{utils.h}!set\_bg\_color@{set\_bg\_color}}
+\index{set\_bg\_color@{set\_bg\_color}!utils.h@{utils.h}}
+\doxysubsubsection{\texorpdfstring{set\_bg\_color()}{set\_bg\_color()}}
+{\footnotesize\ttfamily void set\+\_\+bg\+\_\+color (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{utils_8h_a37dbdc30935031c05304482e1be89d8f}{color}}}]{bg\+Color }\end{DoxyParamCaption})}
+
+
+
+Establece el color del background. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em bg\+Color} & el color que se le seteara al background \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{utils_8h_a72b317f6bdec9df084c7b186cacc93eb}\label{utils_8h_a72b317f6bdec9df084c7b186cacc93eb}} 
+\index{utils.h@{utils.h}!set\_fg\_color@{set\_fg\_color}}
+\index{set\_fg\_color@{set\_fg\_color}!utils.h@{utils.h}}
+\doxysubsubsection{\texorpdfstring{set\_fg\_color()}{set\_fg\_color()}}
+{\footnotesize\ttfamily void set\+\_\+fg\+\_\+color (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{utils_8h_a37dbdc30935031c05304482e1be89d8f}{color}}}]{bg\+Color }\end{DoxyParamCaption})}
+
+
+
+Establece el color del foreground. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em fg\+Color} & el color que se le seteara al foreground \\
+\hline
+\end{DoxyParams}

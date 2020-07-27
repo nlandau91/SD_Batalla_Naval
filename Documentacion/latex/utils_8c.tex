@@ -1,0 +1,167 @@
+\hypertarget{utils_8c}{}\doxysection{utils.\+c File Reference}
+\label{utils_8c}\index{utils.c@{utils.c}}
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include $<$ctype.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}utils.\+h\char`\"{}}\newline
+Include dependency graph for utils.\+c\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=338pt]{utils_8c__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{utils_8c_a92a364c2b863dde1a024a77eac2a5b3b}{A\+N\+S\+I\+\_\+\+C\+O\+L\+O\+R\+\_\+\+R\+E\+S\+ET}}~\char`\"{}\textbackslash{}x1b\mbox{[}0m\char`\"{}
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{utils_8c_a8b5632b1283be8d3206c06f00cab25cd}{clearstdin}} ()
+\begin{DoxyCompactList}\small\item\em Limpia stdin de los caracteres que pueden quedar restantes luego de un funcion como scanf. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{utils_8c_afef387dde30aea5b3860ecb85ac87879}{char\+To\+Int}} (char c)
+\begin{DoxyCompactList}\small\item\em Convierte un char a un int. \end{DoxyCompactList}\item 
+char \mbox{\hyperlink{utils_8c_a69809ecf792cfb8bde533de84831423b}{int\+To\+Char}} (int n)
+\begin{DoxyCompactList}\small\item\em Convierte un int a un char. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{utils_8c_a722aa46210dea7989fa61335d5ee02e9}{read\+\_\+coords}} (int coords\mbox{[}2\mbox{]})
+\begin{DoxyCompactList}\small\item\em Lee un par de enteros y los devuelve. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{utils_8c_a0a2604fcd87d5f830471cda6480b408e}{set\+\_\+bg\+\_\+color}} (\mbox{\hyperlink{utils_8h_a37dbdc30935031c05304482e1be89d8f}{color}} bg\+Color)
+\begin{DoxyCompactList}\small\item\em Establece el color del background. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{utils_8c_a4f11617a68fccbe3588b76baf2b274b2}{set\+\_\+fg\+\_\+color}} (\mbox{\hyperlink{utils_8h_a37dbdc30935031c05304482e1be89d8f}{color}} fg\+Color)
+\begin{DoxyCompactList}\small\item\em Establece el color del foreground. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{utils_8c_acc5e263bd0437827b0fe084b2afdb420}{color\+\_\+reset}} ()
+\begin{DoxyCompactList}\small\item\em Establece el color del foreground y background a los default. \end{DoxyCompactList}\item 
+char \mbox{\hyperlink{utils_8c_a8f1d89f3ee205452ccb6b63c2e4b24c3}{get\+\_\+input}} ()
+\begin{DoxyCompactList}\small\item\em Lee un char de stdin y lo devuelve Borra el resto de la line. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Macro Definition Documentation}
+\mbox{\Hypertarget{utils_8c_a92a364c2b863dde1a024a77eac2a5b3b}\label{utils_8c_a92a364c2b863dde1a024a77eac2a5b3b}} 
+\index{utils.c@{utils.c}!ANSI\_COLOR\_RESET@{ANSI\_COLOR\_RESET}}
+\index{ANSI\_COLOR\_RESET@{ANSI\_COLOR\_RESET}!utils.c@{utils.c}}
+\doxysubsubsection{\texorpdfstring{ANSI\_COLOR\_RESET}{ANSI\_COLOR\_RESET}}
+{\footnotesize\ttfamily \#define A\+N\+S\+I\+\_\+\+C\+O\+L\+O\+R\+\_\+\+R\+E\+S\+ET~\char`\"{}\textbackslash{}x1b\mbox{[}0m\char`\"{}}
+
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{utils_8c_afef387dde30aea5b3860ecb85ac87879}\label{utils_8c_afef387dde30aea5b3860ecb85ac87879}} 
+\index{utils.c@{utils.c}!charToInt@{charToInt}}
+\index{charToInt@{charToInt}!utils.c@{utils.c}}
+\doxysubsubsection{\texorpdfstring{charToInt()}{charToInt()}}
+{\footnotesize\ttfamily int char\+To\+Int (\begin{DoxyParamCaption}\item[{char}]{c }\end{DoxyParamCaption})}
+
+
+
+Convierte un char a un int. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em c} & el char que sera convertido, debe estar entre \textquotesingle{}0\textquotesingle{} y \textquotesingle{}9\textquotesingle{} \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+el entero correspondiente 
+\end{DoxyReturn}
+\mbox{\Hypertarget{utils_8c_a8b5632b1283be8d3206c06f00cab25cd}\label{utils_8c_a8b5632b1283be8d3206c06f00cab25cd}} 
+\index{utils.c@{utils.c}!clearstdin@{clearstdin}}
+\index{clearstdin@{clearstdin}!utils.c@{utils.c}}
+\doxysubsubsection{\texorpdfstring{clearstdin()}{clearstdin()}}
+{\footnotesize\ttfamily int clearstdin (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Limpia stdin de los caracteres que pueden quedar restantes luego de un funcion como scanf. 
+
+\mbox{\Hypertarget{utils_8c_acc5e263bd0437827b0fe084b2afdb420}\label{utils_8c_acc5e263bd0437827b0fe084b2afdb420}} 
+\index{utils.c@{utils.c}!color\_reset@{color\_reset}}
+\index{color\_reset@{color\_reset}!utils.c@{utils.c}}
+\doxysubsubsection{\texorpdfstring{color\_reset()}{color\_reset()}}
+{\footnotesize\ttfamily void color\+\_\+reset (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Establece el color del foreground y background a los default. 
+
+\mbox{\Hypertarget{utils_8c_a8f1d89f3ee205452ccb6b63c2e4b24c3}\label{utils_8c_a8f1d89f3ee205452ccb6b63c2e4b24c3}} 
+\index{utils.c@{utils.c}!get\_input@{get\_input}}
+\index{get\_input@{get\_input}!utils.c@{utils.c}}
+\doxysubsubsection{\texorpdfstring{get\_input()}{get\_input()}}
+{\footnotesize\ttfamily char get\+\_\+input (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Lee un char de stdin y lo devuelve Borra el resto de la line. 
+
+\begin{DoxyReturn}{Returns}
+el char leido, o -\/1 si el char no era imprimible 
+\end{DoxyReturn}
+\mbox{\Hypertarget{utils_8c_a69809ecf792cfb8bde533de84831423b}\label{utils_8c_a69809ecf792cfb8bde533de84831423b}} 
+\index{utils.c@{utils.c}!intToChar@{intToChar}}
+\index{intToChar@{intToChar}!utils.c@{utils.c}}
+\doxysubsubsection{\texorpdfstring{intToChar()}{intToChar()}}
+{\footnotesize\ttfamily char int\+To\+Char (\begin{DoxyParamCaption}\item[{int}]{n }\end{DoxyParamCaption})}
+
+
+
+Convierte un int a un char. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em n} & el int que sera convertido, debe estar entre 0 y 9 \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+el char correspondiente 
+\end{DoxyReturn}
+\mbox{\Hypertarget{utils_8c_a722aa46210dea7989fa61335d5ee02e9}\label{utils_8c_a722aa46210dea7989fa61335d5ee02e9}} 
+\index{utils.c@{utils.c}!read\_coords@{read\_coords}}
+\index{read\_coords@{read\_coords}!utils.c@{utils.c}}
+\doxysubsubsection{\texorpdfstring{read\_coords()}{read\_coords()}}
+{\footnotesize\ttfamily int read\+\_\+coords (\begin{DoxyParamCaption}\item[{int}]{coords\mbox{[}2\mbox{]} }\end{DoxyParamCaption})}
+
+
+
+Lee un par de enteros y los devuelve. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em coords} & un arreglo donde se devolveran las coordenadas leidas \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+un arreglo de dos enteros 
+\end{DoxyReturn}
+\mbox{\Hypertarget{utils_8c_a0a2604fcd87d5f830471cda6480b408e}\label{utils_8c_a0a2604fcd87d5f830471cda6480b408e}} 
+\index{utils.c@{utils.c}!set\_bg\_color@{set\_bg\_color}}
+\index{set\_bg\_color@{set\_bg\_color}!utils.c@{utils.c}}
+\doxysubsubsection{\texorpdfstring{set\_bg\_color()}{set\_bg\_color()}}
+{\footnotesize\ttfamily void set\+\_\+bg\+\_\+color (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{utils_8h_a37dbdc30935031c05304482e1be89d8f}{color}}}]{bg\+Color }\end{DoxyParamCaption})}
+
+
+
+Establece el color del background. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em bg\+Color} & el color que se le seteara al background \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{utils_8c_a4f11617a68fccbe3588b76baf2b274b2}\label{utils_8c_a4f11617a68fccbe3588b76baf2b274b2}} 
+\index{utils.c@{utils.c}!set\_fg\_color@{set\_fg\_color}}
+\index{set\_fg\_color@{set\_fg\_color}!utils.c@{utils.c}}
+\doxysubsubsection{\texorpdfstring{set\_fg\_color()}{set\_fg\_color()}}
+{\footnotesize\ttfamily void set\+\_\+fg\+\_\+color (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{utils_8h_a37dbdc30935031c05304482e1be89d8f}{color}}}]{bg\+Color }\end{DoxyParamCaption})}
+
+
+
+Establece el color del foreground. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em fg\+Color} & el color que se le seteara al foreground \\
+\hline
+\end{DoxyParams}

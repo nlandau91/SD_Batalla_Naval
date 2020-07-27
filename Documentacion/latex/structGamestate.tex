@@ -1,0 +1,95 @@
+\hypertarget{structGamestate}{}\doxysection{Gamestate Struct Reference}
+\label{structGamestate}\index{Gamestate@{Gamestate}}
+
+
+Estructura del gamestate.  
+
+
+
+
+{\ttfamily \#include $<$battleship.\+h$>$}
+
+
+
+Collaboration diagram for Gamestate\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=162pt]{structGamestate__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsection*{Data Fields}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{structShip}{Ship}} $\ast$ \mbox{\hyperlink{structGamestate_ada0bc70502abdd024b6b935c4aa7b3c0}{my\+Board}} \mbox{[}10\mbox{]}\mbox{[}10\mbox{]}
+\begin{DoxyCompactList}\small\item\em tablero de punteros a nave representando las naves del jugador \end{DoxyCompactList}\item 
+\mbox{\hyperlink{battleship_8h_a9739dc8e2f05bf198c3af9aa272593fa}{tile}} \mbox{\hyperlink{structGamestate_aae28ad6b750d583cf10f98751c8fad70}{his\+Board}} \mbox{[}10\mbox{]}\mbox{[}10\mbox{]}
+\begin{DoxyCompactList}\small\item\em tablero de tiles representando el tablero del oponente \end{DoxyCompactList}\item 
+\mbox{\hyperlink{structShip}{Ship}} \mbox{\hyperlink{structGamestate_a5fa290a8b92cc028a833eb0990087cf5}{my\+Ships}} \mbox{[}9\mbox{]}
+\begin{DoxyCompactList}\small\item\em un arreglo conteniendo las naves del jugador \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{structGamestate_abf37115e0610f6c10cb68d928e2fcf18}{his\+Ships}}
+\begin{DoxyCompactList}\small\item\em cuantas naves le quedan al oponente \end{DoxyCompactList}\item 
+\mbox{\hyperlink{battleship_8h_adc6e5733fc3c22f0a7b2914188c49c90}{state}} \mbox{\hyperlink{structGamestate_a9c33e171864fce3c46fceb09ebe4beef}{my\+State}}
+\begin{DoxyCompactList}\small\item\em representa el estado actual del jugador \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Estructura del gamestate. 
+
+\doxysubsection{Field Documentation}
+\mbox{\Hypertarget{structGamestate_aae28ad6b750d583cf10f98751c8fad70}\label{structGamestate_aae28ad6b750d583cf10f98751c8fad70}} 
+\index{Gamestate@{Gamestate}!hisBoard@{hisBoard}}
+\index{hisBoard@{hisBoard}!Gamestate@{Gamestate}}
+\doxysubsubsection{\texorpdfstring{hisBoard}{hisBoard}}
+{\footnotesize\ttfamily \mbox{\hyperlink{battleship_8h_a9739dc8e2f05bf198c3af9aa272593fa}{tile}} Gamestate\+::his\+Board\mbox{[}10\mbox{]}\mbox{[}10\mbox{]}}
+
+
+
+tablero de tiles representando el tablero del oponente 
+
+\mbox{\Hypertarget{structGamestate_abf37115e0610f6c10cb68d928e2fcf18}\label{structGamestate_abf37115e0610f6c10cb68d928e2fcf18}} 
+\index{Gamestate@{Gamestate}!hisShips@{hisShips}}
+\index{hisShips@{hisShips}!Gamestate@{Gamestate}}
+\doxysubsubsection{\texorpdfstring{hisShips}{hisShips}}
+{\footnotesize\ttfamily int Gamestate\+::his\+Ships}
+
+
+
+cuantas naves le quedan al oponente 
+
+\mbox{\Hypertarget{structGamestate_ada0bc70502abdd024b6b935c4aa7b3c0}\label{structGamestate_ada0bc70502abdd024b6b935c4aa7b3c0}} 
+\index{Gamestate@{Gamestate}!myBoard@{myBoard}}
+\index{myBoard@{myBoard}!Gamestate@{Gamestate}}
+\doxysubsubsection{\texorpdfstring{myBoard}{myBoard}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structShip}{Ship}}$\ast$ Gamestate\+::my\+Board\mbox{[}10\mbox{]}\mbox{[}10\mbox{]}}
+
+
+
+tablero de punteros a nave representando las naves del jugador 
+
+\mbox{\Hypertarget{structGamestate_a5fa290a8b92cc028a833eb0990087cf5}\label{structGamestate_a5fa290a8b92cc028a833eb0990087cf5}} 
+\index{Gamestate@{Gamestate}!myShips@{myShips}}
+\index{myShips@{myShips}!Gamestate@{Gamestate}}
+\doxysubsubsection{\texorpdfstring{myShips}{myShips}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structShip}{Ship}} Gamestate\+::my\+Ships\mbox{[}9\mbox{]}}
+
+
+
+un arreglo conteniendo las naves del jugador 
+
+\mbox{\Hypertarget{structGamestate_a9c33e171864fce3c46fceb09ebe4beef}\label{structGamestate_a9c33e171864fce3c46fceb09ebe4beef}} 
+\index{Gamestate@{Gamestate}!myState@{myState}}
+\index{myState@{myState}!Gamestate@{Gamestate}}
+\doxysubsubsection{\texorpdfstring{myState}{myState}}
+{\footnotesize\ttfamily \mbox{\hyperlink{battleship_8h_adc6e5733fc3c22f0a7b2914188c49c90}{state}} Gamestate\+::my\+State}
+
+
+
+representa el estado actual del jugador 
+
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{battleship_8h}{battleship.\+h}}\end{DoxyCompactItemize}
