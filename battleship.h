@@ -56,38 +56,27 @@ typedef enum result
 
 /**
     Estructura de una nave
-    @var Ship::nombre tablero de punteros a nave representando las naves del jugador
-    @var Ship::cantidad de posiciones que ocupa
-    @var Ship::x posision horizontal en el tablero
-    @var Ship::y posicion vertical en el tablero
-    @var Ship::orientacion orientacion horizontal o vertical
-    @var Ship::hitsremaining hits restantes para hundir al nave
 */
 typedef struct Ship
 {
-    char nombre[16];
-    int largo;
-    int x;
-    int y;
-    orientation orientacion;
-    int hitsRemaining;
+    char nombre[16]; /**< nombre de la nave */
+    int largo; /**< cantidad de posiciones que ocupa */
+    int x; /**< posision horizontal en el tablero */
+    int y; /**< posicion vertical en el tablero */
+    orientation orientacion; /**< orientacion horizontal o vertical */
+    int hitsRemaining; /**< hits restantes para hundir al nave */
 } Ship;
 
 /**
     Estructura del gamestate
-    @var Gamestate::myBoard tablero de punteros a nave representando las naves del jugador
-    @var Gamestate::hisBoard tablero de tiles representando el tablero del oponente
-    @var Gamestate::myShips un arreglo conteniendo las naves del jugador
-    @var Gamestate::hiShips un entero representando cuantas naves le quedan al oponente
-    @var Gamestate::myState representa el estado actual del jugador
 */
 typedef struct Gamestate
 {
-    Ship* myBoard[10][10];
-    tile hisBoard[10][10];
-    Ship myShips[9];
-    int hisShips;
-    state myState;
+    Ship* myBoard[10][10]; /**< tablero de punteros a nave representando las naves del jugador */
+    tile hisBoard[10][10]; /**< tablero de tiles representando el tablero del oponente */
+    Ship myShips[9]; /**< un arreglo conteniendo las naves del jugador */
+    int hisShips; /**< cuantas naves le quedan al oponente */
+    state myState; /**< representa el estado actual del jugador */
 } Gamestate;
 
 /**
