@@ -77,12 +77,15 @@ int y = 0;
 int mode = UNDEFINED;
 int activarBotones = 0;
 int ataqueEnemigo[3]={0,0,0};
+int actualizarTablero = 1;
+sem_t boardUpdate;
 
 
 /*Defino algunas funciones que son necesarias*/
 void myCSS(void);
 void seguirJugando();
 void pintarBarcos();
+void pintarAttackButtons();
 int shooting_state(Gamestate* gamestate, int socket);
 int waiting_state(Gamestate* gamestate, int socket);
 void append_text(const gchar *text, char* color);
@@ -95,7 +98,7 @@ void* funcionJuego(void* arg)
         //me toca disparar
         if(check_disconnect(newSocket))
         {
-            printf("Recibi 1");
+            //printf("Recibi 1");
             (&gamestate)->myState = WON;
         }
         else
@@ -114,7 +117,13 @@ void* funcionJuego(void* arg)
             else
             {
                 waiting_state(&gamestate, newSocket);
-            }   
+            }
+            //paso un turno, tengo que actualizar los tableros
+            //actualizarTablero = 1;
+            if(sem_trywait(&boardUpdate) != 0)
+            {
+                sem_post(&boardUpdate);
+            }
         }
     //}
     }
@@ -158,6 +167,7 @@ int main(int argc, char *argv[])
     btnCarrier = GTK_WIDGET(gtk_builder_get_object(builder,"btnCarrier"));
     btnOrientation = GTK_WIDGET(gtk_builder_get_object(builder,"btnOrientation"));
     sem_init(&mutex,0,1);
+    sem_init(&boardUpdate, 0, 1);
     
     buffer = gtk_text_buffer_new (NULL);
     
@@ -314,6 +324,8 @@ void positionButtonCallback(GtkWidget *button,datos* data)
     }
     barcoActual = -1;
     pintarBarcos();
+    while (gtk_events_pending ())
+            gtk_main_iteration ();
     if(frigateRestantes == 0 && destroyerRestantes == 0 &&
         battleshipRestantes == 0 && carrierRestantes == 0)
         {
@@ -435,8 +447,8 @@ void pintarBarcos()
             }
         }
     }
-    while (gtk_events_pending ())
-            gtk_main_iteration ();
+    //while (gtk_events_pending ())
+     //       gtk_main_iteration ();
     
 }
 
@@ -474,14 +486,14 @@ void pintarAttackButtons()
             }
         }
     }
-    while (gtk_events_pending ())
-            gtk_main_iteration ();
+    //while (gtk_events_pending ())
+       //     gtk_main_iteration ();
 }
 
 
 void insertAutomatic()
 {
-    printf("Inserto automatico");
+    //printf("Inserto automatico");
     if(check_disconnect(newSocket))
     {
         append_text("El oponente se desconecto.\n",HIT_COLOR);
@@ -489,12 +501,14 @@ void insertAutomatic()
     }
     else
     {
-        printf("No me llego nada gg.\n");
+        //printf("No me llego nada gg.\n");
         //printf("Hice click en automatico.\n");
         autoaddships(&gamestate);
         //Tengo que pintar los botones correspondientes
         //Para indicar donde estan los barcos.
         pintarBarcos();
+        while (gtk_events_pending ())
+            gtk_main_iteration ();
         
         //Tengo que quitar de la vista los botones estos.
         gtk_widget_hide(box_insercion);
@@ -607,12 +621,14 @@ int startGameAux(int mode)
         
     if(newSocket < 0 )
     {
-        printf("Error al crear o unirse a la partida...\n");
+        //printf("Error al crear o unirse a la partida...\n");
     }
     else
     {
         init_gamestate2(&gamestate);// Inicio el gamestate unicamente
         pintarBarcos();
+        while (gtk_events_pending ())
+            gtk_main_iteration ();
         //Termino esta funcion
     }
 }
@@ -621,12 +637,12 @@ int startGameAux(int mode)
 //aqui se realizan las acciones correspondientes a un jugador que tiene que disparar
 int shooting_state(Gamestate* gamestate, int socket)
 {
-    printf("Estoy en el shooting state.\n");
+    //printf("Estoy en el shooting state.\n");
     imprimirHiloLogico("Tu turno. Elige donde atacar.\n",TEXT_COLOR);
     //espero la respuesta
     char receive_buffer[8] = {0};
     wait_shot_resp(socket,receive_buffer);
-    printf("El buffer recibido es: %s",receive_buffer);
+    //printf("El buffer recibido es: %s",receive_buffer);
     if(strcmp(receive_buffer,"/")==0)
     {
         imprimirHiloLogico("El oponente se desconecto.\n",HIT_COLOR);
@@ -664,6 +680,7 @@ int shooting_state(Gamestate* gamestate, int socket)
         }
         //actualizamos el tablero
         gamestate->hisBoard[x][y] = new_tile;
+        
     }
     
     return 0;
@@ -756,7 +773,10 @@ void toggleButtons(int mode)
 pthread_t hiloJuego;
 int play_game(int socket, Gamestate* gamestate)
 {
-    
+    pintarAttackButtons();
+    pintarBarcos();
+    while (gtk_events_pending ())
+        gtk_main_iteration ();
     //gameloop
     //se juega hasta que ganes o pierdas
     
@@ -765,8 +785,15 @@ int play_game(int socket, Gamestate* gamestate)
     inicioElJuego = 1;
     do
     {
-        pintarAttackButtons();
-        pintarBarcos();
+        //if(actualizarTablero == 1)
+        if(sem_trywait(&boardUpdate) == 0)
+        {
+            pintarAttackButtons();
+            pintarBarcos();
+            //actualizarTablero = 0;
+        }       
+        while (gtk_events_pending ())
+           gtk_main_iteration ();
         sem_wait(&mutex);
         if(ataqueEnemigo[0])
         {
@@ -778,10 +805,10 @@ int play_game(int socket, Gamestate* gamestate)
             toggleButtons(activarBotones);
         }
         if(hay_que_escribir > 0){
-            printf("Tengo que imprimir.\n");
+            //printf("Tengo que imprimir.\n");
             for(int i = 0; i<hay_que_escribir; i++)
             {
-                printf("MENSAJE A IMPRIMIR: %d %s %s",i,bufferEscritura[i].msg,bufferEscritura[i].color);
+                //printf("MENSAJE A IMPRIMIR: %d %s %s",i,bufferEscritura[i].msg,bufferEscritura[i].color);
                 append_text(bufferEscritura[i].msg,bufferEscritura[i].color);
             }
             hay_que_escribir = 0;
@@ -807,21 +834,21 @@ void seguirJugando()
     }
     else
     {
-        printf("Voy a enviar.\n");
+        //printf("Voy a enviar.\n");
         send(newSocket, &ready, 1, 0);
         //esperamos a que el oponente este listo
-        printf("Envie.\n");
+        //printf("Envie.\n");
         read(newSocket, &ready, 1);
-        printf("RECIBI.\n");
-        printf("Lo que recibi del otro player es: %c",ready);
-        printf("PASE EL PRINT.\n");
+        //printf("RECIBI.\n");
+        //printf("Lo que recibi del otro player es: %c",ready);
+        //printf("PASE EL PRINT.\n");
         if(ready == '/')
         {
             append_text("El oponente se desconecto.\n",HIT_COLOR);
             gamestate.myState = WON;
         }
 
-        printf("Lo que recibi del otro player es: %c",ready);
+        //printf("Lo que recibi del otro player es: %c",ready);
         //printf("El oponente esta listo, asi que arranca el juego.\n");
         //a jugar!
         int res = play_game(newSocket, &gamestate);
@@ -832,12 +859,16 @@ void seguirJugando()
         if(gamestate.myState == WON)
         {
             pintarAttackButtons();
+            while (gtk_events_pending ())
+            gtk_main_iteration ();
             append_text("GANASTE!\n",WATER_COLOR);
         }
         if(gamestate.myState == LOST)
         {
             pintarBarcos();
             pintarAttackButtons();
+            while (gtk_events_pending ())
+            gtk_main_iteration ();
             append_text("PERDISTE!\n",WATER_COLOR);
         }
         close(newSocket);
@@ -872,7 +903,7 @@ int resultadoJoin = 20;
 void* joinGameThread(void* arg)
 {
     struct joinStructure aux = *(struct joinStructure*) arg;
-    printf("datosRecibidos: %s,%s.\n",aux.hostname,aux.port);
+    //printf("datosRecibidos: %s,%s.\n",aux.hostname,aux.port);
     int toReturn = join_game(aux.hostname,atoi(aux.port));
     sem_wait(&mutex);
     resultadoJoin = toReturn;
@@ -894,7 +925,7 @@ void acceptGame()
                 portString = (char *)gtk_entry_get_text(GTK_ENTRY(inputPort));
             else
                 portString = "14550";
-            printf("%s.\n",portString);
+            //printf("%s.\n",portString);
             pthread_t hilito;
             append_text("Esperando oponente.\n",TEXT_COLOR);
             gtk_widget_set_sensitive (btnAccept, FALSE);
@@ -913,7 +944,7 @@ void acceptGame()
                 if(resultado != 20)
                 {
                     //Se creo correctamente
-                    printf("ENTRO ACA.%d\n",resultado);
+                    //printf("ENTRO ACA.%d\n",resultado);
                     termine = 1;
                     newSocket = resultado;
                 }
@@ -924,7 +955,7 @@ void acceptGame()
             //newSocket = create_game(atoi(portString));
             if(resultado>=0)
             {
-                printf("Voy a iniciar el juego.\n");
+                //printf("Voy a iniciar el juego.\n");
                 gamestate.myState = SHOOTING;
                 startGameAux(0);
             }
@@ -959,7 +990,7 @@ void acceptGame()
                 if(resultadoJoin != 20)
                 {
                     //Se creo correctamente
-                    printf("ENTRO ACA.%d\n",resultadoJoin);
+                    //printf("ENTRO ACA.%d\n",resultadoJoin);
                     termine2 = 1;
                     newSocket = resultadoJoin;
                 }
@@ -986,7 +1017,7 @@ void acceptGame()
 void on_window_main_destroy()
 {
     
-    printf("Voy a enviar los mensajes correspondientes para desconectar.\n");
+    //printf("Voy a enviar los mensajes correspondientes para desconectar.\n");
     //Tengo que enviar un mensajito
     if(newSocket>=0){
         gamestate.myState = LOST;

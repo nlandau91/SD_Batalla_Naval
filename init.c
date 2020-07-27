@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "utils.h"
-#include "time.h"
+#include <sys/time.h>
 
 /**
     Inserta las naves automaticamente en el tablero
@@ -13,7 +13,11 @@
 int autoaddships(Gamestate* gamestate)
 {
     char* orientaciones[2] = {"horizontal","vertical"};
-    srand(time(0));
+    //seteamos la semilla de srand
+    //srand(time(0));
+    struct timeval time; 
+    gettimeofday(&time,NULL);
+    srand((time.tv_sec * 1000) + (time.tv_usec / 1000));
     for(int i = 0; i < 9; i++)
     {
         int valido = EXIT_FAILURE;
